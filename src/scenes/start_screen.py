@@ -23,20 +23,33 @@ class StartEffect(Print):
 
     def _update(self, frame_no):
         # Draw the top bar
-        bar_edge = "=" * (self.screen.width - 2)
+        bar_edge = "=" * (self._screen.width - 2)
         bar_side = "= + ="
         bar_content = "Dungeon Depths"
-        self.screen.print_at(bar_edge, 1, 1)
-        self.screen.print_at(bar_side, 1, 2)
-        self.screen.print_at(
-            bar_content, (self._screen.width - len(bar_content)) // 2, 2
+        self._screen.print_at(bar_edge, 1, 1, 7, 1)
+        self._screen.paint(
+            text=bar_side,
+            x=1,
+            y=2,
+            colour_map=[(7, 1, 0), (0, 1, 0), (3, 1, 0), (0, 1, 0), (7, 1, 0)],
         )
-        self.screen.print_at(bar_side, self._screen.width - 1 - len(bar_side), 2)
-        self.screen.print_at(bar_edge, 1, 3)
+        self._screen.print_at(
+            bar_content, (self._screen.width - len(bar_content)) // 2, 2, 1, 4
+        )
+        self._screen.paint(
+            text=bar_side,
+            x=self._screen.width - 1 - len(bar_side),
+            y=2,
+            colour_map=[(7, 1, 0), (0, 1, 0), (3, 1, 0), (0, 1, 0), (7, 1, 0)],
+        )
+        self._screen.print_at(bar_edge, 1, 3, 7, 1)
 
         # Draw navigation options
-        nav_options = "[S]ettings [Q]uit"
-        x = (self.screen.width - len(nav_options)) // 2
-        self.screen.print_at(nav_options, x, 5)
+        nav_options = ["[P]lay", "[M]anage Save", "[S]ettings", "[Q]uit"]
+        for i, option in enumerate(nav_options):
+            x = (self._screen.width - len(option)) // 2
+            colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
+            colour_map += [(7, 1, 0)] * (len(option) - 3)
+            self._screen.paint(text=option, x=x, y=i + 5, colour_map=colour_map)
 
         return super()._update(frame_no)
