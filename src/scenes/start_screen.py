@@ -52,4 +52,14 @@ class StartEffect(Print):
             colour_map += [(7, 1, 0)] * (len(option) - 3)
             self._screen.paint(text=option, x=x, y=i + 5, colour_map=colour_map)
 
-        return super()._update(frame_no)
+        # Draw social media contacts
+
+        # Draw a copyright statement
+        statement = "Copyright (c) 2025, TheWorldJar"
+        self._screen.print_at(
+            statement,
+            (self._screen.width - len(statement)) // 2,
+            self._screen.height - 2,
+            3,
+            4,
+        )
