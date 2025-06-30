@@ -1,8 +1,6 @@
-from asciimatics.screen import Screen
-from asciimatics.scene import Scene
 from asciimatics.effects import Print
 from asciimatics.renderers import FigletText
-from asciimatics.exceptions import NextScene, StopApplication
+from asciimatics.exceptions import NextScene
 
 
 class SettingsEffect(Print):
