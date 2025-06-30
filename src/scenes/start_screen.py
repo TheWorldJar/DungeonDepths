@@ -17,8 +17,12 @@ class StartEffect(Print):
         if hasattr(event, "key_code"):
             if event.key_code == ord("s"):  # Press 's' for settings
                 raise NextScene("Settings")
-            elif event.key_code == ord("q"):  # Press 'q' to quit
+            if event.key_code == ord("q"):  # Press 'q' to quit
                 raise StopApplication("User quit")
+            if event.key_code == ord("p"):  # Press 'p' to play
+                raise NextScene("Play")
+            if event.key_code == ord("m"):  # Presse 'm' to manage the player's save
+                raise NextScene("Manage")
         return event
 
     def _update(self, frame_no):

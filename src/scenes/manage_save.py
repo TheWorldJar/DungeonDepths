@@ -2,7 +2,7 @@ from asciimatics.effects import Print
 from asciimatics.renderers import FigletText
 
 
-class SettingsEffect(Print):
+class ManageEffect(Print):
     """The Game's Setting Screen"""
 
     def __init__(self, screen):
