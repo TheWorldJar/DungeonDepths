@@ -15,6 +15,9 @@ class SettingsEffect(Print):
         if hasattr(event, "key_code"):
             if event.key_code == ord("b"):  # Press 'b' to go back
                 raise NextScene("Start")
-            elif event.key_code == ord("q"):
+            if event.key_code == ord("q"):
                 return None
         return event
+
+    def _update(self, frame_no):
+        return super()._update(frame_no)

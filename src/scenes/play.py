@@ -3,7 +3,7 @@ from asciimatics.renderers import FigletText
 
 
 class PlayEffect(Print):
-    """The Game's Setting Screen"""
+    """The Game's Play Screen"""
 
     def __init__(self, screen):
         super().__init__(screen=screen, renderer=FigletText("Play", font="big"), y=2)

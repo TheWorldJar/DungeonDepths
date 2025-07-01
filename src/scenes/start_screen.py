@@ -21,8 +21,12 @@ class StartEffect(Print):
                 raise StopApplication("User quit")
             if event.key_code == ord("p"):  # Press 'p' to play
                 raise NextScene("Play")
-            if event.key_code == ord("m"):  # Presse 'm' to manage the player's save
+            if event.key_code == ord("m"):  # Press 'm' to manage the player's save
                 raise NextScene("Manage")
+            if event.key_code == ord("w"):  # Press 'w' to show warranty information
+                raise NextScene("Warranty")
+            if event.key_code == ord("l"):  # Press 'l' to show license information
+                raise NextScene("License")
         return event
 
     def _update(self, frame_no):
@@ -63,7 +67,25 @@ class StartEffect(Print):
         self._screen.print_at(
             statement,
             (self._screen.width - len(statement)) // 2,
-            self._screen.height - 2,
+            self._screen.height - 4,
             3,
             4,
+        )
+        statement = "[L]icense"
+        colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
+        colour_map += [(7, 1, 0)] * (len(statement) - 3)
+        self._screen.paint(
+            text=statement,
+            x=(self._screen.width // 2) - len(statement) - 1,
+            y=self._screen.height - 3,
+            colour_map=colour_map,
+        )
+        statement = "[W]arranty"
+        colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
+        colour_map += [(7, 1, 0)] * (len(statement) - 3)
+        self._screen.paint(
+            text=statement,
+            x=(self._screen.width // 2) + 1,
+            y=self._screen.height - 3,
+            colour_map=colour_map,
         )

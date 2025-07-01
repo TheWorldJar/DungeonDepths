@@ -5,6 +5,8 @@ from scenes.start_screen import StartEffect
 from scenes.settings import SettingsEffect
 from scenes.play import PlayEffect
 from scenes.manage_save import ManageEffect
+from scenes.warranty import WarrantyEffect
+from scenes.license import LicenseEffect
 import sys
 
 
@@ -14,8 +16,17 @@ def screen_init(screen, scene):
     settings_scene = Scene([SettingsEffect(screen)], -1, name="Settings")
     play_scene = Scene([PlayEffect(screen)], -1, name="Play")
     manage_scene = Scene([ManageEffect(screen)], -1, name="Manage")
+    warranty_scene = Scene([WarrantyEffect(screen)], -1, name="Warranty")
+    license_scene = Scene([LicenseEffect(screen)], -1, name="License")
     screen.play(
-        [start_scene, settings_scene, play_scene, manage_scene],
+        [
+            start_scene,
+            settings_scene,
+            play_scene,
+            manage_scene,
+            warranty_scene,
+            license_scene,
+        ],
         stop_on_resize=True,
         start_scene=scene,
     )
