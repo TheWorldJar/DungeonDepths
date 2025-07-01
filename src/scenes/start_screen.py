@@ -15,17 +15,29 @@ class StartEffect(Print):
 
     def process_event(self, event):
         if hasattr(event, "key_code"):
-            if event.key_code == ord("s"):  # Press 's' for settings
+            if event.key_code == ord("s") or event.key_code == ord(
+                "S"
+            ):  # Press 's' for settings
                 raise NextScene("Settings")
-            if event.key_code == ord("q"):  # Press 'q' to quit
+            if event.key_code == ord("q") or event.key_code == ord(
+                "Q"
+            ):  # Press 'q' to quit
                 raise StopApplication("User quit")
-            if event.key_code == ord("p"):  # Press 'p' to play
+            if event.key_code == ord("p") or event.key_code == ord(
+                "P"
+            ):  # Press 'p' to play
                 raise NextScene("Play")
-            if event.key_code == ord("m"):  # Press 'm' to manage the player's save
+            if event.key_code == ord("m") or event.key_code == ord(
+                "M"
+            ):  # Press 'm' to manage the player's save
                 raise NextScene("Manage")
-            if event.key_code == ord("w"):  # Press 'w' to show warranty information
+            if event.key_code == ord("w") or event.key_code == ord(
+                "W"
+            ):  # Press 'w' to show warranty information
                 raise NextScene("Warranty")
-            if event.key_code == ord("l"):  # Press 'l' to show license information
+            if event.key_code == ord("l") or event.key_code == ord(
+                "L"
+            ):  # Press 'l' to show license information
                 raise NextScene("License")
         return event
 

@@ -43,9 +43,11 @@ For more information, please consult the LICENSE file found in the root of this 
 
     def process_event(self, event):
         if hasattr(event, "key_code"):
-            if event.key_code == ord("b"):  # Press 'b' to go back
+            if event.key_code == ord("b") or event.key_code == ord(
+                "B"
+            ):  # Press 'b' to go back
                 raise NextScene("Start")
-            if event.key_code == ord("q"):
+            if event.key_code == ord("q") or event.key_code == ord("Q"):
                 return None
         return event
 

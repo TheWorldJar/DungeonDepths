@@ -1,13 +1,15 @@
+import sys
+
 from asciimatics.screen import Screen
 from asciimatics.scene import Scene
 from asciimatics.exceptions import ResizeScreenError
+
 from scenes.start_screen import StartEffect
 from scenes.settings import SettingsEffect
 from scenes.play import PlayEffect
 from scenes.manage_save import ManageEffect
 from scenes.warranty import WarrantyEffect
 from scenes.license import LicenseEffect
-import sys
 
 
 def screen_init(screen, scene):
