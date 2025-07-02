@@ -29,7 +29,8 @@ class Actor:
     def __init__(self, name: str, actor_type: str, health: int, abilities: set):
         self.name = name
         self.actor_type = actor_type
-        self.health = health
+        self.max_health = health
+        self.current_health = health
         self.abilities = abilities
 
     def use_ability(self):
@@ -38,10 +39,10 @@ class Actor:
 
     def change_health(self, change: int):
         """Changes the actor's health"""
-        self.health += change
+        self.current_health += change
 
     def get_type(self) -> str:
         return self.actor_type
 
     def get_health(self) -> int:
-        return self.health
+        return self.current_health
