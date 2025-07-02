@@ -1,4 +1,5 @@
 import sys
+from time import time
 
 from asciimatics.screen import Screen
 from asciimatics.scene import Scene
@@ -37,12 +38,15 @@ def screen_init(screen, scene):
 def main():
     """The program's entry point"""
     last_scene = None
+    last_time = time()
     while True:
-        try:
-            Screen.wrapper(screen_init, arguments=[last_scene])
-            sys.exit(0)
-        except ResizeScreenError as e:
-            last_scene = e.scene
+        if time() - last_time > 1.0 / 60:
+            last_time = time()
+            try:
+                Screen.wrapper(screen_init, arguments=[last_scene])
+                sys.exit(0)
+            except ResizeScreenError as e:
+                last_scene = e.scene
 
 
 if __name__ == "__main__":
