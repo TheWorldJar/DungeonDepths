@@ -1,6 +1,7 @@
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene, StopApplication
+from .compositions.topbar import print_top_bar
 
 
 class StartEffect(Print):
@@ -43,26 +44,7 @@ class StartEffect(Print):
 
     def _update(self, frame_no):
         # Draw the top bar
-        bar_edge = "=" * (self._screen.width - 2)
-        bar_side = "= + ="
-        bar_content = "Dungeon Depths"
-        self._screen.print_at(bar_edge, 1, 1, 7, 1)
-        self._screen.paint(
-            text=bar_side,
-            x=1,
-            y=2,
-            colour_map=[(7, 1, 0), (0, 1, 0), (3, 1, 0), (0, 1, 0), (7, 1, 0)],
-        )
-        self._screen.print_at(
-            bar_content, (self._screen.width - len(bar_content)) // 2, 2, 1, 4
-        )
-        self._screen.paint(
-            text=bar_side,
-            x=self._screen.width - 1 - len(bar_side),
-            y=2,
-            colour_map=[(7, 1, 0), (0, 1, 0), (3, 1, 0), (0, 1, 0), (7, 1, 0)],
-        )
-        self._screen.print_at(bar_edge, 1, 3, 7, 1)
+        print_top_bar(self, "Dungeon Depths")
 
         # Draw navigation options
         nav_options = [
@@ -75,39 +57,39 @@ class StartEffect(Print):
             colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
             colour_map += [(7, 1, 0)] * (len(option) - 3)
             if i < len(nav_options) // 2:
-                x = self._screen.width // 3
+                x = self.screen.width // 3
                 y = i + 5
             else:
-                x = (self._screen.width * 2) // 3
+                x = (self.screen.width * 2) // 3
                 y = (5 - (len(nav_options) // 2)) + i
-            self._screen.paint(text=option, x=x, y=y, colour_map=colour_map)
+            self.screen.paint(text=option, x=x, y=y, colour_map=colour_map)
 
         # Draw social media contacts
 
         # Draw a copyright statement
         statement = "Copyright (c) 2025, TheWorldJar"
-        self._screen.print_at(
+        self.screen.print_at(
             statement,
-            (self._screen.width - len(statement)) // 2,
-            self._screen.height - 4,
+            (self.screen.width - len(statement)) // 2,
+            self.screen.height - 4,
             3,
             4,
         )
         statement = "[L]icense"
         colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
         colour_map += [(7, 1, 0)] * (len(statement) - 3)
-        self._screen.paint(
+        self.screen.paint(
             text=statement,
-            x=(self._screen.width // 2) - len(statement) - 1,
-            y=self._screen.height - 3,
+            x=(self.screen.width // 2) - len(statement) - 1,
+            y=self.screen.height - 3,
             colour_map=colour_map,
         )
         statement = "[W]arranty"
         colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
         colour_map += [(7, 1, 0)] * (len(statement) - 3)
-        self._screen.paint(
+        self.screen.paint(
             text=statement,
-            x=(self._screen.width // 2) + 1,
-            y=self._screen.height - 3,
+            x=(self.screen.width // 2) + 1,
+            y=self.screen.height - 3,
             colour_map=colour_map,
         )
