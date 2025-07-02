@@ -2,7 +2,7 @@ import random
 from enum import Enum
 from src.actors.actor import Actor, Attributes, CombatSkills
 from ancestries import Ancestry
-from classes import Classes
+from classes.classes import Classes
 
 
 class CraftingSkills(Enum):
@@ -78,10 +78,11 @@ class Character(Actor):
 
         # Generate a race at random.
         self.ancestry = random.choice(list(Ancestry))
+        self.change_on_ancestry()
 
         # Change starting attributes & skills based on class and ancestry
         self.char_class = char_class
-        self.change_starting_attributes()
+        self.change_on_class()
 
         # Calculate starting health
         health = (
@@ -97,7 +98,22 @@ class Character(Actor):
         # Call parent constructor
         super().__init__(name, "character", health, abilities)
 
-    def change_starting_attributes(self):
+    def change_on_ancestry(self):
+        match self.ancestry:
+            case Ancestry.HUMAN:
+                self.attributes[Attributes.INTUITION] += 1
+                self.attributes[Attributes.RESILIENCE] += 1
+            case Ancestry.NEPHILIM:
+                self.attributes[Attributes.INTELLIGENCE] += 1
+                self.attributes[Attributes.ENDURANCE] += 1
+            case Ancestry.ELF:
+                self.attributes[Attributes.DEXTERITY] += 1
+                self.attributes[Attributes.PERCEPTION] += 1
+            case Ancestry.DRAGONKIN:
+                self.attributes[Attributes.STRENGTH] += 1
+                self.attributes[Attributes.WILLPOWER] += 1
+
+    def change_on_class(self):
         match self.char_class:
             case Classes.MARAUDER:
                 self.attributes[Attributes.STRENGTH] += 1
