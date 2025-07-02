@@ -65,12 +65,22 @@ class StartEffect(Print):
         self._screen.print_at(bar_edge, 1, 3, 7, 1)
 
         # Draw navigation options
-        nav_options = ["[P]lay", "[M]anage Save", "[S]ettings", "[Q]uit"]
+        nav_options = [
+            "[P]lay",
+            "[M]anage Save",
+            "[S]ettings",
+            "[Q]uit",
+        ]
         for i, option in enumerate(nav_options):
-            x = (self._screen.width - len(option)) // 2
             colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
             colour_map += [(7, 1, 0)] * (len(option) - 3)
-            self._screen.paint(text=option, x=x, y=i + 5, colour_map=colour_map)
+            if i < len(nav_options) // 2:
+                x = self._screen.width // 3
+                y = i + 5
+            else:
+                x = (self._screen.width * 2) // 3
+                y = (5 - (len(nav_options) // 2)) + i
+            self._screen.paint(text=option, x=x, y=y, colour_map=colour_map)
 
         # Draw social media contacts
 
