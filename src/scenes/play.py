@@ -60,3 +60,9 @@ class PlayEffect(Print):
                     (1, (self.play_y * i // 8) + 4),
                 ]
                 self.screen.fill_polygon([polygon], 3, 0)
+            self.screen.paint(
+                text=f"[{i}]",
+                x=3,
+                y=(self.play_y * i // 8) - (self.play_y // 8) + 5,
+                colour_map=[(1, 1, 0), (3, 4, 0), (1, 1, 0)],
+            )
