@@ -26,12 +26,17 @@ class CombatSkills(Enum):
 class Actor:
     """Default Actor Parent Class"""
 
-    def __init__(self, name: str, actor_type: str, health: int, abilities: set):
+    def __init__(
+        self, name: str, actor_type: str, health: int, armour: int, abilities: set
+    ):
         self.name = name
         self.actor_type = actor_type
         self.max_health = health
         self.current_health = health
+        self.armour = armour
         self.abilities = abilities
+        self.effects = []
+        self.initiative = 0
 
     def use_ability(self):
         """Children of Actor need to define their own logic to use abilities"""
@@ -46,3 +51,9 @@ class Actor:
 
     def get_health(self) -> int:
         return self.current_health
+
+    def get_armour(self) -> int:
+        return self.armour
+
+    def add_effect(self, effect):
+        self.effects.append(effect)
