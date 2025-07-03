@@ -1,5 +1,5 @@
 import sys
-from time import time
+import time
 
 from asciimatics.screen import Screen
 from asciimatics.scene import Scene
@@ -38,10 +38,10 @@ def screen_init(screen, scene):
 def main():
     """The program's entry point"""
     last_scene = None
-    last_time = time()
+    last_time = time.perf_counter()
     while True:
-        if time() - last_time > 1.0 / 60:
-            last_time = time()
+        if time.perf_counter() - last_time > 1.0 / 20:
+            last_time = time.perf_counter
             try:
                 Screen.wrapper(screen_init, arguments=[last_scene])
                 sys.exit(0)
