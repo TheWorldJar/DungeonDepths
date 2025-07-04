@@ -57,3 +57,6 @@ class Actor:
 
     def add_effect(self, effect):
         self.effects.append(effect)
+
+    def on_target(self):
+        return self

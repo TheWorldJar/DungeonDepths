@@ -24,6 +24,7 @@ class PlayEffect(Print):
                 return None
             if event.key_code == ord("b") or event.key_code == ord("B"):
                 raise NextScene("Start")
+            # These effects are palceholder.
             if event.key_code == ord("1"):
                 self.current = ("Character 1", 1)
             if event.key_code == ord("2"):
