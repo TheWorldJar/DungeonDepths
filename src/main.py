@@ -14,7 +14,6 @@ from scenes.warranty import WarrantyEffect
 from scenes.license import LicenseEffect
 
 
-# 180x35
 def screens(screen, scene, game_state):
     """The game's screen and its scenes"""
     start_scene = Scene([StartEffect(screen, game_state)], -1, name="Start")

@@ -5,6 +5,7 @@ from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene, StopApplication
 from .compositions.topbar import print_top_bar
+from .compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
 
 
 class StartEffect(Print):
@@ -55,56 +56,59 @@ class StartEffect(Print):
         return event
 
     def _update(self, frame_no):
-        # Draw the top bar
-        print_top_bar(self, "Dungeon Depths")
+        if self.screen.width < MIN_WIDTH or self.screen.height < MIN_HEIGHT:
+            print_screen_size(self)
+        else:
+            # Draw the top bar
+            print_top_bar(self, "Dungeon Depths")
 
-        # Draw navigation options
-        nav_options = [
-            "[P]lay",
-            "[M]anage Save",
-            "[S]ettings",
-            "[Q]uit",
-        ]
-        for i, option in enumerate(nav_options):
+            # Draw navigation options
+            nav_options = [
+                "[P]lay",
+                "[M]anage Save",
+                "[S]ettings",
+                "[Q]uit",
+            ]
+            for i, option in enumerate(nav_options):
+                colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
+                colour_map += [(7, 1, 0)] * (len(option) - 3)
+                if i < len(nav_options) // 2:
+                    x = self.screen.width // 3
+                    y = i + 5
+                else:
+                    x = (self.screen.width * 2) // 3
+                    y = (5 - (len(nav_options) // 2)) + i
+                self.screen.paint(text=option, x=x, y=y, colour_map=colour_map)
+
+            # Draw social media contacts
+
+            # Draw a copyright statement
+            statement = "Copyright (c) 2025, TheWorldJar"
+            self.screen.print_at(
+                statement,
+                (self.screen.width - len(statement)) // 2,
+                self.screen.height - 4,
+                3,
+                4,
+            )
+            statement = "[L]icense"
             colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
-            colour_map += [(7, 1, 0)] * (len(option) - 3)
-            if i < len(nav_options) // 2:
-                x = self.screen.width // 3
-                y = i + 5
-            else:
-                x = (self.screen.width * 2) // 3
-                y = (5 - (len(nav_options) // 2)) + i
-            self.screen.paint(text=option, x=x, y=y, colour_map=colour_map)
-
-        # Draw social media contacts
-
-        # Draw a copyright statement
-        statement = "Copyright (c) 2025, TheWorldJar"
-        self.screen.print_at(
-            statement,
-            (self.screen.width - len(statement)) // 2,
-            self.screen.height - 4,
-            3,
-            4,
-        )
-        statement = "[L]icense"
-        colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
-        colour_map += [(7, 1, 0)] * (len(statement) - 3)
-        self.screen.paint(
-            text=statement,
-            x=(self.screen.width // 2) - len(statement) - 1,
-            y=self.screen.height - 3,
-            colour_map=colour_map,
-        )
-        statement = "[W]arranty"
-        colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
-        colour_map += [(7, 1, 0)] * (len(statement) - 3)
-        self.screen.paint(
-            text=statement,
-            x=(self.screen.width // 2) + 1,
-            y=self.screen.height - 3,
-            colour_map=colour_map,
-        )
+            colour_map += [(7, 1, 0)] * (len(statement) - 3)
+            self.screen.paint(
+                text=statement,
+                x=(self.screen.width // 2) - len(statement) - 1,
+                y=self.screen.height - 3,
+                colour_map=colour_map,
+            )
+            statement = "[W]arranty"
+            colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
+            colour_map += [(7, 1, 0)] * (len(statement) - 3)
+            self.screen.paint(
+                text=statement,
+                x=(self.screen.width // 2) + 1,
+                y=self.screen.height - 3,
+                colour_map=colour_map,
+            )
 
     def check_save(self) -> str:
         save_path = os.path.realpath("./save")

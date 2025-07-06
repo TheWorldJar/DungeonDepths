@@ -3,6 +3,7 @@ from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene
 from .compositions.topbar import print_top_bar
 from .compositions.verticalbar import print_vertical_bar
+from .compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
 
 
 class PlayEffect(Print):
@@ -46,40 +47,43 @@ class PlayEffect(Print):
         return event
 
     def _update(self, frame_no):
-        print_top_bar(self, self.current[0])
-        print_vertical_bar(self, self.screen.width // 5)
+        if self.screen.width < MIN_WIDTH or self.screen.height < MIN_HEIGHT:
+            print_screen_size(self)
+        else:
+            print_top_bar(self, self.current[0])
+            print_vertical_bar(self, self.screen.width // 5)
 
-        horizontal_sep = "=" * ((self.screen.width // 5) - 1)
-        for i in range(1, 9):
-            line = (self.play_y * i // 8) + 4
-            line_above = (self.play_y * i // 8) - (self.play_y // 8) + 4
-            self.screen.print_at(horizontal_sep, 1, line, 7, 1)
-            if i == self.current[1]:
-                polygon = [
-                    (1, line_above),
-                    (
-                        (self.screen.width // 5),
-                        line_above,
-                    ),
-                    ((self.screen.width // 5), line),
-                    (1, line),
-                ]
-                self.screen.fill_polygon([polygon], 3, 0)
-            self.screen.paint(
-                text=f"[{i}]",
-                x=3,
-                y=line_above + 1,
-                colour_map=[(1, 1, 0), (3, 4, 0), (1, 1, 0)],
-            )
-            if i > self.game.slots:
-                self.screen.print_at(
-                    "Purchase Slot for 200 Silver",  # Placeholder
-                    x=7,
+            horizontal_sep = "=" * ((self.screen.width // 5) - 1)
+            for i in range(1, 9):
+                line = (self.play_y * i // 8) + 4
+                line_above = (self.play_y * i // 8) - (self.play_y // 8) + 4
+                self.screen.print_at(horizontal_sep, 1, line, 7, 1)
+                if i == self.current[1]:
+                    polygon = [
+                        (1, line_above),
+                        (
+                            (self.screen.width // 5),
+                            line_above,
+                        ),
+                        ((self.screen.width // 5), line),
+                        (1, line),
+                    ]
+                    self.screen.fill_polygon([polygon], 3, 0)
+                self.screen.paint(
+                    text=f"[{i}]",
+                    x=3,
                     y=line_above + 1,
+                    colour_map=[(1, 1, 0), (3, 4, 0), (1, 1, 0)],
                 )
-            else:
-                self.screen.print_at(
-                    f"{self.game.characters[i - 1].name}",
-                    x=7,
-                    y=line_above + 1,
-                )
+                if i > self.game.slots:
+                    self.screen.print_at(
+                        "Purchase Slot for 200 Silver",  # Placeholder
+                        x=7,
+                        y=line_above + 1,
+                    )
+                else:
+                    self.screen.print_at(
+                        f"{self.game.characters[i - 1].name}",
+                        x=7,
+                        y=line_above + 1,
+                    )

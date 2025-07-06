@@ -2,6 +2,8 @@ from asciimatics.effects import Print
 from asciimatics.renderers import FigletText
 from asciimatics.exceptions import NextScene
 
+from .compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
+
 
 class SettingsEffect(Print):
     """The Game's Setting Screen"""
@@ -24,4 +26,7 @@ class SettingsEffect(Print):
         return event
 
     def _update(self, frame_no):
-        return super()._update(frame_no)
+        if self.screen.width < MIN_WIDTH or self.screen.height < MIN_HEIGHT:
+            print_screen_size(self)
+        else:
+            return super()._update(frame_no)
