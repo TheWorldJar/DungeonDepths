@@ -1,5 +1,4 @@
 import sys
-import time
 
 from asciimatics.screen import Screen
 from asciimatics.scene import Scene
@@ -15,6 +14,7 @@ from scenes.warranty import WarrantyEffect
 from scenes.license import LicenseEffect
 
 
+# 180x35
 def screens(screen, scene, game_state):
     """The game's screen and its scenes"""
     start_scene = Scene([StartEffect(screen, game_state)], -1, name="Start")
@@ -40,16 +40,13 @@ def screens(screen, scene, game_state):
 def main():
     """The program's entry point"""
     last_scene = None
-    last_time = time.perf_counter()
     game = GameState()
     while True:
-        if time.perf_counter() - last_time > 1.0 / 20:
-            last_time = time.perf_counter
-            try:
-                Screen.wrapper(screens, arguments=[last_scene, game])
-                sys.exit(0)
-            except ResizeScreenError as e:
-                last_scene = e.scene
+        try:
+            Screen.wrapper(screens, arguments=[last_scene, game])
+            sys.exit(0)
+        except ResizeScreenError as e:
+            last_scene = e.scene
 
 
 if __name__ == "__main__":

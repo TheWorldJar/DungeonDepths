@@ -51,21 +51,35 @@ class PlayEffect(Print):
 
         horizontal_sep = "=" * ((self.screen.width // 5) - 1)
         for i in range(1, 9):
-            self.screen.print_at(horizontal_sep, 1, (self.play_y * i // 8) + 4, 7, 1)
+            line = (self.play_y * i // 8) + 4
+            line_above = (self.play_y * i // 8) - (self.play_y // 8) + 4
+            self.screen.print_at(horizontal_sep, 1, line, 7, 1)
             if i == self.current[1]:
                 polygon = [
-                    (1, ((self.play_y * i // 8) - (self.play_y // 8) + 4)),
+                    (1, line_above),
                     (
                         (self.screen.width // 5),
-                        ((self.play_y * i // 8) - (self.play_y // 8) + 4),
+                        line_above,
                     ),
-                    ((self.screen.width // 5), (self.play_y * i // 8) + 4),
-                    (1, (self.play_y * i // 8) + 4),
+                    ((self.screen.width // 5), line),
+                    (1, line),
                 ]
                 self.screen.fill_polygon([polygon], 3, 0)
             self.screen.paint(
                 text=f"[{i}]",
                 x=3,
-                y=(self.play_y * i // 8) - (self.play_y // 8) + 5,
+                y=line_above + 1,
                 colour_map=[(1, 1, 0), (3, 4, 0), (1, 1, 0)],
             )
+            if i > self.game.slots:
+                self.screen.print_at(
+                    "Purchase Slot for 200 Silver",  # Placeholder
+                    x=7,
+                    y=line_above + 1,
+                )
+            else:
+                self.screen.print_at(
+                    f"{self.game.characters[i - 1].name}",
+                    x=7,
+                    y=line_above + 1,
+                )

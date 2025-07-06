@@ -96,7 +96,7 @@ class Character(Actor):
         abilities = set()
 
         # Call parent constructor
-        super().__init__(name, "character", health, abilities)
+        super().__init__(name, "character", health, 0, abilities)
 
     def change_on_ancestry(self):
         match self.ancestry:
