@@ -1,8 +1,8 @@
 import random
 from enum import Enum
 from src.actors.actor import Actor, Attributes, CombatSkills
-from ancestries import Ancestry
-from classes.classes import Classes
+from .ancestries import Ancestry
+from .classes.classes import Classes
 
 
 class CraftingSkills(Enum):

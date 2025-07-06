@@ -1,10 +1,95 @@
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene
+from asciimatics.widgets import Frame, Layout, Text, ListBox, Button, Widget
+from asciimatics.scene import Scene
+from asciimatics.screen import Screen
 
 from .compositions.topbar import print_top_bar
 from .compositions.verticalbar import print_vertical_bar
 from .compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
+from src.actors.characters.classes.classes import Classes
+from src.actors.characters.character import Character
+
+
+class CharacterCreationView(Frame):
+    def __init__(self, screen, game_state, slot):
+        super().__init__(
+            screen,
+            screen.height - 4,
+            screen.width * 4 // 5,
+            x=screen.width // 5 + 1,
+            y=4,
+            hover_focus=True,
+            title="Character Creation",
+            reduce_cpu=True,
+            has_border=False,
+            is_modal=True,
+        )
+        self.palette = {
+            "background": (7, 2, 0),
+            "shadow": (7, 2, 0),
+            "disabled": (7, 2, 0),
+            "invalid": (7, 2, 0),
+            "label": (7, 2, 0),
+            "borders": (7, 2, 0),
+            "scroll": (7, 2, 0),
+            "title": (7, 2, 0),
+            "edit_text": (7, 2, 0),
+            "button": (7, 2, 0),
+            "control": (7, 2, 0),
+            "field": (7, 2, 0),
+            "focus_button": (7, 2, 0),
+            "focus_control": (7, 2, 0),
+            "focus_field": (7, 2, 0),
+            "focus_edit_text": (7, 2, 0),
+            "focus_label": (7, 2, 0),
+            "selected_field": (7, 2, 0),
+            "selected_control": (7, 2, 0),
+            "selected_button": (7, 2, 0),
+            "selected_focus_field": (7, 2, 0),
+            "selected_focus_control": (7, 2, 0),
+            "selected_focus_button": (7, 2, 0),
+        }
+        self.game = game_state
+        self.slot = slot
+
+        layout = Layout([100], fill_frame=True)
+        self.add_layout(layout)
+
+        layout.add_widget(Text("Name:", "name", on_change=self._on_change))
+
+        classes_options = [(c.value.capitalize(), c) for c in Classes]
+        layout.add_widget(
+            ListBox(
+                Widget.FILL_FRAME,
+                classes_options,
+                name="character_class",
+                on_change=self._on_change,
+                add_scroll_bar=True,
+            )
+        )
+
+        layout2 = Layout([1, 1, 1, 1])
+        self.add_layout(layout2)
+        layout2.add_widget(Button("OK", self._ok), 0)
+        layout2.add_widget(Button("Cancel", self._cancel), 3)
+
+        self.fix()
+
+    def _on_change(self):
+        # Placeholder for dynamic updates if needed
+        pass
+
+    def _ok(self):
+        character_name = self.data["name"]
+        selected_class = self.data["character_class"]
+        self.game.characters[self.slot - 1] = Character(selected_class, character_name)
+        raise NextScene("Play")
+
+    def _cancel(self):
+        self.game.current_sub = ("Default", 0)
+        raise NextScene("Play")
 
 
 class PlayEffect(Print):
@@ -79,7 +164,7 @@ class PlayEffect(Print):
                 )
                 if i > self.game.slots:
                     self.screen.print_at(
-                        "Purchase Slot for 200 Silver",  # Placeholder
+                        "Purchase: 200 Silver",  # Placeholder
                         x=7,
                         y=line_above + 1,
                     )
@@ -92,18 +177,16 @@ class PlayEffect(Print):
             # Placholder
             match self.game.current_sub[0]:
                 case "char_creation":
-                    self.screen.print_at(
-                        "Character Creation",
-                        50,
-                        (self.screen.height // 2 + 4),
-                        7,
-                        1,
+                    self.scene.add_effect(
+                        CharacterCreationView(
+                            self.screen, self.game, self.game.current_sub[1]
+                        )
                     )
                 case _:
                     self.screen.print_at(
                         "Default",
                         50,
-                        (self.screen.height // 2 + 4),
+                        (self.screen.height // 2) + 4,
                         7,
                         1,
                     )

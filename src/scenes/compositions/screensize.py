@@ -1,7 +1,7 @@
 from asciimatics.effects import Print
 
-MIN_WIDTH = 180
-MIN_HEIGHT = 35
+MIN_WIDTH = 100
+MIN_HEIGHT = 30
 
 
 def print_screen_size(source: Print):
