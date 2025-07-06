@@ -8,7 +8,7 @@ from .compositions.verticalbar import print_vertical_bar
 class PlayEffect(Print):
     """The Game's Play Screen"""
 
-    def __init__(self, screen):
+    def __init__(self, screen, game_state):
         super().__init__(
             screen=screen,
             renderer=SpeechBubble("Copyright (c) 2025, TheWorldJar"),
@@ -16,6 +16,7 @@ class PlayEffect(Print):
         )
         self.play_y = self.screen.height - 4
         self.current = ("Dungeon Depths", 0)
+        self.game = game_state
 
     def process_event(self, event):
         if hasattr(event, "key_code"):
@@ -23,6 +24,7 @@ class PlayEffect(Print):
             if event.key_code == ord("q") or event.key_code == ord("Q"):
                 return None
             if event.key_code == ord("b") or event.key_code == ord("B"):
+                self.game.current_scene = "Start"
                 raise NextScene("Start")
             # These effects are palceholder.
             if event.key_code == ord("1"):

@@ -5,7 +5,8 @@ from asciimatics.renderers import FigletText
 class ManageEffect(Print):
     """The Game's Manage Savegame Screen"""
 
-    def __init__(self, screen):
+    def __init__(self, screen, game_state):
+        self.game = game_state
         super().__init__(
             screen=screen, renderer=FigletText("Manage Save", font="big"), y=2
         )

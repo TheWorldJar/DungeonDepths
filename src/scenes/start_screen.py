@@ -7,7 +7,8 @@ from .compositions.topbar import print_top_bar
 class StartEffect(Print):
     """The Game's Start Screen"""
 
-    def __init__(self, screen):
+    def __init__(self, screen, game_state):
+        self.game = game_state
         super().__init__(
             screen=screen,
             renderer=SpeechBubble("Copyright (c) 2025, TheWorldJar"),
@@ -19,6 +20,7 @@ class StartEffect(Print):
             if event.key_code == ord("s") or event.key_code == ord(
                 "S"
             ):  # Press 's' for settings
+                self.game.current_scene = "Settings"
                 raise NextScene("Settings")
             if event.key_code == ord("q") or event.key_code == ord(
                 "Q"
@@ -27,18 +29,22 @@ class StartEffect(Print):
             if event.key_code == ord("p") or event.key_code == ord(
                 "P"
             ):  # Press 'p' to play
+                self.game.current_scene = "Play"
                 raise NextScene("Play")
             if event.key_code == ord("m") or event.key_code == ord(
                 "M"
             ):  # Press 'm' to manage the player's save
+                self.game.current_scene = "Manage"
                 raise NextScene("Manage")
             if event.key_code == ord("w") or event.key_code == ord(
                 "W"
             ):  # Press 'w' to show warranty information
+                self.game.current_scene = "Warranty"
                 raise NextScene("Warranty")
             if event.key_code == ord("l") or event.key_code == ord(
                 "L"
             ):  # Press 'l' to show license information
+                self.game.current_scene = "License"
                 raise NextScene("License")
         return event
 

@@ -6,7 +6,8 @@ from asciimatics.exceptions import NextScene
 class LicenseEffect(Print):
     """The Game's License Information"""
 
-    def __init__(self, screen):
+    def __init__(self, screen, game_state):
+        self.game = game_state
         preamble = """
                       GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
@@ -28,6 +29,7 @@ class LicenseEffect(Print):
             if event.key_code == ord("b") or event.key_code == ord(
                 "B"
             ):  # Press 'b' to go back
+                self.game.current_scene = "Start"
                 raise NextScene("Start")
             if event.key_code == ord("q") or event.key_code == ord("Q"):
                 return None

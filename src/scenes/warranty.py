@@ -6,7 +6,7 @@ from asciimatics.exceptions import NextScene
 class WarrantyEffect(Print):
     """The Game's Warranty Information"""
 
-    def __init__(self, screen):
+    def __init__(self, screen, game_state):
         warranty = """THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
 APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
 HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY
@@ -35,6 +35,7 @@ copy of the Program in return for a fee.
 
 For more information, please consult the LICENSE file found in the root of this project."""
 
+        self.game = game_state
         super().__init__(
             screen=screen,
             renderer=SpeechBubble(warranty),
