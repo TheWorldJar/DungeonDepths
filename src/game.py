@@ -5,3 +5,4 @@ class GameState:
         self.current_scene = "Start"
         self.current_sub = None
         self.characters = []
+        self.inventory = []

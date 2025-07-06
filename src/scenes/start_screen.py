@@ -1,3 +1,6 @@
+import os
+import json
+
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene, StopApplication
@@ -29,6 +32,9 @@ class StartEffect(Print):
             if event.key_code == ord("p") or event.key_code == ord(
                 "P"
             ):  # Press 'p' to play
+                save = self.check_save()
+                if save is not None:
+                    self.load_save(save)
                 self.game.current_scene = "Play"
                 raise NextScene("Play")
             if event.key_code == ord("m") or event.key_code == ord(
@@ -99,3 +105,28 @@ class StartEffect(Print):
             y=self.screen.height - 3,
             colour_map=colour_map,
         )
+
+    def check_save(self) -> str:
+        save_path = os.path.realpath("./save")
+        save_file = os.path.realpath("./save/save.json")
+        # If there is no save file directory, create it.
+        if not os.path.exists(save_path) or not os.path.isdir(save_path):
+            os.makedirs(save_path)
+
+        # If there is a save.json file, try to load it.
+        if os.path.exists(save_file) and os.path.isfile(save_file):
+            try:
+                json.loads(save_file)
+            except ValueError:
+                return None
+            return save_file
+        # Otherwise, create a blank save file.
+        else:
+            data = {"characters": [], "inventory": []}
+            with open("save.json", "w") as s:
+                json.dump(data, s, indent=4)
+            return None
+
+    def load_save(self, save_file):
+        # Placeholder
+        pass
