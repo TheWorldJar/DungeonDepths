@@ -6,7 +6,7 @@ class GameState:
 
     def __init__(self):
         self.current_scene = "Start"
-        self.current_sub = None
+        self.current_sub = ("Default", 0)
         self.characters = [Actor("Empty", "None", 0, 0, set())] * 8
         self.inventory = []
         self.slots = 2

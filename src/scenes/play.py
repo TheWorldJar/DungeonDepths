@@ -1,6 +1,7 @@
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene
+
 from .compositions.topbar import print_top_bar
 from .compositions.verticalbar import print_vertical_bar
 from .compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
@@ -29,6 +30,7 @@ class PlayEffect(Print):
                 raise NextScene("Start")
             # These effects are palceholder.
             if event.key_code == ord("1"):
+                self.character_creator(1)
                 self.current = ("Character 1", 1)
             if event.key_code == ord("2"):
                 self.current = ("Character 2", 2)
@@ -87,3 +89,25 @@ class PlayEffect(Print):
                         x=7,
                         y=line_above + 1,
                     )
+            # Placholder
+            match self.game.current_sub[0]:
+                case "char_creation":
+                    self.screen.print_at(
+                        "Character Creation",
+                        50,
+                        (self.screen.height // 2 + 4),
+                        7,
+                        1,
+                    )
+                case _:
+                    self.screen.print_at(
+                        "Default",
+                        50,
+                        (self.screen.height // 2 + 4),
+                        7,
+                        1,
+                    )
+
+    def character_creator(self, slot):
+        if self.game.characters[slot].actor_type == "None" and self.game.slots >= slot:
+            self.game.current_sub = ("char_creation", slot)
