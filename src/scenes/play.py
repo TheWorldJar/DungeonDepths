@@ -82,8 +82,13 @@ class CharacterCreationView(Frame):
         pass
 
     def _ok(self):
-        character_name = self.data["name"]
-        selected_class = self.data["character_class"]
+        self.save()
+        character_name = self.data.get("name")
+        if not character_name:
+            character_name = "Nameless"
+        selected_class = self.data.get("character_class")
+        if not selected_class:
+            selected_class = Classes.MARAUDER
         self.game.characters[self.slot - 1] = Character(selected_class, character_name)
         raise NextScene("Play")
 
@@ -104,8 +109,12 @@ class PlayEffect(Print):
         self.play_y = self.screen.height - 4
         self.current = ("Dungeon Depths", 0)
         self.game = game_state
+        self._char_creation_active = False
 
     def process_event(self, event):
+        if self._char_creation_active:
+            return event
+
         if hasattr(event, "key_code"):
             self.screen.clear_buffer(0, 0, 0)
             if event.key_code == ord("q") or event.key_code == ord("Q"):
@@ -177,12 +186,15 @@ class PlayEffect(Print):
             # Placholder
             match self.game.current_sub[0]:
                 case "char_creation":
-                    self.scene.add_effect(
-                        CharacterCreationView(
-                            self.screen, self.game, self.game.current_sub[1]
+                    if not self._char_creation_active:
+                        self.scene.add_effect(
+                            CharacterCreationView(
+                                self.screen, self.game, self.game.current_sub[1]
+                            )
                         )
-                    )
+                        self._char_creation_active = True
                 case _:
+                    self._char_creation_active = False
                     self.screen.print_at(
                         "Default",
                         50,
@@ -192,5 +204,8 @@ class PlayEffect(Print):
                     )
 
     def character_creator(self, slot):
-        if self.game.characters[slot].actor_type == "None" and self.game.slots >= slot:
+        if (
+            self.game.characters[slot - 1].actor_type == "None"
+            and self.game.slots >= slot
+        ):
             self.game.current_sub = ("char_creation", slot)
