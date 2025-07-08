@@ -28,28 +28,28 @@ class CharacterCreationView(Frame):
         )
         self.palette = {
             "background": (7, 2, 0),
-            "shadow": (7, 2, 0),
+            "shadow": (0, 2, 0),
             "disabled": (7, 2, 0),
-            "invalid": (7, 2, 0),
+            "invalid": (1, 2, 0),
             "label": (7, 2, 0),
             "borders": (7, 2, 0),
-            "scroll": (7, 2, 0),
-            "title": (7, 2, 0),
+            "scroll": (3, 2, 0),
+            "title": (1, 1, 0),
             "edit_text": (7, 2, 0),
             "button": (7, 2, 0),
             "control": (7, 2, 0),
             "field": (7, 2, 0),
-            "focus_button": (7, 2, 0),
-            "focus_control": (7, 2, 0),
-            "focus_field": (7, 2, 0),
-            "focus_edit_text": (7, 2, 0),
+            "focus_button": (0, 2, 7),
+            "focus_control": (0, 2, 7),
+            "focus_field": (0, 2, 7),
+            "focus_edit_text": (0, 2, 7),
             "focus_label": (7, 2, 0),
-            "selected_field": (7, 2, 0),
-            "selected_control": (7, 2, 0),
-            "selected_button": (7, 2, 0),
-            "selected_focus_field": (7, 2, 0),
-            "selected_focus_control": (7, 2, 0),
-            "selected_focus_button": (7, 2, 0),
+            "selected_field": (7, 3, 0),
+            "selected_control": (7, 3, 0),
+            "selected_button": (0, 2, 7),
+            "selected_focus_field": (0, 2, 3),
+            "selected_focus_control": (0, 2, 3),
+            "selected_focus_button": (0, 2, 7),
         }
         self.game = game_state
         self.slot = slot
@@ -66,14 +66,14 @@ class CharacterCreationView(Frame):
                 classes_options,
                 name="character_class",
                 on_change=self._on_change,
-                add_scroll_bar=True,
+                add_scroll_bar=False,
             )
         )
 
         layout2 = Layout([1, 1, 1, 1])
         self.add_layout(layout2)
-        layout2.add_widget(Button("OK", self._ok), 0)
-        layout2.add_widget(Button("Cancel", self._cancel), 3)
+        layout2.add_widget(Button("[O]K", self._ok), 0)
+        layout2.add_widget(Button("[C]ancel", self._cancel), 3)
 
         self.fix()
 
