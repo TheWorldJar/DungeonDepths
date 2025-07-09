@@ -5,9 +5,10 @@ from asciimatics.widgets import Frame, Layout, Text, ListBox, Button, Widget
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 
-from .compositions.topbar import print_top_bar
-from .compositions.verticalbar import print_vertical_bar
-from .compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
+from src.scenes.compositions.topbar import print_top_bar
+from src.scenes.compositions.verticalbar import print_vertical_bar
+from src.scenes.compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
+
 from src.actors.characters.classes.classes import Classes
 from src.actors.characters.character import Character
 

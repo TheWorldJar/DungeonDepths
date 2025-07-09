@@ -127,7 +127,7 @@ class StartEffect(Print):
         # Otherwise, create a blank save file.
         else:
             data = {"characters": [], "inventory": [], "slots": 2}
-            with open("save.json", "w") as s:
+            with open(save_file, "w") as s:
                 json.dump(data, s, indent=4)
             return None
 
