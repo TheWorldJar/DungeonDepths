@@ -1,7 +1,7 @@
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene
-from asciimatics.widgets import Frame, Layout, Text, ListBox, Button, Widget
+from asciimatics.widgets import Frame, Layout, Text, RadioButtons, Button, Widget
 from asciimatics.screen import Screen
 
 from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, PALETTE
@@ -32,23 +32,24 @@ class CharacterCreationView(Frame):
         self.game = game_state
         self.slot = slot
 
-        layout = Layout([100], fill_frame=True)
+        layout = Layout([1, 1], fill_frame=True)
         self.add_layout(layout)
 
         # Creates a text input field.
-        layout.add_widget(Text("Name:", "name", on_change=self._on_change))
+        self.name_text = Text("Name:", "name", on_change=self._on_change)
+        layout.add_widget(self.name_text, 0)
 
         # Creates a list of available classes
-        classes_options = [(c.value.capitalize(), c) for c in Classes]
-        layout.add_widget(
-            ListBox(
-                Widget.FILL_FRAME,
-                classes_options,
-                name="character_class",
-                on_change=self._on_change,
-                add_scroll_bar=False,
-            )
+        classes_options = []
+        for i, c in enumerate(Classes):
+            classes_options.append((f"{i + 1}. {c.value.capitalize()}", c))
+        self.classes_radio = RadioButtons(
+            classes_options,
+            label="Class:",
+            name="character_class",
+            on_change=self._on_change,
         )
+        layout.add_widget(self.classes_radio, 0)
 
         # Buttons for 'Ok' and 'Cancel'
         layout2 = Layout([1, 1, 1, 1])
@@ -77,6 +78,24 @@ class CharacterCreationView(Frame):
     def _cancel(self):
         self.game.current_sub = ("Default", 0)
         raise NextScene("Play")
+
+    def process_event(self, event):
+        if self.name_text._has_focus:
+            return super().process_event(event)
+
+        if hasattr(event, "key_code"):
+            if event.key_code in (ord("q"), ord("Q")):
+                return None  # Disables global exit from this screen.
+
+            # Select Radio Button options from 1 to 8
+            if ord("1") <= event.key_code <= ord("9"):
+                class_index = event.key_code - ord("1")
+                if class_index < len(self.classes_radio._options):
+                    self.classes_radio.value = self.classes_radio._options[class_index][
+                        1
+                    ]
+                    return None
+        return super().process_event(event)
 
 
 class PlayEffect(Print):
