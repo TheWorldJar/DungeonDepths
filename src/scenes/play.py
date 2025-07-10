@@ -2,12 +2,13 @@ from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene
 from asciimatics.widgets import Frame, Layout, Text, ListBox, Button, Widget
-from asciimatics.scene import Scene
 from asciimatics.screen import Screen
+
+from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, PALETTE
 
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.verticalbar import print_vertical_bar
-from src.scenes.compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
+from src.scenes.compositions.screensize import print_screen_size
 
 from src.actors.characters.classes.classes import Classes
 from src.actors.characters.character import Character
@@ -17,8 +18,8 @@ class CharacterCreationView(Frame):
     def __init__(self, screen, game_state, slot):
         super().__init__(
             screen,
-            screen.height - 4,
-            screen.width * 4 // 5,
+            screen.height - 4,  # The top bar occupies the first 4 lines.
+            screen.width * 4 // 5,  # The Character menu occupies the left fifth.
             x=screen.width // 5 + 1,
             y=4,
             hover_focus=True,
@@ -27,39 +28,17 @@ class CharacterCreationView(Frame):
             has_border=False,
             is_modal=True,
         )
-        self.palette = {
-            "background": (7, 2, 0),
-            "shadow": (0, 2, 0),
-            "disabled": (7, 2, 0),
-            "invalid": (1, 2, 0),
-            "label": (7, 2, 0),
-            "borders": (7, 2, 0),
-            "scroll": (3, 2, 0),
-            "title": (1, 1, 0),
-            "edit_text": (7, 2, 0),
-            "button": (7, 2, 0),
-            "control": (7, 2, 0),
-            "field": (7, 2, 0),
-            "focus_button": (0, 2, 7),
-            "focus_control": (0, 2, 7),
-            "focus_field": (0, 2, 7),
-            "focus_edit_text": (0, 2, 7),
-            "focus_label": (7, 2, 0),
-            "selected_field": (7, 3, 0),
-            "selected_control": (7, 3, 0),
-            "selected_button": (0, 2, 7),
-            "selected_focus_field": (0, 2, 3),
-            "selected_focus_control": (0, 2, 3),
-            "selected_focus_button": (0, 2, 7),
-        }
+        self.palette = PALETTE
         self.game = game_state
         self.slot = slot
 
         layout = Layout([100], fill_frame=True)
         self.add_layout(layout)
 
+        # Creates a text input field.
         layout.add_widget(Text("Name:", "name", on_change=self._on_change))
 
+        # Creates a list of available classes
         classes_options = [(c.value.capitalize(), c) for c in Classes]
         layout.add_widget(
             ListBox(
@@ -71,11 +50,13 @@ class CharacterCreationView(Frame):
             )
         )
 
+        # Buttons for 'Ok' and 'Cancel'
         layout2 = Layout([1, 1, 1, 1])
         self.add_layout(layout2)
         layout2.add_widget(Button("[O]K", self._ok), 0)
         layout2.add_widget(Button("[C]ancel", self._cancel), 3)
 
+        # The layout becomes fixed and the position of all widgets is calculated.
         self.fix()
 
     def _on_change(self):
@@ -102,6 +83,8 @@ class PlayEffect(Print):
     """The Game's Play Screen"""
 
     def __init__(self, screen, game_state):
+
+        # This is only used for initialization and isn't displayed during normal operations.
         super().__init__(
             screen=screen,
             renderer=SpeechBubble("Copyright (c) 2025, TheWorldJar"),
@@ -119,13 +102,13 @@ class PlayEffect(Print):
         if hasattr(event, "key_code"):
             self.screen.clear_buffer(0, 0, 0)
             if event.key_code == ord("q") or event.key_code == ord("Q"):
-                return None
+                return None  # Disables global exit from this screen.
             if event.key_code == ord("b") or event.key_code == ord("B"):
                 self.game.current_scene = "Start"
                 raise NextScene("Start")
             # These effects are palceholder.
             if event.key_code == ord("1"):
-                self.character_creator(1)
+                self.activate_character_creator(1)
                 self.current = ("Character 1", 1)
             if event.key_code == ord("2"):
                 self.current = ("Character 2", 2)
@@ -144,17 +127,31 @@ class PlayEffect(Print):
         return event
 
     def _update(self, frame_no):
-        if self.screen.width < MIN_WIDTH or self.screen.height < MIN_HEIGHT:
+        if (
+            self.screen.width < MIN_SCREEN_WIDTH
+            or self.screen.height < MIN_SCREEN_HEIGHT
+        ):
             print_screen_size(self)
         else:
             print_top_bar(self, self.current[0])
-            print_vertical_bar(self, self.screen.width // 5)
+            print_vertical_bar(self, self.screen.width // 5, self.screen.height)
 
             horizontal_sep = "=" * ((self.screen.width // 5) - 1)
             for i in range(1, 9):
+                # Try to split the character into eights.
+                # We keep track of the line above to avoid rewriting the formula when drawing polygons.
                 line = (self.play_y * i // 8) + 4
                 line_above = (self.play_y * i // 8) - (self.play_y // 8) + 4
-                self.screen.print_at(horizontal_sep, 1, line, 7, 1)
+                self.screen.print_at(
+                    text=horizontal_sep,
+                    x=1,
+                    y=line,
+                    colour=Screen.COLOUR_WHITE,
+                    attr=Screen.A_BOLD,
+                )
+
+                # Draws the polygon highlighting the currently selected character slot.
+                # The polygon is 4 points in tuples (x, y).
                 if i == self.current[1]:
                     polygon = [
                         (1, line_above),
@@ -165,26 +162,38 @@ class PlayEffect(Print):
                         ((self.screen.width // 5), line),
                         (1, line),
                     ]
-                    self.screen.fill_polygon([polygon], 3, 0)
+                    self.screen.fill_polygon(
+                        [polygon], Screen.COLOUR_YELLOW, Screen.COLOUR_BLACK
+                    )
+
+                # Writes the selection number for each character slot.
                 self.screen.paint(
                     text=f"[{i}]",
                     x=3,
                     y=line_above + 1,
-                    colour_map=[(1, 1, 0), (3, 4, 0), (1, 1, 0)],
+                    colour_map=[
+                        (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+                        (Screen.COLOUR_YELLOW, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
+                        (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+                    ],
                 )
+
+                # Writes a buy offer if the slot is above the current maximum slot.
+                # Otherwise, writes the character's name.
                 if i > self.game.slots:
                     self.screen.print_at(
-                        "Purchase: 200 Silver",  # Placeholder
+                        text="Purchase: 200 Silver",  # Placeholder
                         x=7,
                         y=line_above + 1,
                     )
                 else:
                     self.screen.print_at(
-                        f"{self.game.characters[i - 1].name}",
+                        text=f"{self.game.characters[i - 1].name}",
                         x=7,
                         y=line_above + 1,
                     )
-            # Placholder
+
+            # Placholder for the CharacterCreationView logic.
             match self.game.current_sub[0]:
                 case "char_creation":
                     if not self._char_creation_active:
@@ -200,11 +209,11 @@ class PlayEffect(Print):
                         "Default",
                         50,
                         (self.screen.height // 2) + 4,
-                        7,
+                        Screen.COLOUR_WHITE,
                         1,
                     )
 
-    def character_creator(self, slot):
+    def activate_character_creator(self, slot):
         if (
             self.game.characters[slot - 1].actor_type == "None"
             and self.game.slots >= slot

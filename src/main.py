@@ -4,14 +4,14 @@ from asciimatics.screen import Screen
 from asciimatics.scene import Scene
 from asciimatics.exceptions import ResizeScreenError
 
-from game import GameState
+from src.game import GameState
 
-from scenes.start_screen import StartEffect
-from scenes.settings import SettingsEffect
-from scenes.play import PlayEffect
-from scenes.manage_save import ManageEffect
-from scenes.warranty import WarrantyEffect
-from scenes.license import LicenseEffect
+from src.scenes.start_screen import StartEffect
+from src.scenes.settings import SettingsEffect
+from src.scenes.play import PlayEffect
+from src.scenes.manage_save import ManageEffect
+from src.scenes.warranty import WarrantyEffect
+from src.scenes.license import LicenseEffect
 
 
 def screens(screen, scene, game_state):

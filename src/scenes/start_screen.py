@@ -4,8 +4,12 @@ import json
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene, StopApplication
-from .compositions.topbar import print_top_bar
-from .compositions.screensize import print_screen_size, MIN_WIDTH, MIN_HEIGHT
+from asciimatics.screen import Screen
+
+from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, SAVE_PATH, SAVE_FILE
+
+from src.scenes.compositions.topbar import print_top_bar
+from src.scenes.compositions.screensize import print_screen_size
 
 
 class StartEffect(Print):
@@ -13,6 +17,8 @@ class StartEffect(Print):
 
     def __init__(self, screen, game_state):
         self.game = game_state
+
+        # This is only for initilization.
         super().__init__(
             screen=screen,
             renderer=SpeechBubble("Copyright (c) 2025, TheWorldJar"),
@@ -56,7 +62,10 @@ class StartEffect(Print):
         return event
 
     def _update(self, frame_no):
-        if self.screen.width < MIN_WIDTH or self.screen.height < MIN_HEIGHT:
+        if (
+            self.screen.width < MIN_SCREEN_WIDTH
+            or self.screen.height < MIN_SCREEN_HEIGHT
+        ):
             print_screen_size(self)
         else:
             # Draw the top bar
@@ -70,8 +79,18 @@ class StartEffect(Print):
                 "[Q]uit",
             ]
             for i, option in enumerate(nav_options):
-                colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
-                colour_map += [(7, 1, 0)] * (len(option) - 3)
+                colour_map = [
+                    (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+                    (Screen.COLOUR_YELLOW, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
+                    (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+                ]
+                colour_map += [
+                    (Screen.COLOUR_WHITE, Screen.A_BOLD, Screen.COLOUR_BLACK)
+                ] * (
+                    len(option) - 3
+                )  # The first 3 characters have already been defined above.
+
+                # Options a split into 2 collumns.
                 if i < len(nav_options) // 2:
                     x = self.screen.width // 3
                     y = i + 5
@@ -85,15 +104,25 @@ class StartEffect(Print):
             # Draw a copyright statement
             statement = "Copyright (c) 2025, TheWorldJar"
             self.screen.print_at(
-                statement,
-                (self.screen.width - len(statement)) // 2,
-                self.screen.height - 4,
-                3,
-                4,
+                text=statement,
+                x=(self.screen.width - len(statement)) // 2,
+                y=self.screen.height - 4,
+                colour=Screen.COLOUR_YELLOW,
+                attr=Screen.A_UNDERLINE,
             )
+
+            # We reuse statement to make position calculations easier.
             statement = "[L]icense"
-            colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
-            colour_map += [(7, 1, 0)] * (len(statement) - 3)
+            colour_map = [
+                (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+                (Screen.COLOUR_YELLOW, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
+                (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+            ]
+            colour_map += [
+                (Screen.COLOUR_WHITE, Screen.A_BOLD, Screen.COLOUR_BLACK)
+            ] * (
+                len(statement) - 3
+            )  # The first 3 characters have already been defined above.
             self.screen.paint(
                 text=statement,
                 x=(self.screen.width // 2) - len(statement) - 1,
@@ -101,8 +130,16 @@ class StartEffect(Print):
                 colour_map=colour_map,
             )
             statement = "[W]arranty"
-            colour_map = [(1, 1, 0), (3, 4, 0), (1, 1, 0)]
-            colour_map += [(7, 1, 0)] * (len(statement) - 3)
+            colour_map = [
+                (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+                (Screen.COLOUR_YELLOW, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
+                (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),
+            ]
+            colour_map += [
+                (Screen.COLOUR_WHITE, Screen.A_BOLD, Screen.COLOUR_BLACK)
+            ] * (
+                len(statement) - 3
+            )  # The first 3 characters have already been defined above.
             self.screen.paint(
                 text=statement,
                 x=(self.screen.width // 2) + 1,
@@ -111,25 +148,23 @@ class StartEffect(Print):
             )
 
     def check_save(self) -> str:
-        save_path = os.path.realpath("./save")
-        save_file = os.path.realpath("./save/save.json")
         # If there is no save file directory, create it.
-        if not os.path.exists(save_path) or not os.path.isdir(save_path):
-            os.makedirs(save_path)
+        if not os.path.exists(SAVE_PATH) or not os.path.isdir(SAVE_PATH):
+            os.makedirs(SAVE_PATH)
 
         # If there is a save.json file, try to load it.
-        if os.path.exists(save_file) and os.path.isfile(save_file):
+        if os.path.exists(SAVE_FILE) and os.path.isfile(SAVE_FILE):
             try:
-                json.loads(save_file)
+                json.loads(SAVE_FILE)
             except ValueError:
                 return None
-            return save_file
+            return SAVE_FILE
+
         # Otherwise, create a blank save file.
-        else:
-            data = {"characters": [], "inventory": [], "slots": 2}
-            with open(save_file, "w") as s:
-                json.dump(data, s, indent=4)
-            return None
+        data = {"characters": [], "inventory": [], "slots": 2}
+        with open(SAVE_FILE, "w", encoding="utf-8") as s:
+            json.dump(data, s, indent=4)
+        return None
 
     def load_save(self, save_file):
         # Placeholder

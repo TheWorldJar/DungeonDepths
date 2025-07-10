@@ -1,8 +1,11 @@
 import random
 from enum import Enum
+
+from src.const import CHARACTER_BASE_HEALTH, CHARACTER_HEALTH_MULTIPLIER
+
 from src.actors.actor import Actor, Attributes, CombatSkills
-from .ancestries import Ancestry
-from .classes.classes import Classes
+from src.actors.characters.ancestries import Ancestry
+from src.actors.characters.classes.classes import Classes
 
 
 class CraftingSkills(Enum):
@@ -86,10 +89,10 @@ class Character(Actor):
 
         # Calculate starting health
         health = (
-            10
-            + (self.attributes[Attributes.ENDURANCE] * 5)
-            + (self.attributes[Attributes.RESILIENCE] * 5)
-            + (self.attributes[Attributes.WILLPOWER] * 5)
+            CHARACTER_BASE_HEALTH
+            + (self.attributes[Attributes.ENDURANCE] * CHARACTER_HEALTH_MULTIPLIER)
+            + (self.attributes[Attributes.RESILIENCE] * CHARACTER_HEALTH_MULTIPLIER)
+            + (self.attributes[Attributes.WILLPOWER] * CHARACTER_HEALTH_MULTIPLIER)
         )
 
         # Get 4 abilities from the class list
