@@ -95,6 +95,11 @@ class CharacterCreationView(Frame):
                         1
                     ]
                     return None
+            if event.key_code == ord("o") or event.key_code == ord("O"):
+                self._ok()
+                return None
+            if event.key_code == ord("c") or event.key_code == ord("C"):
+                self._cancel()
         return super().process_event(event)
 
 
