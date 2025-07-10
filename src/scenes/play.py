@@ -1,7 +1,15 @@
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene
-from asciimatics.widgets import Frame, Layout, Text, RadioButtons, Button, TextBox
+from asciimatics.widgets import (
+    Frame,
+    Layout,
+    Text,
+    RadioButtons,
+    Button,
+    TextBox,
+    Divider,
+)
 from asciimatics.screen import Screen
 
 from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, PALETTE
@@ -32,12 +40,14 @@ class CharacterCreationView(Frame):
         self.game = game_state
         self.slot = slot
 
-        layout = Layout([1, 1], fill_frame=True)
+        layout = Layout([1, 1], fill_frame=True, gutter=1)
         self.add_layout(layout)
 
         # Creates a text input field.
         self.name_text = Text("Name:", "name")
         layout.add_widget(self.name_text, 0)
+
+        layout.add_widget(Divider(draw_line=False), 0)
 
         # Creates a list of available classes
         classes_options = []
@@ -53,7 +63,7 @@ class CharacterCreationView(Frame):
 
         # Shows details about the selected class to the user.
         self.class_info = TextBox(
-            10,
+            20,
             name="class_info",
             as_string=True,
             line_wrap=True,
@@ -63,6 +73,24 @@ class CharacterCreationView(Frame):
         self.class_info.hide_cursor = True
         self.class_info.value = self._set_info()
         layout.add_widget(self.class_info, 1)
+
+        # Shows additional details about character creation.
+        self.add_info = TextBox(
+            15,
+            name="additional_info",
+            as_string=True,
+            line_wrap=False,
+            readonly=True,
+            tab_stop=False,
+        )
+        self.add_info.hide_cursor = True
+        self.add_info.value = """
+\n-The character's ancestry will be chosen at random.
+\n-The character will be given 4 abilities at random\nfrom their class pool.
+\n-The character's health, attributes, and skills\nwill be calculated based on their class and their\nancestry.
+\n-The character will be given a set of equipement\nfit for their class.
+"""
+        layout.add_widget(self.add_info, 0)
 
         # Buttons for 'Ok' and 'Cancel'
         layout2 = Layout([1, 1, 1, 1])
