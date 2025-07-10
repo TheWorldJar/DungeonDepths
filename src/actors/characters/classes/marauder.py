@@ -5,6 +5,7 @@ from src.const import MARAUDER_BASE_REGEN, MARAUDER_HEALTH_MULTIPLIER
 from src.actors.actor import Actor
 from src.actors.roll import roll
 from src.actors.characters.character import Character, Attributes, CombatSkills
+from src.actors.ability import PrefTarget
 
 
 def strongman(source: Character):
@@ -93,11 +94,12 @@ def overkill(source: Character, target: Actor):
 
 
 class Marauder(Enum):
-    STRONGMAN = ("strongman", strongman)
-    REGENERATE = ("regenerate", regenerate)
-    CLEAVE = ("cleave", cleave)
-    POWER_STRIKE = ("power strike", power_strike)
-    DECAPITATE = ("decapitate", decapitate)
-    EMPOWER = ("empower", empower)
-    SLAM = ("slam", slam)
-    OVERKILL = ("overkill", overkill)
+    # (name, is_active, has_target, func, PrefTarget)
+    STRONGMAN = ("strongman", False, False, strongman, PrefTarget.SELF)
+    REGENERATE = ("regenerate", True, False, regenerate, PrefTarget.SELF)
+    CLEAVE = ("cleave", True, True, cleave, PrefTarget.ANY)
+    POWER_STRIKE = ("power strike", True, True, power_strike, PrefTarget.ANY)
+    DECAPITATE = ("decapitate", True, True, decapitate, PrefTarget.FIRST)
+    EMPOWER = ("empower", True, False, empower, PrefTarget.SELF)
+    SLAM = ("slam", True, True, slam, PrefTarget.ANY)
+    OVERKILL = ("overkill", True, True, overkill, PrefTarget.LOW)
