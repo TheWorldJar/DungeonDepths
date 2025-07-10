@@ -1,5 +1,7 @@
 from asciimatics.screen import Screen
 
+DEBUG = True
+
 # Screen Size Constrainsts
 MIN_SCREEN_WIDTH = 100
 MIN_SCREEN_HEIGHT = 30
