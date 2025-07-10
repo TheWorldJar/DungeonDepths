@@ -38,9 +38,10 @@ class Character(Actor):
     ):
 
         # Generate the character's name.
+        # Though the CharacterCreationView should always give us a name, this prevents any fuckery from happening anywhere.
         if name is None or name == "":
-            # Default name is Steve Dave. Replace with a proper name generator later.
-            name = "Steve Dave"
+            # Default name is Nameless. Replace with a proper name generator later.
+            name = "Nameless"
 
         # Prepare the character's default attributes and skills.
         self.attributes = {
@@ -96,6 +97,7 @@ class Character(Actor):
         )
 
         # Get 4 abilities from the class list
+        # To Be Implemented.
         abilities = set()
 
         # Call parent constructor
@@ -166,3 +168,18 @@ class Character(Actor):
                 self.combat_skills[CombatSkills.MAGIC] += 1
                 self.crafting_skills[CraftingSkills.ALCHEMY] += 1
                 self.secondary_skills[SecondarySkills.ENGINEERING] += 1
+
+    def to_json(self):
+        return {
+            "name": self.name,
+            "actor_type": self.actor_type,
+            "health": self.max_health,
+            "armour": self.armour,
+            "ancestry": self.ancestry,
+            "class": self.char_class,
+            "abilities": self.abilities,
+            "attributes": self.attributes,
+            "combat_skills": self.combat_skills,
+            "crafting_skills": self.crafting_skills,
+            "secondary_skills": self.secondary_skills,
+        }

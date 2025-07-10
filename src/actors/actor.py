@@ -60,3 +60,12 @@ class Actor:
 
     def on_target(self):
         return self
+
+    def to_json(self):
+        return {
+            "name": self.name,
+            "actor_type": self.actor_type,
+            "health": self.max_health,
+            "armour": self.armour,
+            "abilities": self.abilities,
+        }

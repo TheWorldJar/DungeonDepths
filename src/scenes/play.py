@@ -116,7 +116,7 @@ class CharacterCreationView(Frame):
         if not selected_class:
             selected_class = Classes.MARAUDER
         self.game.characters[self.slot - 1] = Character(selected_class, character_name)
-        self.game.logger.debug(self.game.characters[self.slot - 1])
+        self.game.logger.debug(self.game.characters[self.slot - 1].to_json())
         self.game.current_sub = ("Default", 0)
         self.scene.remove_effect(self)
         self.screen.clear_buffer(0, 0, 0)
