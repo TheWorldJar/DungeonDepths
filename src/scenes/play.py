@@ -116,11 +116,14 @@ class CharacterCreationView(Frame):
         if not selected_class:
             selected_class = Classes.MARAUDER
         self.game.characters[self.slot - 1] = Character(selected_class, character_name)
-        raise NextScene("Play")
+        self.game.current_sub = ("Default", 0)
+        self.scene.remove_effect(self)
+        self.screen.clear_buffer(0, 0, 0)
 
     def _cancel(self):
         self.game.current_sub = ("Default", 0)
-        raise NextScene("Play")
+        self.scene.remove_effect(self)
+        self.screen.clear_buffer(0, 0, 0)
 
     def process_event(self, event):
         if hasattr(event, "key_code"):
@@ -218,10 +221,9 @@ class PlayEffect(Print):
         self.play_y = self.screen.height - 4
         self.current = ("Dungeon Depths", 0)
         self.game = game_state
-        self._char_creation_active = False
 
     def process_event(self, event):
-        if self._char_creation_active:
+        if self.game.current_sub[0] == "char_creation":
             return event
 
         if hasattr(event, "key_code"):
@@ -318,18 +320,12 @@ class PlayEffect(Print):
                         y=line_above + 1,
                     )
 
-            # Placholder for the CharacterCreationView logic.
+            # Enter a sub-screen.
+            # OPTIONS NEED TO BE ENUMERATED LATER
             match self.game.current_sub[0]:
                 case "char_creation":
-                    if not self._char_creation_active:
-                        self.scene.add_effect(
-                            CharacterCreationView(
-                                self.screen, self.game, self.game.current_sub[1]
-                            )
-                        )
-                        self._char_creation_active = True
+                    pass
                 case _:
-                    self._char_creation_active = False
                     self.screen.print_at(
                         "Default",
                         50,
@@ -344,3 +340,6 @@ class PlayEffect(Print):
             and self.game.slots >= slot
         ):
             self.game.current_sub = ("char_creation", slot)
+            self.scene.add_effect(
+                CharacterCreationView(self.screen, self.game, self.game.current_sub[1])
+            )
