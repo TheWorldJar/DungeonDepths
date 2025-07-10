@@ -72,12 +72,12 @@ class Character(Actor):
         self.secondary_skills = {
             SecondarySkills.FITNESS: 0,
             SecondarySkills.STEALTH: 0,
-            SecondarySkills.MEDICINE: 0,
             SecondarySkills.SURVIVAL: 0,
+            SecondarySkills.MEDICINE: 0,
+            SecondarySkills.NATURE: 0,
             SecondarySkills.ENGINEERING: 0,
             SecondarySkills.OCCULTISM: 0,
             SecondarySkills.SPEECHCRAFT: 0,
-            SecondarySkills.NATURE: 0,
         }
 
         # Generate a race at random.
@@ -126,48 +126,48 @@ class Character(Actor):
                 self.combat_skills[CombatSkills.MELEE] += 1
                 self.crafting_skills[CraftingSkills.BLACKSMITHING] += 1
                 self.secondary_skills[SecondarySkills.SURVIVAL] += 1
-            case Classes.STALKER:
-                self.attributes[Attributes.DEXTERITY] += 1
-                self.attributes[Attributes.PERCEPTION] += 1
-                self.combat_skills[CombatSkills.RANGED] += 1
-                self.crafting_skills[CraftingSkills.OUTFITTING] += 1
-                self.secondary_skills[SecondarySkills.STEALTH] += 1
-            case Classes.OCCULTIST:
-                self.attributes[Attributes.INTELLIGENCE] += 1
-                self.attributes[Attributes.WILLPOWER] += 1
-                self.combat_skills[CombatSkills.MAGIC] += 1
-                self.crafting_skills[CraftingSkills.ENCHANTING] += 1
-                self.secondary_skills[SecondarySkills.OCCULTISM] += 1
-            case Classes.PENITENT:
-                self.attributes[Attributes.ENDURANCE] += 1
-                self.attributes[Attributes.RESILIENCE] += 1
-                self.combat_skills[CombatSkills.DEFENCE] += 1
-                self.crafting_skills[CraftingSkills.ALCHEMY] += 1
-                self.secondary_skills[SecondarySkills.MEDICINE] += 1
-            case Classes.PRIMALIST:
-                self.attributes[Attributes.PERCEPTION] += 1
-                self.attributes[Attributes.INTUITION] += 1
-                self.combat_skills[CombatSkills.MAGIC] += 1
-                self.crafting_skills[CraftingSkills.ENCHANTING] += 1
-                self.secondary_skills[SecondarySkills.NATURE] += 1
             case Classes.SENTINEL:
                 self.attributes[Attributes.DEXTERITY] += 1
                 self.attributes[Attributes.INTUITION] += 1
                 self.combat_skills[CombatSkills.MELEE] += 1
                 self.crafting_skills[CraftingSkills.OUTFITTING] += 1
                 self.secondary_skills[SecondarySkills.SPEECHCRAFT] += 1
+            case Classes.STALKER:
+                self.attributes[Attributes.DEXTERITY] += 1
+                self.attributes[Attributes.PERCEPTION] += 1
+                self.combat_skills[CombatSkills.RANGED] += 1
+                self.crafting_skills[CraftingSkills.OUTFITTING] += 1
+                self.secondary_skills[SecondarySkills.STEALTH] += 1
             case Classes.TEMPLAR:
                 self.attributes[Attributes.STRENGTH] += 1
                 self.attributes[Attributes.WILLPOWER] += 1
                 self.combat_skills[CombatSkills.MELEE] += 1
                 self.crafting_skills[CraftingSkills.BLACKSMITHING] += 1
                 self.secondary_skills[SecondarySkills.FITNESS] += 1
+            case Classes.PRIMALIST:
+                self.attributes[Attributes.PERCEPTION] += 1
+                self.attributes[Attributes.INTUITION] += 1
+                self.combat_skills[CombatSkills.MAGIC] += 1
+                self.crafting_skills[CraftingSkills.ENCHANTING] += 1
+                self.secondary_skills[SecondarySkills.NATURE] += 1
+            case Classes.OCCULTIST:
+                self.attributes[Attributes.INTELLIGENCE] += 1
+                self.attributes[Attributes.WILLPOWER] += 1
+                self.combat_skills[CombatSkills.MAGIC] += 1
+                self.crafting_skills[CraftingSkills.ENCHANTING] += 1
+                self.secondary_skills[SecondarySkills.OCCULTISM] += 1
             case Classes.CENOBITE:
                 self.attributes[Attributes.INTELLIGENCE] += 1
                 self.attributes[Attributes.ENDURANCE] += 1
                 self.combat_skills[CombatSkills.MAGIC] += 1
                 self.crafting_skills[CraftingSkills.ALCHEMY] += 1
                 self.secondary_skills[SecondarySkills.ENGINEERING] += 1
+            case Classes.PENITENT:
+                self.attributes[Attributes.ENDURANCE] += 1
+                self.attributes[Attributes.RESILIENCE] += 1
+                self.combat_skills[CombatSkills.DEFENCE] += 1
+                self.crafting_skills[CraftingSkills.ALCHEMY] += 1
+                self.secondary_skills[SecondarySkills.MEDICINE] += 1
 
     def to_json(self):
         return {
