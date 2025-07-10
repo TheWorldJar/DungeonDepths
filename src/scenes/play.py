@@ -66,9 +66,11 @@ class CharacterCreationView(Frame):
 
         # Buttons for 'Ok' and 'Cancel'
         layout2 = Layout([1, 1, 1, 1])
+        self.button_ok = Button("[O]K", self._ok)
+        self.button_cancel = Button("[C]ancel", self._cancel)
         self.add_layout(layout2)
-        layout2.add_widget(Button("[O]K", self._ok), 0)
-        layout2.add_widget(Button("[C]ancel", self._cancel), 3)
+        layout2.add_widget(self.button_ok, 0)
+        layout2.add_widget(self.button_cancel, 3)
 
         # The layout becomes fixed and the position of all widgets is calculated.
         self.fix()
@@ -93,30 +95,63 @@ class CharacterCreationView(Frame):
         raise NextScene("Play")
 
     def process_event(self, event):
-        if self.name_text._has_focus:
-            if hasattr(event, "key_code"):
-                if event.key_code == ord("\n") or event.key_code == ord("\r"):
+        if hasattr(event, "key_code"):
+
+            if self.name_text._has_focus:
+                if event.key_code in (ord("\n"), ord("\r")):
                     self.name_text.blur()
                     self.classes_radio.focus()
-            return super().process_event(event)
+                    return None
+                return super().process_event(event)
 
-        if hasattr(event, "key_code"):
+            if self.classes_radio._has_focus:
+                # Select Radio Button options from 1 to 8
+                if ord("1") <= event.key_code <= ord("9"):
+                    class_index = event.key_code - ord("1")
+                    if class_index < len(self.classes_radio._options):
+                        self.classes_radio.value = self.classes_radio._options[
+                            class_index
+                        ][1]
+                        return None
+                if event.key_code in (ord("\n"), ord("\r")):
+                    self.classes_radio.blur()
+                    self.button_ok.focus()
+                    return None
+                if event.key_code in (ord("o"), ord("O")):
+                    self.classes_radio.blur()
+                    self.button_ok.focus()
+                    return None
+                if event.key_code in (ord("c"), ord("C")):
+                    self.classes_radio.blur()
+                    self.button_cancel.focus()
+                    return None
+
+            if self.button_ok._has_focus:
+                if event.key_code in (ord("\n"), ord("\r")):
+                    self._ok()
+                    return None
+                if event.key_code in (ord("o"), ord("O")):
+                    self._ok()
+                    return None
+                if event.key_code in (ord("c"), ord("C")):
+                    self.button_ok.blur()
+                    self.button_cancel.focus()
+                    return None
+
+            if self.button_cancel._has_focus:
+                if event.key_code in (ord("\n"), ord("\r")):
+                    self._cancel()
+                    return None
+                if event.key_code in (ord("o"), ord("O")):
+                    self.button_cancel.blur()
+                    self.button_ok.focus()
+                    return None
+                if event.key_code in (ord("c"), ord("C")):
+                    self._cancel()
+                    return None
+
             if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables global exit from this screen.
-
-            # Select Radio Button options from 1 to 8
-            if ord("1") <= event.key_code <= ord("9"):
-                class_index = event.key_code - ord("1")
-                if class_index < len(self.classes_radio._options):
-                    self.classes_radio.value = self.classes_radio._options[class_index][
-                        1
-                    ]
-                    return None
-            if event.key_code == ord("o") or event.key_code == ord("O"):
-                self._ok()
-                return None
-            if event.key_code == ord("c") or event.key_code == ord("C"):
-                self._cancel()
         return super().process_event(event)
 
     def _set_info(self):
