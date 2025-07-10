@@ -1,7 +1,7 @@
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene
-from asciimatics.widgets import Frame, Layout, Text, RadioButtons, Button, Widget
+from asciimatics.widgets import Frame, Layout, Text, RadioButtons, Button, TextBox
 from asciimatics.screen import Screen
 
 from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, PALETTE
@@ -10,7 +10,7 @@ from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.verticalbar import print_vertical_bar
 from src.scenes.compositions.screensize import print_screen_size
 
-from src.actors.characters.classes.classes import Classes
+from src.actors.characters.classes.classes import Classes, ClassesDescriptions
 from src.actors.characters.character import Character
 
 
@@ -36,7 +36,7 @@ class CharacterCreationView(Frame):
         self.add_layout(layout)
 
         # Creates a text input field.
-        self.name_text = Text("Name:", "name", on_change=self._on_change)
+        self.name_text = Text("Name:", "name")
         layout.add_widget(self.name_text, 0)
 
         # Creates a list of available classes
@@ -51,6 +51,19 @@ class CharacterCreationView(Frame):
         )
         layout.add_widget(self.classes_radio, 0)
 
+        # Shows details about the selected class to the user.
+        self.class_info = TextBox(
+            10,
+            name="class_info",
+            as_string=True,
+            line_wrap=True,
+            readonly=True,
+            tab_stop=False,
+        )
+        self.class_info.hide_cursor = True
+        self.class_info.value = self._set_info()
+        layout.add_widget(self.class_info, 1)
+
         # Buttons for 'Ok' and 'Cancel'
         layout2 = Layout([1, 1, 1, 1])
         self.add_layout(layout2)
@@ -61,8 +74,8 @@ class CharacterCreationView(Frame):
         self.fix()
 
     def _on_change(self):
-        # Placeholder for dynamic updates if needed
-        pass
+        self.save()
+        self.class_info.value = self._set_info()
 
     def _ok(self):
         self.save()
@@ -101,6 +114,27 @@ class CharacterCreationView(Frame):
             if event.key_code == ord("c") or event.key_code == ord("C"):
                 self._cancel()
         return super().process_event(event)
+
+    def _set_info(self):
+        match self.classes_radio.value:
+            case Classes.MARAUDER:
+                return ClassesDescriptions.DESC_MARAUDER.value
+            case Classes.STALKER:
+                return ClassesDescriptions.DESC_STALKER.value
+            case Classes.OCCULTIST:
+                return ClassesDescriptions.DESC_OCCULTIST.value
+            case Classes.PENITENT:
+                return ClassesDescriptions.DESC_PENITENT.value
+            case Classes.PRIMALIST:
+                return ClassesDescriptions.DESC_PRIMALIST.value
+            case Classes.SENTINEL:
+                return ClassesDescriptions.DESC_SENTINEL.value
+            case Classes.TEMPLAR:
+                return ClassesDescriptions.DESC_TEMPLAR.value
+            case Classes.CENOBITE:
+                return ClassesDescriptions.DESC_CENOBITE.value
+            case _:
+                return "Something went wrong finding the class description!"
 
 
 class PlayEffect(Print):
