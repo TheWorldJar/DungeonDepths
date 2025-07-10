@@ -12,7 +12,7 @@ from asciimatics.widgets import (
 )
 from asciimatics.screen import Screen
 
-from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, PALETTE
+from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, PALETTE, MAX_CHARACTER_SLOT
 
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.verticalbar import print_vertical_bar
@@ -137,7 +137,7 @@ class CharacterCreationView(Frame):
 
             if self.classes_radio._has_focus:
                 # Select Radio Button options from 1 to 8
-                if ord("1") <= event.key_code <= ord("9"):
+                if ord("1") <= event.key_code <= ord(str(MAX_CHARACTER_SLOT)):
                     class_index = event.key_code - ord("1")
                     if class_index < len(self.classes_radio._options):
                         self.classes_radio.value = self.classes_radio._options[
@@ -219,7 +219,7 @@ class PlayEffect(Print):
             y=screen.height - 4,
         )
         self.play_y = self.screen.height - 4
-        self.current = ("Dungeon Depths", 0)
+        self.current_header = ("Dungeon Depths", 0)
         self.game = game_state
 
     def process_event(self, event):
@@ -228,29 +228,15 @@ class PlayEffect(Print):
 
         if hasattr(event, "key_code"):
             self.screen.clear_buffer(0, 0, 0)
-            if event.key_code == ord("q") or event.key_code == ord("Q"):
+            if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables global exit from this screen.
-            if event.key_code == ord("b") or event.key_code == ord("B"):
+            if event.key_code in (ord("b"), ("B")):
                 self.game.current_scene = "Start"
                 raise NextScene("Start")
-            # These effects are palceholder.
-            if event.key_code == ord("1"):
-                self.activate_character_creator(1)
-                self.current = ("Character 1", 1)
-            if event.key_code == ord("2"):
-                self.current = ("Character 2", 2)
-            if event.key_code == ord("3"):
-                self.current = ("Character 3", 3)
-            if event.key_code == ord("4"):
-                self.current = ("Character 4", 4)
-            if event.key_code == ord("5"):
-                self.current = ("Character 5", 5)
-            if event.key_code == ord("6"):
-                self.current = ("Character 6", 6)
-            if event.key_code == ord("7"):
-                self.current = ("Character 7", 7)
-            if event.key_code == ord("8"):
-                self.current = ("Character 8", 8)
+            if ord("1") <= event.key_code <= ord(str(MAX_CHARACTER_SLOT)):
+                slot = event.key_code - ord("0")
+                self.activate_character_creator(slot)
+                self.current_header = (f"Character {slot}", slot)
         return event
 
     def _update(self, frame_no):
@@ -260,7 +246,7 @@ class PlayEffect(Print):
         ):
             print_screen_size(self)
         else:
-            print_top_bar(self, self.current[0])
+            print_top_bar(self, self.current_header[0])
             print_vertical_bar(self, self.screen.width // 5, self.screen.height)
 
             horizontal_sep = "=" * ((self.screen.width // 5) - 1)
@@ -279,7 +265,7 @@ class PlayEffect(Print):
 
                 # Draws the polygon highlighting the currently selected character slot.
                 # The polygon is 4 points in tuples (x, y).
-                if i == self.current[1]:
+                if i == self.current_header[1]:
                     polygon = [
                         (1, line_above),
                         (
