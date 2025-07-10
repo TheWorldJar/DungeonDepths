@@ -65,7 +65,8 @@ class Actor:
         return {
             "name": self.name,
             "actor_type": self.actor_type,
-            "health": self.max_health,
+            "max_health": self.max_health,
+            "current_health": self.current_health,
             "armour": self.armour,
             "abilities": self.abilities,
         }

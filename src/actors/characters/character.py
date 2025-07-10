@@ -22,12 +22,12 @@ class SecondarySkills(Enum):
 
     FITNESS = "fitness"
     STEALTH = "stealth"
-    MEDICINE = "medicine"
     SURVIVAL = "survival"
+    MEDICINE = "medicine"
+    NATURE = "nature"
     ENGINEERING = "engineering"
     OCCULTISM = "occultism"
     SPEECHCRAFT = "speechcraft"
-    NATURE = "nature"
 
 
 class Character(Actor):
@@ -170,16 +170,17 @@ class Character(Actor):
                 self.secondary_skills[SecondarySkills.MEDICINE] += 1
 
     def to_json(self):
-        return {
-            "name": self.name,
-            "actor_type": self.actor_type,
-            "health": self.max_health,
-            "armour": self.armour,
-            "ancestry": self.ancestry,
-            "class": self.char_class,
-            "abilities": self.abilities,
-            "attributes": self.attributes,
-            "combat_skills": self.combat_skills,
-            "crafting_skills": self.crafting_skills,
-            "secondary_skills": self.secondary_skills,
-        }
+        return (
+            super()
+            .to_json()
+            .update(
+                {
+                    "ancestry": self.ancestry,
+                    "class": self.char_class,
+                    "attributes": self.attributes,
+                    "combat_skills": self.combat_skills,
+                    "crafting_skills": self.crafting_skills,
+                    "secondary_skills": self.secondary_skills,
+                }
+            )
+        )
