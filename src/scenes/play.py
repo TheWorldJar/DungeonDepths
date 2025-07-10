@@ -94,6 +94,10 @@ class CharacterCreationView(Frame):
 
     def process_event(self, event):
         if self.name_text._has_focus:
+            if hasattr(event, "key_code"):
+                if event.key_code == ord("\n") or event.key_code == ord("\r"):
+                    self.name_text.blur()
+                    self.classes_radio.focus()
             return super().process_event(event)
 
         if hasattr(event, "key_code"):
