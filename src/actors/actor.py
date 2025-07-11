@@ -1,5 +1,7 @@
 from enum import Enum
 
+from src.actors.ability import Ability
+
 
 class Attributes(Enum):
     """An actor's basic attributes"""
@@ -34,8 +36,10 @@ class Actor:
         self.max_health = health
         self.current_health = health
         self.armour = armour
-        self.abilities = abilities
-        self.effects = []
+        self.abilities = set()
+        for a in abilities:
+            self.abilities.add(Ability(**a))
+        self.effects = set()
         self.initiative = 0
 
     def use_ability(self):
@@ -56,7 +60,10 @@ class Actor:
         return self.armour
 
     def add_effect(self, effect):
-        self.effects.append(effect)
+        self.effects.add(effect)
+
+    def remove_effect(self, effect):
+        self.effects.remove(effect)
 
     def on_target(self):
         return self
@@ -69,4 +76,5 @@ class Actor:
             "current_health": self.current_health,
             "armour": self.armour,
             "abilities": self.abilities,
+            "effects": self.effects,
         }

@@ -1,10 +1,10 @@
 from enum import Enum
 
-from src.const import MARAUDER_BASE_REGEN, MARAUDER_HEALTH_MULTIPLIER
+from src.const import MARAUDER_BASE_REGEN, MARAUDER_HEALTH_MULTIPLIER, NO_DURATION
 
-from src.actors.actor import Actor
+from src.actors.actor import Actor, Attributes, CombatSkills
 from src.actors.roll import roll
-from src.actors.characters.character import Character, Attributes, CombatSkills
+from src.actors.characters.character import Character
 from src.actors.ability import PrefTarget
 
 
@@ -66,12 +66,7 @@ def decapitate(source: Character, target: Actor):
 
 
 def empower(source: Character):
-    is_empowered = False
-    for e in source.effects:
-        if hasattr(e, "empower"):
-            is_empowered = True
-    if not is_empowered:
-        source.add_effect("empower")  # This line is placehodler
+    raise NotImplementedError
 
 
 def slam(source: Character, target: list[Actor]):
@@ -94,12 +89,68 @@ def overkill(source: Character, target: Actor):
 
 
 class Marauder(Enum):
-    # (name, is_active, has_target, func, PrefTarget)
-    STRONGMAN = ("strongman", False, False, strongman, PrefTarget.SELF)
-    REGENERATE = ("regenerate", True, False, regenerate, PrefTarget.SELF)
-    CLEAVE = ("cleave", True, True, cleave, PrefTarget.ANY)
-    POWER_STRIKE = ("power strike", True, True, power_strike, PrefTarget.ANY)
-    DECAPITATE = ("decapitate", True, True, decapitate, PrefTarget.FIRST)
-    EMPOWER = ("empower", True, False, empower, PrefTarget.SELF)
-    SLAM = ("slam", True, True, slam, PrefTarget.ANY)
-    OVERKILL = ("overkill", True, True, overkill, PrefTarget.LOW)
+    # (name, is_active, has_target, func, PrefTarget, duration)
+    STRONGMAN = {
+        "name": "strongman",
+        "is_active": False,
+        "has_target": False,
+        "func": strongman,
+        "pref_targ": PrefTarget.SELF,
+        "duration": NO_DURATION,
+    }
+    REGENERATE = {
+        "name": "regenerate",
+        "is_active": True,
+        "has_target": False,
+        "func": regenerate,
+        "pref_targ": PrefTarget.SELF,
+        "duration": NO_DURATION,
+    }
+    CLEAVE = {
+        "name": "cleave",
+        "is_active": True,
+        "has_target": True,
+        "func": cleave,
+        "pref_targ": PrefTarget.ANY,
+        "duration": NO_DURATION,
+    }
+    POWER_STRIKE = {
+        "name": "power strike",
+        "is_active": True,
+        "has_target": True,
+        "func": power_strike,
+        "pref_targ": PrefTarget.ANY,
+        "duration": NO_DURATION,
+    }
+    DECAPITATE = {
+        "name": "decapitate",
+        "is_active": True,
+        "has_target": True,
+        "func": decapitate,
+        "pref_targ": PrefTarget.FIRST,
+        "duration": NO_DURATION,
+    }
+    EMPOWER = {
+        "name": "empower",
+        "is_active": True,
+        "has_target": False,
+        "func": empower,
+        "pref_targ": PrefTarget.SELF,
+        "duration": NO_DURATION,
+    }
+    SLAM = {
+        "name": "slam",
+        "is_active": True,
+        "has_target": True,
+        "func": slam,
+        "pref_targ": PrefTarget.ANY,
+        "duration": NO_DURATION,
+    }
+    OVERKILL = {
+        "name": "overkill",
+        "is_active": True,
+        "has_target": True,
+        "func": overkill,
+        "pref_targ": PrefTarget.LOW,
+        "duration": NO_DURATION,
+    }

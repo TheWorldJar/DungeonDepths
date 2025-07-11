@@ -1,11 +1,13 @@
 import random
 from enum import Enum
 
-from src.const import CHARACTER_BASE_HEALTH, CHARACTER_HEALTH_MULTIPLIER
+from src.const import CHARACTER_BASE_HEALTH, CHARACTER_HEALTH_MULTIPLIER, ABILITY_SLOT
 
 from src.actors.actor import Actor, Attributes, CombatSkills
 from src.actors.characters.ancestries import Ancestry
 from src.actors.characters.classes.classes import Classes
+from src.actors.characters.classes.marauder import Marauder
+from src.actors.ability import Ability, PrefTarget
 
 
 class CraftingSkills(Enum):
@@ -82,11 +84,11 @@ class Character(Actor):
 
         # Generate a race at random.
         self.ancestry = random.choice(list(Ancestry))
-        self.change_on_ancestry()
+        self._change_on_ancestry()
 
         # Change starting attributes & skills based on class and ancestry
         self.char_class = char_class
-        self.change_on_class()
+        self._change_on_class()
 
         # Calculate starting health
         health = (
@@ -97,13 +99,17 @@ class Character(Actor):
         )
 
         # Get 4 abilities from the class list
-        # To Be Implemented.
-        abilities = set()
+        abilities = self._get_initial_abilities()
 
         # Call parent constructor
         super().__init__(name, "character", health, 0, abilities)
 
-    def change_on_ancestry(self):
+        # Check for Passive Ability effects
+        for a in self.abilities:
+            if not a.is_active and a.pref_targ == PrefTarget.SELF:
+                a.apply(self)
+
+    def _change_on_ancestry(self):
         match self.ancestry:
             case Ancestry.HUMAN:
                 self.attributes[Attributes.INTUITION] += 1
@@ -118,7 +124,7 @@ class Character(Actor):
                 self.attributes[Attributes.STRENGTH] += 1
                 self.attributes[Attributes.WILLPOWER] += 1
 
-    def change_on_class(self):
+    def _change_on_class(self):
         match self.char_class:
             case Classes.MARAUDER:
                 self.attributes[Attributes.STRENGTH] += 1
@@ -168,6 +174,13 @@ class Character(Actor):
                 self.combat_skills[CombatSkills.DEFENCE] += 1
                 self.crafting_skills[CraftingSkills.ALCHEMY] += 1
                 self.secondary_skills[SecondarySkills.MEDICINE] += 1
+
+    def _get_initial_abilities(self) -> set:
+        match self.char_class:
+            case Classes.MARAUDER:
+                return set(random.sample(list(Marauder), ABILITY_SLOT))
+            case _:
+                raise NotImplementedError()
 
     def to_json(self):
         return (

@@ -1,5 +1,7 @@
 from enum import Enum
 
+from src.actors.status import Status
+
 
 class PrefTarget(Enum):
     """
@@ -22,7 +24,13 @@ class PrefTarget(Enum):
 
 class Ability:
     def __init__(
-        self, name: str, is_active: bool, has_target: bool, func, pref_targ: PrefTarget
+        self,
+        name: str,
+        is_active: bool,
+        has_target: bool,
+        func,
+        pref_targ: PrefTarget,
+        duration: float | int,
     ):
         self.name = name
         self.is_active = is_active
@@ -30,6 +38,7 @@ class Ability:
         self.func = func
         self.priority = 1
         self.pref_targ = pref_targ
+        self.duration = duration
 
     def execute(self, source, target):
         if self.has_target:
@@ -37,3 +46,6 @@ class Ability:
             self.func(source, target)
         else:
             self.func(source)
+
+    def apply(self, source):
+        source.add_effect(Status(self.name, self.func, self.duration))
