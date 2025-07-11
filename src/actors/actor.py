@@ -43,6 +43,7 @@ class Actor:
         self.max_health = health
         self.current_health = health
         self.armour = armour
+        self.abilities_ref = abilities
         self.abilities = set()
         for a in abilities:
             self.abilities.add(
@@ -93,8 +94,7 @@ class Actor:
             "max_health": self.max_health,
             "current_health": self.current_health,
             "armour": self.armour,
-            "abilities": self.abilities,
-            "effects": self.effects,
+            "abilities": self.abilities_ref,
             "attributes": self.attributes,
             "combat_skills": self.combat_skills,
         }

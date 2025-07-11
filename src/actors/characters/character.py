@@ -110,6 +110,8 @@ class Character(Actor):
         for a in self.abilities:
             if not a.is_active and a.pref_targ == PrefTarget.SELF:
                 a.apply(self)
+        for e in self.effects:
+            e.execute(self)
 
     def _change_on_ancestry(self, attributes):
         match self.ancestry:
