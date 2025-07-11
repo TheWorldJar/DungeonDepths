@@ -1,7 +1,8 @@
 import logging
 import os
+import json
 
-from src.const import MAX_CHARACTER_SLOT, START_CHARACTER_SLOT, DEBUG
+from src.const import MAX_CHARACTER_SLOT, START_CHARACTER_SLOT, DEBUG, SAVE_FILE
 
 from src.actors.actor import Actor
 
@@ -27,3 +28,22 @@ class GameState:
                 format="%(asctime)s - %(levelname)s - %(message)s",
             )
             self.logger = logging.getLogger("game_state")
+
+    def save_to_json(self):
+        current_scene = {"current_scene": self.current_scene}
+        current_sub = {"current_sub": self.current_sub}
+        char_in_slot = {}
+        for i, c in enumerate(self.characters):
+            char_in_slot[i] = c.to_json()
+        characters = {"characters": char_in_slot}
+
+        # Placeholder for inventory
+        inventory = {"inventory": self.inventory}
+        slots = {"slots": self.slots}
+
+        save_data = {**current_scene, **current_sub, **characters, **inventory, **slots}
+        if DEBUG:
+            self.logger.debug(save_data)
+
+        with open(SAVE_FILE, "w", encoding="utf-8") as s:
+            s.dump(save_data, s, indent=4)

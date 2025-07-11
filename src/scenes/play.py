@@ -9,10 +9,17 @@ from asciimatics.widgets import (
     Button,
     TextBox,
     Divider,
+    PopUpDialog,
 )
 from asciimatics.screen import Screen
 
-from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, PALETTE, MAX_CHARACTER_SLOT
+from src.const import (
+    MIN_SCREEN_HEIGHT,
+    MIN_SCREEN_WIDTH,
+    PALETTE,
+    MAX_CHARACTER_SLOT,
+    DEBUG,
+)
 
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.verticalbar import print_vertical_bar
@@ -20,6 +27,36 @@ from src.scenes.compositions.screensize import print_screen_size
 
 from src.actors.characters.classes.classes import Classes, ClassesDescriptions
 from src.actors.characters.character import Character
+
+
+class QuitPopup(PopUpDialog):
+    def __init__(self, screen, game_state):
+        self.game = game_state
+        super().__init__(
+            screen,
+            "Save and Quit to Main Menu?",
+            ["[O]K", "[C]ancel"],
+            on_close=self._on_exit,
+            has_shadow=True,
+        )
+        self.palette = PALETTE
+
+    def _on_exit(self, choice):
+        if choice == 0:
+            self._ok()
+        else:
+            self._cancel()
+
+    def _ok(self):
+        self.game.save_to_json()
+        self.game.current_sub = ("Default", 0)
+        self.screen.clear_buffer(0, 0, 0)
+        self.game.current_scene = "Start"
+        raise NextScene("Start")
+
+    def _cancel(self):
+        self.game.current_sub = ("Default", 0)
+        self.screen.clear_buffer(0, 0, 0)
 
 
 class CharacterCreationView(Frame):
@@ -116,7 +153,8 @@ class CharacterCreationView(Frame):
         if not selected_class:
             selected_class = Classes.MARAUDER
         self.game.characters[self.slot - 1] = Character(selected_class, character_name)
-        self.game.logger.debug(self.game.characters[self.slot - 1].to_json())
+        if DEBUG:
+            self.game.logger.debug(self.game.characters[self.slot - 1].to_json())
         self.game.current_sub = ("Default", 0)
         self.scene.remove_effect(self)
         self.screen.clear_buffer(0, 0, 0)
@@ -224,7 +262,7 @@ class PlayEffect(Print):
         self.game = game_state
 
     def process_event(self, event):
-        if self.game.current_sub[0] == "char_creation":
+        if self.game.current_sub[0] in ("char_creation", "quit"):
             return event
 
         if hasattr(event, "key_code"):
@@ -232,8 +270,9 @@ class PlayEffect(Print):
             if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables global exit from this screen.
             if event.key_code in (ord("b"), ("B")):
-                self.game.current_scene = "Start"
-                raise NextScene("Start")
+                self.activate_quit_confirm()
+                # self.game.current_scene = "Start"
+                # raise NextScene("Start")
             if ord("1") <= event.key_code <= ord(str(MAX_CHARACTER_SLOT)):
                 slot = event.key_code - ord("0")
                 self.activate_character_creator(slot)
@@ -312,6 +351,8 @@ class PlayEffect(Print):
             match self.game.current_sub[0]:
                 case "char_creation":
                     pass
+                case "quit":
+                    pass
                 case _:
                     self.screen.print_at(
                         "Default",
@@ -330,3 +371,7 @@ class PlayEffect(Print):
             self.scene.add_effect(
                 CharacterCreationView(self.screen, self.game, self.game.current_sub[1])
             )
+
+    def activate_quit_confirm(self):
+        self.game.current_sub = ("quit", 1000)
+        self.scene.add_effect(QuitPopup(self.screen, self.game))
