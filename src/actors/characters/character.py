@@ -185,17 +185,10 @@ class Character(Actor):
                 raise NotImplementedError()
 
     def to_json(self):
-        return (
-            super()
-            .to_json()
-            .update(
-                {
-                    "ancestry": self.ancestry,
-                    "class": self.char_class,
-                    "attributes": self.attributes,
-                    "combat_skills": self.combat_skills,
-                    "crafting_skills": self.crafting_skills,
-                    "secondary_skills": self.secondary_skills,
-                }
-            )
-        )
+        char_data = {
+            "ancestry": self.ancestry,
+            "class": self.char_class,
+            "crafting_skills": self.crafting_skills,
+            "secondary_skills": self.secondary_skills,
+        }
+        return super().to_json().update(char_data)

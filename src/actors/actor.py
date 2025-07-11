@@ -95,4 +95,6 @@ class Actor:
             "armour": self.armour,
             "abilities": self.abilities,
             "effects": self.effects,
+            "attributes": self.attributes,
+            "combat_skills": self.combat_skills,
         }
