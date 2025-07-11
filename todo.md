@@ -8,6 +8,7 @@
     - View that there is a valid file.
     - view stats about the file.
     - delete the file.
+    - add more robust save file handling to automate creation if the user deletes the file after it loaded.
 - Add a guide message to the Play Scene's default view.
 - Refactor navigation to use 'in' instead of 'or'
 - Enumerate the sub-screen options for the Play Scene.
@@ -26,14 +27,6 @@
         3. Then, an ability is chosen with priority as a weight.
             - Rules defined below.
         4. Then, the ability targets it's prefered target, or finds one from the other actors in the combat.
-
-## Health Status
-
-- 100% = Full
-- 99–70% = Healthy
-- 69–30% = Hurt
-- 29–1% = Bloodied
-- 0% = Dead
 
 ## Priority Modifers
 
