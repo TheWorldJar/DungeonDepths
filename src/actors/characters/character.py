@@ -191,4 +191,4 @@ class Character(Actor):
             "crafting_skills": self.crafting_skills,
             "secondary_skills": self.secondary_skills,
         }
-        return super().to_json().update(char_data)
+        return {**super().to_json(), **char_data}
