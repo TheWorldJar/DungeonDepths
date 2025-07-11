@@ -48,8 +48,8 @@ class QuitPopup(PopUpDialog):
             self._cancel()
 
     def _ok(self):
-        self.game.save_to_json()
         self.game.current_sub = ("Default", 0)
+        self.game.save_to_json()
         self.screen.clear_buffer(0, 0, 0)
         self.game.current_scene = "Start"
         raise NextScene("Start")

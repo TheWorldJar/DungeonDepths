@@ -49,3 +49,6 @@ class Ability:
 
     def apply(self, source):
         source.add_effect(Status(self.name, self.func, self.duration))
+
+    def to_json(self):
+        return self.name.upper()

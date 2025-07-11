@@ -43,7 +43,6 @@ class Actor:
         self.max_health = health
         self.current_health = health
         self.armour = armour
-        self.abilities_ref = abilities
         self.abilities = set()
         for a in abilities:
             self.abilities.add(
@@ -88,13 +87,25 @@ class Actor:
         return self
 
     def to_json(self):
+        abilities_data = {}
+        for i, a in enumerate(self.abilities):
+            abilities_data[i] = a.to_json()
+
+        attributes_data = {}
+        for t in self.attributes:
+            attributes_data[t.name] = self.attributes[t]
+
+        combat_skills_data = {}
+        for c in self.combat_skills:
+            combat_skills_data[c.name] = self.combat_skills[c]
+
         return {
             "name": self.name,
             "actor_type": self.actor_type,
             "max_health": self.max_health,
             "current_health": self.current_health,
             "armour": self.armour,
-            "abilities": self.abilities_ref,
-            "attributes": self.attributes,
-            "combat_skills": self.combat_skills,
+            "abilities": abilities_data,
+            "attributes": attributes_data,
+            "combat_skills": combat_skills_data,
         }

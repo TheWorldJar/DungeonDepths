@@ -46,4 +46,4 @@ class GameState:
             self.logger.debug(save_data)
 
         with open(SAVE_FILE, "w", encoding="utf-8") as s:
-            s.dump(save_data, s, indent=4)
+            json.dump(save_data, s, indent=4)
