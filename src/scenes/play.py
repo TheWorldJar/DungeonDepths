@@ -271,8 +271,8 @@ class PlayEffect(Print):
                 return None  # Disables global exit from this screen.
             if event.key_code in (ord("b"), ("B")):
                 self.activate_quit_confirm()
-                # self.game.current_scene = "Start"
-                # raise NextScene("Start")
+            if event.key_code in (ord("\n"), ord("\r")):
+                return None  # Disables global scene cycling.
             if ord("1") <= event.key_code <= ord(str(MAX_CHARACTER_SLOT)):
                 slot = event.key_code - ord("0")
                 self.activate_character_creator(slot)

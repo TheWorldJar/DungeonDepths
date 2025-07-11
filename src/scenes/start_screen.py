@@ -27,38 +27,28 @@ class StartEffect(Print):
 
     def process_event(self, event):
         if hasattr(event, "key_code"):
-            if event.key_code == ord("s") or event.key_code == ord(
-                "S"
-            ):  # Press 's' for settings
+            if event.key_code in (ord("s"), ord("S")):
                 self.game.current_scene = "Settings"
                 raise NextScene("Settings")
-            if event.key_code == ord("q") or event.key_code == ord(
-                "Q"
-            ):  # Press 'q' to quit
+            if event.key_code in (ord("q"), ord("Q")):
                 raise StopApplication("User quit")
-            if event.key_code == ord("p") or event.key_code == ord(
-                "P"
-            ):  # Press 'p' to play
+            if event.key_code in (ord("p"), ord("P")):
                 save = self.check_save()
                 if save is not None:
                     self.load_save(save)
                 self.game.current_scene = "Play"
                 raise NextScene("Play")
-            if event.key_code == ord("m") or event.key_code == ord(
-                "M"
-            ):  # Press 'm' to manage the player's save
+            if event.key_code in (ord("m"), ord("M")):
                 self.game.current_scene = "Manage"
                 raise NextScene("Manage")
-            if event.key_code == ord("w") or event.key_code == ord(
-                "W"
-            ):  # Press 'w' to show warranty information
+            if event.key_code in (ord("w"), ord("W")):
                 self.game.current_scene = "Warranty"
                 raise NextScene("Warranty")
-            if event.key_code == ord("l") or event.key_code == ord(
-                "L"
-            ):  # Press 'l' to show license information
+            if event.key_code in (ord("l"), ord("L")):
                 self.game.current_scene = "License"
                 raise NextScene("License")
+            if event.key_code in (ord("\n"), ord("\r")):
+                return None  # Disables global scene cycling.
         return event
 
     def _update(self, frame_no):
@@ -147,7 +137,7 @@ class StartEffect(Print):
                 colour_map=colour_map,
             )
 
-    def check_save(self) -> str:
+    def check_save(self) -> str | None:
         # If there is no save file directory, create it.
         if not os.path.exists(SAVE_PATH) or not os.path.isdir(SAVE_PATH):
             os.makedirs(SAVE_PATH)

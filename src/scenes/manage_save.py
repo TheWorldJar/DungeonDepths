@@ -1,5 +1,6 @@
 from asciimatics.effects import Print
 from asciimatics.renderers import FigletText
+from asciimatics.exceptions import NextScene
 
 
 class ManageEffect(Print):
@@ -12,3 +13,14 @@ class ManageEffect(Print):
         super().__init__(
             screen=screen, renderer=FigletText("Manage Save", font="big"), y=2
         )
+
+    def process_event(self, event):
+        if hasattr(event, "key_code"):
+            if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
+                self.game.current_scene = "Start"
+                raise NextScene("Start")
+            if event.key_code in (ord("q"), ord("Q")):
+                return None  # Disables global exit from this screen.
+            if event.key_code in (ord("\n"), ord("\r")):
+                return None  # Disables global scene cycling.
+        return event
