@@ -4,23 +4,22 @@ from src.const import MARAUDER_BASE_REGEN, MARAUDER_HEALTH_MULTIPLIER, NO_DURATI
 
 from src.actors.actor import Actor, Attributes, CombatSkills
 from src.actors.roll import roll
-from src.actors.characters.character import Character
 from src.actors.ability import PrefTarget
 
 
-def strongman(source: Character):
+def strongman(source: Actor):
     source.max_health += (
         source.attributes[Attributes.STRENGTH] * MARAUDER_HEALTH_MULTIPLIER
     )
 
 
-def regenerate(source: Character):
+def regenerate(source: Actor):
     source.change_health(
         MARAUDER_BASE_REGEN + roll(source.attributes[Attributes.RESILIENCE])[0]
     )
 
 
-def cleave(source: Character, target: list[Actor]):
+def cleave(source: Actor, target: list[Actor]):
     for t in target:
         attack = roll(
             source.attributes[Attributes.STRENGTH]
@@ -37,7 +36,7 @@ def cleave(source: Character, target: list[Actor]):
             t.change_health(-(1 + delta))
 
 
-def power_strike(source: Character, target: Actor):
+def power_strike(source: Actor, target: Actor):
     attack = roll(
         source.attributes[Attributes.STRENGTH]
         + source.combat_skills[CombatSkills.MELEE]
@@ -54,7 +53,7 @@ def power_strike(source: Character, target: Actor):
         )
 
 
-def decapitate(source: Character, target: Actor):
+def decapitate(source: Actor, target: Actor):
     attack = roll(
         source.attributes[Attributes.STRENGTH]
         + source.combat_skills[CombatSkills.MELEE]
@@ -65,11 +64,11 @@ def decapitate(source: Character, target: Actor):
         target.change_health(-(1 + delta))
 
 
-def empower(source: Character):
+def empower(source: Actor):
     raise NotImplementedError
 
 
-def slam(source: Character, target: list[Actor]):
+def slam(source: Actor, target: list[Actor]):
     for t in target:
         t.initiative -= roll(
             source.attributes[Attributes.RESILIENCE]
@@ -77,7 +76,7 @@ def slam(source: Character, target: list[Actor]):
         )[0]
 
 
-def overkill(source: Character, target: Actor):
+def overkill(source: Actor, target: Actor):
     attack = roll(
         source.attributes[Attributes.STRENGTH]
         + source.combat_skills[CombatSkills.MELEE]

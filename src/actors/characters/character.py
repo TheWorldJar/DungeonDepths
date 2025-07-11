@@ -46,7 +46,7 @@ class Character(Actor):
             name = "Nameless"
 
         # Prepare the character's default attributes and skills.
-        self.attributes = {
+        attributes = {
             Attributes.STRENGTH: 1,
             Attributes.DEXTERITY: 1,
             Attributes.ENDURANCE: 1,
@@ -57,7 +57,7 @@ class Character(Actor):
             Attributes.PERCEPTION: 1,
         }
 
-        self.combat_skills = {
+        combat_skills = {
             CombatSkills.MELEE: 0,
             CombatSkills.RANGED: 0,
             CombatSkills.MAGIC: 0,
@@ -84,94 +84,96 @@ class Character(Actor):
 
         # Generate a race at random.
         self.ancestry = random.choice(list(Ancestry))
-        self._change_on_ancestry()
+        self._change_on_ancestry(attributes)
 
         # Change starting attributes & skills based on class and ancestry
         self.char_class = char_class
-        self._change_on_class()
+        self._change_on_class(attributes, combat_skills)
 
         # Calculate starting health
         health = (
             CHARACTER_BASE_HEALTH
-            + (self.attributes[Attributes.ENDURANCE] * CHARACTER_HEALTH_MULTIPLIER)
-            + (self.attributes[Attributes.RESILIENCE] * CHARACTER_HEALTH_MULTIPLIER)
-            + (self.attributes[Attributes.WILLPOWER] * CHARACTER_HEALTH_MULTIPLIER)
+            + (attributes[Attributes.ENDURANCE] * CHARACTER_HEALTH_MULTIPLIER)
+            + (attributes[Attributes.RESILIENCE] * CHARACTER_HEALTH_MULTIPLIER)
+            + (attributes[Attributes.WILLPOWER] * CHARACTER_HEALTH_MULTIPLIER)
         )
 
         # Get 4 abilities from the class list
         abilities = self._get_initial_abilities()
 
         # Call parent constructor
-        super().__init__(name, "character", health, 0, abilities)
+        super().__init__(
+            name, "character", health, 0, abilities, attributes, combat_skills
+        )
 
         # Check for Passive Ability effects
         for a in self.abilities:
             if not a.is_active and a.pref_targ == PrefTarget.SELF:
                 a.apply(self)
 
-    def _change_on_ancestry(self):
+    def _change_on_ancestry(self, attributes):
         match self.ancestry:
             case Ancestry.HUMAN:
-                self.attributes[Attributes.INTUITION] += 1
-                self.attributes[Attributes.RESILIENCE] += 1
+                attributes[Attributes.INTUITION] += 1
+                attributes[Attributes.RESILIENCE] += 1
             case Ancestry.NEPHILIM:
-                self.attributes[Attributes.INTELLIGENCE] += 1
-                self.attributes[Attributes.ENDURANCE] += 1
+                attributes[Attributes.INTELLIGENCE] += 1
+                attributes[Attributes.ENDURANCE] += 1
             case Ancestry.ELF:
-                self.attributes[Attributes.DEXTERITY] += 1
-                self.attributes[Attributes.PERCEPTION] += 1
+                attributes[Attributes.DEXTERITY] += 1
+                attributes[Attributes.PERCEPTION] += 1
             case Ancestry.DRAGONKIN:
-                self.attributes[Attributes.STRENGTH] += 1
-                self.attributes[Attributes.WILLPOWER] += 1
+                attributes[Attributes.STRENGTH] += 1
+                attributes[Attributes.WILLPOWER] += 1
 
-    def _change_on_class(self):
+    def _change_on_class(self, attributes, combat_skills):
         match self.char_class:
             case Classes.MARAUDER:
-                self.attributes[Attributes.STRENGTH] += 1
-                self.attributes[Attributes.RESILIENCE] += 1
-                self.combat_skills[CombatSkills.MELEE] += 1
+                attributes[Attributes.STRENGTH] += 1
+                attributes[Attributes.RESILIENCE] += 1
+                combat_skills[CombatSkills.MELEE] += 1
                 self.crafting_skills[CraftingSkills.BLACKSMITHING] += 1
                 self.secondary_skills[SecondarySkills.SURVIVAL] += 1
             case Classes.SENTINEL:
-                self.attributes[Attributes.DEXTERITY] += 1
-                self.attributes[Attributes.INTUITION] += 1
-                self.combat_skills[CombatSkills.MELEE] += 1
+                attributes[Attributes.DEXTERITY] += 1
+                attributes[Attributes.INTUITION] += 1
+                combat_skills[CombatSkills.MELEE] += 1
                 self.crafting_skills[CraftingSkills.OUTFITTING] += 1
                 self.secondary_skills[SecondarySkills.SPEECHCRAFT] += 1
             case Classes.STALKER:
-                self.attributes[Attributes.DEXTERITY] += 1
-                self.attributes[Attributes.PERCEPTION] += 1
-                self.combat_skills[CombatSkills.RANGED] += 1
+                attributes[Attributes.DEXTERITY] += 1
+                attributes[Attributes.PERCEPTION] += 1
+                combat_skills[CombatSkills.RANGED] += 1
                 self.crafting_skills[CraftingSkills.OUTFITTING] += 1
                 self.secondary_skills[SecondarySkills.STEALTH] += 1
             case Classes.TEMPLAR:
-                self.attributes[Attributes.STRENGTH] += 1
-                self.attributes[Attributes.WILLPOWER] += 1
-                self.combat_skills[CombatSkills.MELEE] += 1
+                attributes[Attributes.STRENGTH] += 1
+                attributes[Attributes.WILLPOWER] += 1
+                combat_skills[CombatSkills.MELEE] += 1
                 self.crafting_skills[CraftingSkills.BLACKSMITHING] += 1
                 self.secondary_skills[SecondarySkills.FITNESS] += 1
             case Classes.PRIMALIST:
-                self.attributes[Attributes.PERCEPTION] += 1
-                self.attributes[Attributes.INTUITION] += 1
-                self.combat_skills[CombatSkills.MAGIC] += 1
+                attributes[Attributes.PERCEPTION] += 1
+                attributes[Attributes.INTUITION] += 1
+                combat_skills[CombatSkills.MAGIC] += 1
                 self.crafting_skills[CraftingSkills.ENCHANTING] += 1
                 self.secondary_skills[SecondarySkills.NATURE] += 1
             case Classes.OCCULTIST:
-                self.attributes[Attributes.INTELLIGENCE] += 1
-                self.attributes[Attributes.WILLPOWER] += 1
-                self.combat_skills[CombatSkills.MAGIC] += 1
+                attributes[Attributes.INTELLIGENCE] += 1
+                attributes[Attributes.WILLPOWER] += 1
+                combat_skills[CombatSkills.MAGIC] += 1
                 self.crafting_skills[CraftingSkills.ENCHANTING] += 1
                 self.secondary_skills[SecondarySkills.OCCULTISM] += 1
             case Classes.CENOBITE:
-                self.attributes[Attributes.INTELLIGENCE] += 1
-                self.attributes[Attributes.ENDURANCE] += 1
-                self.combat_skills[CombatSkills.MAGIC] += 1
+                attributes[Attributes.INTELLIGENCE] += 1
+                attributes[Attributes.ENDURANCE] += 1
+                combat_skills[CombatSkills.MAGIC] += 1
                 self.crafting_skills[CraftingSkills.ALCHEMY] += 1
                 self.secondary_skills[SecondarySkills.ENGINEERING] += 1
             case Classes.PENITENT:
-                self.attributes[Attributes.ENDURANCE] += 1
-                self.attributes[Attributes.RESILIENCE] += 1
-                self.combat_skills[CombatSkills.DEFENCE] += 1
+                attributes[Attributes.ENDURANCE] += 1
+                attributes[Attributes.RESILIENCE] += 1
+                combat_skills[CombatSkills.DEFENCE] += 1
                 self.crafting_skills[CraftingSkills.ALCHEMY] += 1
                 self.secondary_skills[SecondarySkills.MEDICINE] += 1
 

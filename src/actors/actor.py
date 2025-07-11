@@ -29,7 +29,14 @@ class Actor:
     """Default Actor Parent Class"""
 
     def __init__(
-        self, name: str, actor_type: str, health: int, armour: int, abilities: set
+        self,
+        name: str,
+        actor_type: str,
+        health: int,
+        armour: int,
+        abilities: set,
+        attributes: dict,
+        combat_skills: dict,
     ):
         self.name = name
         self.actor_type = actor_type
@@ -38,8 +45,19 @@ class Actor:
         self.armour = armour
         self.abilities = set()
         for a in abilities:
-            self.abilities.add(Ability(**a))
+            self.abilities.add(
+                Ability(
+                    name=a.value["name"],
+                    is_active=a.value["is_active"],
+                    has_target=a.value["has_target"],
+                    func=a.value["func"],
+                    pref_targ=a.value["pref_targ"],
+                    duration=a.value["duration"],
+                )
+            )
         self.effects = set()
+        self.attributes = attributes
+        self.combat_skills = combat_skills
         self.initiative = 0
 
     def use_ability(self):

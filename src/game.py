@@ -12,7 +12,9 @@ class GameState:
     def __init__(self):
         self.current_scene = "Start"
         self.current_sub = ("Default", 0)
-        self.characters = [Actor("Empty", "None", 0, 0, set())] * MAX_CHARACTER_SLOT
+        self.characters = [
+            Actor("Empty", "None", 0, 0, set(), {}, {})
+        ] * MAX_CHARACTER_SLOT
         self.inventory = []
         self.slots = START_CHARACTER_SLOT
         if DEBUG:
