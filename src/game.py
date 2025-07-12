@@ -4,7 +4,8 @@ import json
 
 from src.const import MAX_CHARACTER_SLOT, START_CHARACTER_SLOT, DEBUG, SAVE_FILE
 
-from src.actors.actor import Actor
+from src.actors.characters.character import Character
+from src.actors.characters.classes.classes import Classes
 
 
 class GameState:
@@ -13,9 +14,7 @@ class GameState:
     def __init__(self):
         self.current_scene = "Start"
         self.current_sub = ("Default", 0)
-        self.characters = [
-            Actor("Empty", "None", 0, 0, set(), {}, {})
-        ] * MAX_CHARACTER_SLOT
+        self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
         self.inventory = []
         self.slots = START_CHARACTER_SLOT
         if DEBUG:
