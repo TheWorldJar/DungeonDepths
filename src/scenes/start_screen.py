@@ -160,12 +160,15 @@ class StartEffect(Print):
         try:
             scene_data = save["current_scene"]
             sub_data = save["current_sub"]
-        # Load Characters
-        # Each Character will need to load their abilities
-        # Load Inventory
-        # Load Slots
+            # Load Characters
+            # Each Character will need to load their abilities
+            inv_data = save["inventory"]
+            slot_data = save["slots"]
         except IndexError:
             return None
 
         self.game.current_scene = scene_data
         self.game.current_sub = sub_data
+        # Characters go here.
+        self.game.inventory = inv_data
+        self.game.slots = slot_data
