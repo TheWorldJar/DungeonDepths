@@ -27,6 +27,7 @@ class GameState:
                 format="%(asctime)s - %(levelname)s - %(message)s",
             )
             self.logger = logging.getLogger("game_state")
+        self.is_empty_save = True
 
     def save_to_json(self):
         current_scene = {"current_scene": self.current_scene}
@@ -39,8 +40,16 @@ class GameState:
         # Placeholder for inventory
         inventory = {"inventory": self.inventory}
         slots = {"slots": self.slots}
+        empty_save = {"is_empty_save": self.is_empty_save}
 
-        save_data = {**current_scene, **current_sub, **characters, **inventory, **slots}
+        save_data = {
+            **current_scene,
+            **current_sub,
+            **characters,
+            **inventory,
+            **slots,
+            **empty_save,
+        }
         if DEBUG:
             self.logger.debug(save_data)
 

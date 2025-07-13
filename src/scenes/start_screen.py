@@ -6,7 +6,7 @@ from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene, StopApplication
 from asciimatics.screen import Screen
 
-from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, SAVE_PATH, SAVE_FILE
+from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, SAVE_PATH, SAVE_FILE, DEBUG
 
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.screensize import print_screen_size
@@ -158,13 +158,20 @@ class StartEffect(Print):
 
     def load_save(self, save):
         try:
+            empty_save_data = save["is_empty_save"]
+            if empty_save_data:
+                if DEBUG:
+                    self.game.logger.info("Aborting Loading: Save File is Empty!")
+                return None
             scene_data = save["current_scene"]
             sub_data = save["current_sub"]
             # Load Characters
             # Each Character will need to load their abilities
             inv_data = save["inventory"]
             slot_data = save["slots"]
-        except IndexError:
+        except KeyError:
+            if DEBUG:
+                self.game.logger.info("Aborting Loading: Save File is Malformed!")
             return None
 
         self.game.current_scene = scene_data
@@ -172,3 +179,4 @@ class StartEffect(Print):
         # Characters go here.
         self.game.inventory = inv_data
         self.game.slots = slot_data
+        self.game.is_empty_save = empty_save_data
