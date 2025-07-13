@@ -145,10 +145,10 @@ class StartEffect(Print):
         # If there is a save.json file, try to load it.
         if os.path.exists(SAVE_FILE) and os.path.isfile(SAVE_FILE):
             try:
-                json.loads(SAVE_FILE)
+                save = json.loads(SAVE_FILE)
             except ValueError:
                 return None
-            return SAVE_FILE
+            return save
 
         # Otherwise, create a blank save file.
         data = {"characters": [], "inventory": [], "slots": 2}
@@ -156,6 +156,16 @@ class StartEffect(Print):
             json.dump(data, s, indent=4)
         return None
 
-    def load_save(self, save_file):
-        # Placeholder
-        pass
+    def load_save(self, save):
+        try:
+            scene_data = save["current_scene"]
+            sub_data = save["current_sub"]
+        # Load Characters
+        # Each Character will need to load their abilities
+        # Load Inventory
+        # Load Slots
+        except IndexError:
+            return None
+
+        self.game.current_scene = scene_data
+        self.game.current_sub = sub_data
