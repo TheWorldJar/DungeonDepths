@@ -12,42 +12,53 @@ def check_save(game_state) -> str | None:
         game_state.logger.info("Creating Save Folder...")
         os.makedirs(SAVE_PATH)
 
-    # If there is a save.json file, try to load it.
-    if os.path.exists(SAVE_FILE) and os.path.isfile(SAVE_FILE):
-        try:
-            with open(SAVE_FILE, "r", encoding="utf-8") as j:
-                save = json.load(j)
-        except ValueError:
-            game_state.logger.warning("Save File is not Valid!")
-            return None
-        game_state.logger.info("Save File Found!")
-        return save
+    # If there is no save.json file, create a blank save file.
+    if not os.path.exists(SAVE_FILE) or not os.path.isfile(SAVE_FILE):
+        game_state.logger.info("Creating Blank Save...")
+        data = {
+            "current_scene": "Start",
+            "current_sub": ("Default", 0),
+            "characters": [],
+            "inventory": [],
+            "slots": 2,
+            "is_empty_save": True,
+        }
+        with open(SAVE_FILE, "w", encoding="utf-8") as s:
+            json.dump(data, s, indent=4)
 
-    # Otherwise, create a blank save file.
-    game_state.logger.info("Creating Blank Save...")
-    data = {
-        "current_scene": "Start",
-        "current_sub": ("Defaul", 0),
-        "characters": [],
-        "inventory": [],
-        "slots": 2,
-        "is_empty_save": True,
-    }
-    with open(SAVE_FILE, "w", encoding="utf-8") as s:
-        json.dump(data, s, indent=4)
-    return None
+    # Return the save, even if it is empty.
+    try:
+        with open(SAVE_FILE, "r", encoding="utf-8") as j:
+            save = json.load(j)
+    except ValueError:
+        game_state.logger.warning("Save File is not Valid!")
+        return None
+    game_state.logger.info("Save File Found!")
+    return save
 
 
 def load_save(game_state, save):
+    empty_save_data = is_empty_save(game_state, save)
+    if empty_save_data:
+        return None
+    scene_data, sub_data, char_data, inv_data, slot_data = validate_save(
+        game_state, save
+    )
+    game_state.current_scene = scene_data
+    game_state.current_sub = sub_data
+    game_state.characters = char_data
+    game_state.inventory = inv_data
+    game_state.slots = slot_data
+    game_state.is_empty_save = empty_save_data
+    game_state.logger.info("Finished Loading Save")
+
+
+def validate_save(game_state, save):
     game_state.logger.info("Loading Save...")
     if DEBUG:
         game_state.logger.debug(save)
     char_data = []
     try:
-        empty_save_data = save["is_empty_save"]
-        if empty_save_data:
-            game_state.logger.info("Aborting Loading: Save File is Empty!")
-            return None
         scene_data = save["current_scene"]
         sub_data = save["current_sub"]
         slot_data = save["slots"]
@@ -60,13 +71,18 @@ def load_save(game_state, save):
         game_state.logger.warning("Aborting Loading: Save File is Malformed!")
         return None
 
-    game_state.current_scene = scene_data
-    game_state.current_sub = sub_data
-    game_state.characters = char_data
-    game_state.inventory = inv_data
-    game_state.slots = slot_data
-    game_state.is_empty_save = empty_save_data
-    game_state.logger.info("Finished Loading Save")
+    return scene_data, sub_data, char_data, inv_data, slot_data
+
+
+def is_empty_save(game_state, save):
+    try:
+        empty_save_data = save["is_empty_save"]
+    except KeyError:
+        game_state.logger.info("Aborting Loading: Save File is Empty!")
+        return True
+    if empty_save_data:
+        game_state.logger.info("Aborting Loading: Save File is Empty!")
+    return empty_save_data
 
 
 def write_save(game_state):
