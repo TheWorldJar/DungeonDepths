@@ -4,6 +4,7 @@
     - When there is a valid save file, load it.
     - resolve dictonaries of names to their appropriate enums.
     - restore characters.
+    - Move everything to a save module.
 - Add save file management to the save file scene.
     - View that there is a valid file.
     - view stats about the file.

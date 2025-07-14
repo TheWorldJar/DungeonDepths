@@ -156,7 +156,7 @@ class CharacterCreationView(Frame):
         if DEBUG:
             self.game.logger.debug(self.game.characters[self.slot - 1].to_json())
         if self.game.is_empty_save:
-            self.is_game.empty_save = False
+            self.game.is_empty_save = False
         self.game.current_sub = ("Default", 0)
         self.scene.remove_effect(self)
         self.screen.clear_buffer(0, 0, 0)

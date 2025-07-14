@@ -15,6 +15,8 @@ class GameState:
         self.current_scene = "Start"
         self.current_sub = ("Default", 0)
         self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
+        for character in self.characters:
+            character.actor_type = "None"
         self.inventory = []
         self.slots = START_CHARACTER_SLOT
         if DEBUG:

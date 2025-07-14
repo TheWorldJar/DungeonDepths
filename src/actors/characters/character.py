@@ -113,6 +113,58 @@ class Character(Actor):
         for e in self.effects:
             e.execute(self)
 
+    @classmethod
+    def from_save(cls, data: dict):
+        new_character = cls(Classes.MARAUDER, "New")
+        new_character.name = data["name"]
+        new_character.actor_type = data["actor_type"]
+        new_character.max_health = data["max_health"]
+        new_character.current_health = data["current_health"]
+        new_character.armour = data["armour"]
+        for attribute_name, attribute_value in data["attributes"].items():
+            attr_enum_member = Attributes[attribute_name]
+            new_character.attributes[attr_enum_member] = attribute_value
+        for combat_skill_name, combat_skill_value in data["combat_skills"].items():
+            combat_enum_member = CombatSkills[combat_skill_name]
+            new_character.combat_skills[combat_enum_member] = combat_skill_value
+        anc_enum_member = Ancestry[data["ancestry"]]
+        new_character.ancestry = anc_enum_member
+        char_class_enum_member = Classes[data["class"]]
+        new_character.char_class = char_class_enum_member
+
+        new_character.abilities.clear()
+        for _, ability_name in data["abilities"].items():
+            match new_character.char_class:
+                case Classes.MARAUDER:
+                    ability_enum_member = Marauder[ability_name]
+                case _:
+                    raise NotImplementedError
+            ability_data = ability_enum_member.value
+            new_character.abilities.add(
+                Ability(
+                    name=ability_data["name"],
+                    is_active=ability_data["is_active"],
+                    has_target=ability_data["has_target"],
+                    func=ability_data["func"],
+                    pref_targ=ability_data["pref_targ"],
+                    duration=ability_data["duration"],
+                )
+            )
+
+        for crafting_skill_name, crafting_skill_value in data[
+            "crafting_skills"
+        ].items():
+            craft_enum_member = CraftingSkills[crafting_skill_name]
+            new_character.crafting_skills[craft_enum_member] = crafting_skill_value
+        for secondary_skill_name, secondary_skill_value in data[
+            "secondary_skills"
+        ].items():
+            secondary_enum_member = SecondarySkills[secondary_skill_name]
+            new_character.secondary_skills[secondary_enum_member] = (
+                secondary_skill_value
+            )
+        return new_character
+
     def _change_on_ancestry(self, attributes):
         match self.ancestry:
             case Ancestry.HUMAN:

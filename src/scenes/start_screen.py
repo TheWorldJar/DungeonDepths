@@ -11,6 +11,8 @@ from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, SAVE_PATH, SAVE_FILE,
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.screensize import print_screen_size
 
+from src.actors.characters.character import Character
+
 
 class StartEffect(Print):
     """The Game's Start Screen"""
@@ -140,23 +142,31 @@ class StartEffect(Print):
     def check_save(self) -> str | None:
         # If there is no save file directory, create it.
         if not os.path.exists(SAVE_PATH) or not os.path.isdir(SAVE_PATH):
+            self.game.logger.info("Creating Save Folder...")
             os.makedirs(SAVE_PATH)
 
         # If there is a save.json file, try to load it.
         if os.path.exists(SAVE_FILE) and os.path.isfile(SAVE_FILE):
             try:
-                save = json.loads(SAVE_FILE)
+                with open(SAVE_FILE, "r", encoding="utf-8") as j:
+                    save = json.load(j)
             except ValueError:
+                self.game.logger.info("Save File is not Valid!")
                 return None
+            self.game.logger.info("Save File Found!")
             return save
 
         # Otherwise, create a blank save file.
+        self.game.logger.info("Creating Blank Save...")
         data = {"characters": [], "inventory": [], "slots": 2}
         with open(SAVE_FILE, "w", encoding="utf-8") as s:
             json.dump(data, s, indent=4)
         return None
 
     def load_save(self, save):
+        self.game.logger.info("Loading Save...")
+        self.game.logger.debug(save)
+        char_data = []
         try:
             empty_save_data = save["is_empty_save"]
             if empty_save_data:
@@ -165,10 +175,12 @@ class StartEffect(Print):
                 return None
             scene_data = save["current_scene"]
             sub_data = save["current_sub"]
-            # Load Characters
-            # Each Character will need to load their abilities
-            inv_data = save["inventory"]
             slot_data = save["slots"]
+            for i in range(0, slot_data):
+                char_save_data = save["characters"][str(i)]
+                char_data.append(Character.from_save(char_save_data))
+            inv_data = save["inventory"]
+
         except KeyError:
             if DEBUG:
                 self.game.logger.info("Aborting Loading: Save File is Malformed!")
@@ -176,7 +188,8 @@ class StartEffect(Print):
 
         self.game.current_scene = scene_data
         self.game.current_sub = sub_data
-        # Characters go here.
+        self.game.characters = char_data
         self.game.inventory = inv_data
         self.game.slots = slot_data
         self.game.is_empty_save = empty_save_data
+        self.game.logger.info("Finished Loading Save")
