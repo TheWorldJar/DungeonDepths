@@ -53,12 +53,76 @@ class QuitPopup(PopUpDialog):
         self.game.current_sub = ("Default", 0)
         write_save(self.game)
         self.screen.clear_buffer(0, 0, 0)
+        self.scene.reset()
         self.game.current_scene = "Start"
         raise NextScene("Start")
 
     def _cancel(self):
         self.game.current_sub = ("Default", 0)
         self.screen.clear_buffer(0, 0, 0)
+
+
+class GuideView(Frame):
+    def __init__(self, screen, game_state, parent):
+        super().__init__(
+            screen,
+            screen.height - 4,  # The top bar occupies the first 4 lines.
+            screen.width * 4 // 5,  # The Character menu occupies the left fifth.
+            x=screen.width // 5 + 1,
+            y=4,
+            hover_focus=True,
+            title="Character Creation",
+            reduce_cpu=True,
+            has_border=False,
+            is_modal=False,
+        )
+        self.palette = PALETTE
+        self.game = game_state
+        self.parent = parent
+
+        layout = Layout([100], fill_frame=True)
+        self.add_layout(layout)
+
+        self.guide_info = TextBox(
+            self.screen.height - 2,
+            name="guide_info",
+            as_string=True,
+            line_wrap=True,
+            readonly=True,
+            tab_stop=False,
+        )
+        self.guide_info.hide_cursor = True
+
+        # Placeholder
+        self.guide_info.value = """
+GUIDE
+- Choose a character slot using a number key [1–8].
+    - If you haven't recruited a character in that slot, you will be brought to the character creator.
+    - Otherwise, you will select that character to give them orders.
+
+- In other screens, actions will be chosen with the key in between brackets: [Key]
+
+- To go back to the Main Menu, press [B].
+"""
+        layout.add_widget(self.guide_info, 0)
+
+        self.fix()
+
+    def process_event(self, event):
+        if hasattr(event, "key_code"):
+            self.screen.clear_buffer(0, 0, 0)
+            if event.key_code in (ord("q"), ord("Q")):
+                return None  # Disables global exit from this screen.
+            if event.key_code in (ord("b"), ("B")):
+                self.parent.activate_quit_confirm()
+            if event.key_code in (ord("\n"), ord("\r")):
+                return None  # Disables global scene cycling.
+            if ord("1") <= event.key_code <= ord(str(MAX_CHARACTER_SLOT)):
+                slot = event.key_code - ord("0")
+                self.scene.remove_effect(self)
+                self.parent.activate_character_creator(slot)
+                self.parent.current_header = (f"Character {slot}", slot)
+        return event
 
 
 class CharacterCreationView(Frame):
@@ -281,6 +345,8 @@ class PlayEffect(Print):
                 slot = event.key_code - ord("0")
                 self.activate_character_creator(slot)
                 self.current_header = (f"Character {slot}", slot)
+            if event.key_code in (ord("g"), ord("G")):
+                self.activate_guide()
         return event
 
     def _update(self, frame_no):
@@ -354,8 +420,10 @@ class PlayEffect(Print):
             # OPTIONS NEED TO BE ENUMERATED LATER
             match self.game.current_sub[0]:
                 case "char_creation":
-                    pass
+                    self.scene
                 case "quit":
+                    pass
+                case "default":
                     pass
                 case _:
                     self.screen.print_at(
@@ -379,3 +447,7 @@ class PlayEffect(Print):
     def activate_quit_confirm(self):
         self.game.current_sub = ("quit", 1000)
         self.scene.add_effect(QuitPopup(self.screen, self.game))
+
+    def activate_guide(self):
+        self.game.current_sub = ("Default", 0)
+        self.scene.add_effect(GuideView(self.screen, self.game, self))

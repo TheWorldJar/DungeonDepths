@@ -1,7 +1,5 @@
 # TODO
 
-- Add a guide message to the Play Scene's default view.
-- Refactor navigation to use 'in' instead of 'or'
 - Enumerate the sub-screen options for the Play Scene.
 - Write the character's class under its name in the character menu.
 - Implement ability sets for the seven other classes.
@@ -20,6 +18,7 @@
         4. Then, the ability targets it's prefered target, or finds one from the other actors in the combat.
 - Implement the seven other classes to the save system.
 - Change const PALETTE to improve display for popups and other layouts.
+- Remove state tracking from the play scene and migrate over to the game state.
 
 ## Priority Modifers
 
