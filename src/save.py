@@ -3,6 +3,7 @@ import json
 
 from src.const import SAVE_FILE, SAVE_PATH, DEBUG
 
+from src.game import GameState
 from src.actors.characters.character import Character
 
 
@@ -40,6 +41,7 @@ def check_save(game_state) -> str | None:
 def load_save(game_state, save):
     empty_save_data = is_empty_save(game_state, save)
     if empty_save_data:
+        game_state.reset()
         return None
     scene_data, sub_data, char_data, inv_data, slot_data = validate_save(
         game_state, save

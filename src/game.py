@@ -45,6 +45,17 @@ class GameState:
             self.logger = logging.getLogger("game_state")
         self.save_status = "Empty"
 
+    def reset(self):
+        self.current_scene = "Start"
+        self.current_sub = ("Default", 0)
+        self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
+        for character in self.characters:
+            character.actor_type = "None"
+        self.inventory = []
+        self.slots = START_CHARACTER_SLOT
+        self.is_empty_save = True
+        self.save_status = "Empty"
+
     def save_to_json(self):
         current_scene = {"current_scene": self.current_scene}
         current_sub = {"current_sub": self.current_sub}
