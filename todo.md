@@ -1,15 +1,5 @@
 # TODO
 
-- Load a character from file.
-    - When there is a valid save file, load it.
-    - resolve dictonaries of names to their appropriate enums.
-    - restore characters.
-    - Move everything to a save module.
-- Add save file management to the save file scene.
-    - View that there is a valid file.
-    - view stats about the file.
-    - delete the file.
-    - add more robust save file handling to automate creation if the user deletes the file after it loaded.
 - Add a guide message to the Play Scene's default view.
 - Refactor navigation to use 'in' instead of 'or'
 - Enumerate the sub-screen options for the Play Scene.
@@ -29,6 +19,7 @@
             - Rules defined below.
         4. Then, the ability targets it's prefered target, or finds one from the other actors in the combat.
 - Implement the seven other classes to the save system.
+- Change const PALETTE to improve display for popups and other layouts.
 
 ## Priority Modifers
 

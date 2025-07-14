@@ -5,7 +5,7 @@ from asciimatics.screen import Screen
 
 from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH
 
-from src.save import check_save, load_save
+from src.save import check_save, load_save, set_save_status
 
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.screensize import print_screen_size
@@ -38,6 +38,7 @@ class StartEffect(Print):
                 self.game.current_scene = "Play"
                 raise NextScene("Play")
             if event.key_code in (ord("m"), ord("M")):
+                set_save_status(self.game)
                 self.game.current_scene = "Manage"
                 raise NextScene("Manage")
             if event.key_code in (ord("w"), ord("W")):

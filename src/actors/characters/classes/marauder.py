@@ -114,7 +114,7 @@ class Marauder(Enum):
         "duration": NO_DURATION,
     }
     POWER_STRIKE = {
-        "name": "power strike",
+        "name": "power_strike",
         "is_active": True,
         "has_target": True,
         "func": power_strike,

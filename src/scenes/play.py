@@ -37,7 +37,7 @@ class QuitPopup(PopUpDialog):
         super().__init__(
             screen,
             "Save and Quit to Main Menu?",
-            ["[O]K", "[C]ancel"],
+            ["OK", "Cancel"],
             on_close=self._on_exit,
             has_shadow=True,
         )

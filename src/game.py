@@ -12,6 +12,7 @@ class GameState:
     """Object to track the game's current state"""
 
     def __init__(self):
+        # These values are saved to file.
         self.current_scene = "Start"
         self.current_sub = ("Default", 0)
         self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
@@ -19,6 +20,9 @@ class GameState:
             character.actor_type = "None"
         self.inventory = []
         self.slots = START_CHARACTER_SLOT
+        self.is_empty_save = True
+
+        # These values are not saved to file.
         if DEBUG:
             if os.path.exists(os.path.realpath("debug.log")):
                 os.remove(os.path.realpath("debug.log"))
@@ -39,7 +43,7 @@ class GameState:
                 format="%(asctime)s - %(levelname)s - %(message)s",
             )
             self.logger = logging.getLogger("game_state")
-        self.is_empty_save = True
+        self.save_status = "Empty"
 
     def save_to_json(self):
         current_scene = {"current_scene": self.current_scene}

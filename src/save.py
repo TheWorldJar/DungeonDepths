@@ -44,6 +44,7 @@ def load_save(game_state, save):
     scene_data, sub_data, char_data, inv_data, slot_data = validate_save(
         game_state, save
     )
+    game_state.logger.info("Loading Save...")
     game_state.current_scene = scene_data
     game_state.current_sub = sub_data
     game_state.characters = char_data
@@ -54,7 +55,7 @@ def load_save(game_state, save):
 
 
 def validate_save(game_state, save):
-    game_state.logger.info("Loading Save...")
+    game_state.logger.info("Validating Save...")
     if DEBUG:
         game_state.logger.debug(save)
     char_data = []
@@ -67,8 +68,10 @@ def validate_save(game_state, save):
             char_data.append(Character.from_save(char_save_data))
         inv_data = save["inventory"]
 
-    except KeyError:
-        game_state.logger.warning("Aborting Loading: Save File is Malformed!")
+    except KeyError as e:
+        game_state.logger.warning(
+            f"Aborting Loading: Save File is Malformed! Exception: {e}"
+        )
         return None
 
     return scene_data, sub_data, char_data, inv_data, slot_data
@@ -83,6 +86,22 @@ def is_empty_save(game_state, save):
     if empty_save_data:
         game_state.logger.info("Aborting Loading: Save File is Empty!")
     return empty_save_data
+
+
+def set_save_status(game_state):
+    save_status = "Empty"
+    save = check_save(game_state)
+    if save is None:
+        save_status = "Invalid"
+    else:
+        if is_empty_save(game_state, save):
+            save_status = "Empty"
+        elif validate_save(game_state, save) is None:
+            save_status = "Malformed"
+        else:
+            save_status = "Valid"
+    game_state.logger.debug(save_status)
+    game_state.save_status = save_status
 
 
 def write_save(game_state):
