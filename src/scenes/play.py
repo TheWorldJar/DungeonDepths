@@ -21,6 +21,8 @@ from src.const import (
     DEBUG,
 )
 
+from src.save import write_save
+
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.verticalbar import print_vertical_bar
 from src.scenes.compositions.screensize import print_screen_size
@@ -49,7 +51,7 @@ class QuitPopup(PopUpDialog):
 
     def _ok(self):
         self.game.current_sub = ("Default", 0)
-        self.game.save_to_json()
+        write_save(self.game)
         self.screen.clear_buffer(0, 0, 0)
         self.game.current_scene = "Start"
         raise NextScene("Start")

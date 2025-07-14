@@ -1,17 +1,14 @@
-import os
-import json
-
 from asciimatics.effects import Print
 from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene, StopApplication
 from asciimatics.screen import Screen
 
-from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, SAVE_PATH, SAVE_FILE, DEBUG
+from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH
+
+from src.save import check_save, load_save
 
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.screensize import print_screen_size
-
-from src.actors.characters.character import Character
 
 
 class StartEffect(Print):
@@ -35,9 +32,9 @@ class StartEffect(Print):
             if event.key_code in (ord("q"), ord("Q")):
                 raise StopApplication("User quit")
             if event.key_code in (ord("p"), ord("P")):
-                save = self.check_save()
+                save = check_save(self.game)
                 if save is not None:
-                    self.load_save(save)
+                    load_save(self.game, save)
                 self.game.current_scene = "Play"
                 raise NextScene("Play")
             if event.key_code in (ord("m"), ord("M")):
@@ -138,58 +135,3 @@ class StartEffect(Print):
                 y=self.screen.height - 3,
                 colour_map=colour_map,
             )
-
-    def check_save(self) -> str | None:
-        # If there is no save file directory, create it.
-        if not os.path.exists(SAVE_PATH) or not os.path.isdir(SAVE_PATH):
-            self.game.logger.info("Creating Save Folder...")
-            os.makedirs(SAVE_PATH)
-
-        # If there is a save.json file, try to load it.
-        if os.path.exists(SAVE_FILE) and os.path.isfile(SAVE_FILE):
-            try:
-                with open(SAVE_FILE, "r", encoding="utf-8") as j:
-                    save = json.load(j)
-            except ValueError:
-                self.game.logger.info("Save File is not Valid!")
-                return None
-            self.game.logger.info("Save File Found!")
-            return save
-
-        # Otherwise, create a blank save file.
-        self.game.logger.info("Creating Blank Save...")
-        data = {"characters": [], "inventory": [], "slots": 2}
-        with open(SAVE_FILE, "w", encoding="utf-8") as s:
-            json.dump(data, s, indent=4)
-        return None
-
-    def load_save(self, save):
-        self.game.logger.info("Loading Save...")
-        self.game.logger.debug(save)
-        char_data = []
-        try:
-            empty_save_data = save["is_empty_save"]
-            if empty_save_data:
-                if DEBUG:
-                    self.game.logger.info("Aborting Loading: Save File is Empty!")
-                return None
-            scene_data = save["current_scene"]
-            sub_data = save["current_sub"]
-            slot_data = save["slots"]
-            for i in range(0, slot_data):
-                char_save_data = save["characters"][str(i)]
-                char_data.append(Character.from_save(char_save_data))
-            inv_data = save["inventory"]
-
-        except KeyError:
-            if DEBUG:
-                self.game.logger.info("Aborting Loading: Save File is Malformed!")
-            return None
-
-        self.game.current_scene = scene_data
-        self.game.current_sub = sub_data
-        self.game.characters = char_data
-        self.game.inventory = inv_data
-        self.game.slots = slot_data
-        self.game.is_empty_save = empty_save_data
-        self.game.logger.info("Finished Loading Save")

@@ -29,6 +29,16 @@ class GameState:
                 format="%(asctime)s - %(levelname)s - %(message)s",
             )
             self.logger = logging.getLogger("game_state")
+        else:
+            if os.path.exists(os.path.realpath("debug.log")):
+                os.remove(os.path.realpath("debug.log"))
+            logging.basicConfig(
+                filename="debug.log",
+                encoding="utf-8",
+                level=logging.INFO,
+                format="%(asctime)s - %(levelname)s - %(message)s",
+            )
+            self.logger = logging.getLogger("game_state")
         self.is_empty_save = True
 
     def save_to_json(self):
