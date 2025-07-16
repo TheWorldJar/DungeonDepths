@@ -5,8 +5,18 @@ from src.const import CHARACTER_BASE_HEALTH, CHARACTER_HEALTH_MULTIPLIER, ABILIT
 
 from src.actors.actor import Actor, Attributes, CombatSkills
 from src.actors.characters.ancestries import Ancestry
+
 from src.actors.characters.classes.classes import Classes
 from src.actors.characters.classes.marauder import Marauder
+from src.actors.characters.classes.stalker import Stalker
+from src.actors.characters.classes.occultist import Occultist
+from src.actors.characters.classes.penitent import Penitent
+from src.actors.characters.classes.primalist import Primalist
+from src.actors.characters.classes.sentinel import Sentinel
+from src.actors.characters.classes.templar import Templar
+from src.actors.characters.classes.cenobite import Cenobite
+
+
 from src.actors.ability import Ability, PrefTarget
 
 
@@ -235,8 +245,20 @@ class Character(Actor):
         match self.char_class:
             case Classes.MARAUDER:
                 return set(random.sample(list(Marauder), ABILITY_SLOT))
-            case _:
-                raise NotImplementedError()
+            case Classes.SENTINEL:
+                return set(random.sample(list(Sentinel), ABILITY_SLOT))
+            case Classes.STALKER:
+                return set(random.sample(list(Stalker), ABILITY_SLOT))
+            case Classes.TEMPLAR:
+                return set(random.sample(list(Templar), ABILITY_SLOT))
+            case Classes.PRIMALIST:
+                return set(random.sample(list(Primalist), ABILITY_SLOT))
+            case Classes.OCCULTIST:
+                return set(random.sample(list(Occultist), ABILITY_SLOT))
+            case Classes.CENOBITE:
+                return set(random.sample(list(Cenobite), ABILITY_SLOT))
+            case Classes.PENITENT:
+                return set(random.sample(list(Penitent), ABILITY_SLOT))
 
     def to_json(self):
         crafting_skills_data = {}

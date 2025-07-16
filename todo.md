@@ -1,18 +1,5 @@
 # TODO
 
-- Finish a full character creation.
-    1. Implement the Ability and Status classes.
-        1. Each ability needs to be able to change its own priority based on specific conditions from the other actors in the combat. (e.g.: Low enemies increase the priority of skills that target low).
-            - The combat calls all of the active character's abilies' modify_priority function.
-            - The combat calls that character's choose ability function.
-            - The character calls the chose ability's execute function.
-            - The ability resolves.
-            - The combat resets that character's priorities to 1.
-        2. Each ability needs to receive a priority malus if it was used on the last turn. (e.g.: 0.5x)
-            - The character object can track that.
-        3. Then, an ability is chosen with priority as a weight.
-            - Rules defined below.
-        4. Then, the ability targets it's prefered target, or finds one from the other actors in the combat.
 - Implement the seven other classes to the save system.
 - Change const PALETTE to improve display for popups and other layouts.
 - Remove state tracking from the play scene and migrate over to the game state.
