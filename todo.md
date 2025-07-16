@@ -1,6 +1,5 @@
 # TODO
 
-- In the Play Scene, change the header text to the selected character's name.
 - Make an Enum for the Actor Types.
 - Refactor the Charcter & Actor classes to user getters and setters.
 - Finish implementing ability functions for all classes.

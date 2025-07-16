@@ -3,6 +3,14 @@ from enum import Enum
 from src.actors.ability import Ability
 
 
+class ActorType(Enum):
+    NONE = "None"
+    CHARACTER = "Character"
+    MONSTER = "Monster"
+    PUZZLE = "Puzzle"
+    SUMMON = "Summon"
+
+
 class Attributes(Enum):
     """An actor's basic attributes"""
 
@@ -31,7 +39,7 @@ class Actor:
     def __init__(
         self,
         name: str,
-        actor_type: str,
+        actor_type: ActorType,
         health: int,
         armour: int,
         abilities: set,
@@ -68,7 +76,7 @@ class Actor:
         """Changes the actor's health"""
         self.current_health += change
 
-    def get_type(self) -> str:
+    def get_type(self) -> ActorType:
         return self.actor_type
 
     def get_health(self) -> int:
@@ -101,7 +109,7 @@ class Actor:
 
         return {
             "name": self.name,
-            "actor_type": self.actor_type,
+            "actor_type": self.actor_type.value.upper(),
             "max_health": self.max_health,
             "current_health": self.current_health,
             "armour": self.armour,

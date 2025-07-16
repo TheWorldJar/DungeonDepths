@@ -30,6 +30,7 @@ from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.verticalbar import print_vertical_bar
 from src.scenes.compositions.screensize import print_screen_size
 
+from src.actors.actor import ActorType
 from src.actors.characters.classes.classes import Classes, ClassesDescriptions
 from src.actors.characters.character import Character
 
@@ -332,10 +333,8 @@ class PlayEffect(Print):
         self.game = game_state
 
     def process_event(self, event):
-        """
         if self.game.current_sub[0] in (SubScreen.CHAR_CREATION, SubScreen.GUIDE):
             return event
-        """
 
         if hasattr(event, "key_code"):
             self.screen.clear_buffer(0, 0, 0)
@@ -418,7 +417,7 @@ class PlayEffect(Print):
                         x=7,
                         y=line_above + 1,
                     )
-                    if self.game.characters[i - 1].actor_type == "character":
+                    if self.game.characters[i - 1].actor_type == ActorType.CHARACTER:
                         self.screen.print_at(
                             text=f"{self.game.characters[i - 1].char_class.value.upper()}",  # Add the character's current activity later.
                             x=7,
@@ -438,10 +437,11 @@ class PlayEffect(Print):
     def activate_character_creator(self, slot):
         self.current_header = f"{slot}—{self.game.characters[slot - 1].name}"
         if (
-            self.game.characters[slot - 1].actor_type == "None"
+            self.game.characters[slot - 1].actor_type == ActorType.NONE
             and self.game.slots >= slot
         ):
-            self.game.current_sub = ("char_creation", slot)
+            self.game.logger.info("Activating Character Creator...")
+            self.game.current_sub = (SubScreen.CHAR_CREATION, slot)
             self.scene.add_effect(
                 CharacterCreationView(
                     self.screen, self.game, self.game.current_sub[1], self
@@ -452,6 +452,7 @@ class PlayEffect(Print):
         self.scene.add_effect(QuitPopup(self.screen, self.game))
 
     def activate_guide(self):
+        self.game.logger.info("Activating Guide...")
         self.game.current_sub = (SubScreen.GUIDE, 0)
         self.current_header = "Guide"
         self.scene.add_effect(GuideView(self.screen, self.game, self))

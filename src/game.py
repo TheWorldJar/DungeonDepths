@@ -6,6 +6,7 @@ from enum import Enum
 
 from src.const import MAX_CHARACTER_SLOT, START_CHARACTER_SLOT, DEBUG, SAVE_FILE
 
+from src.actors.actor import ActorType
 from src.actors.characters.character import Character
 from src.actors.characters.classes.classes import Classes
 
@@ -41,7 +42,7 @@ class GameState:
         self.current_sub = (SubScreen.DEFAULT, 0)
         self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
         for character in self.characters:
-            character.actor_type = "None"
+            character.actor_type = ActorType.NONE
         self.inventory = []
         self.slots = START_CHARACTER_SLOT
         self.is_empty_save = True
@@ -74,7 +75,7 @@ class GameState:
         self.current_sub = (SubScreen.DEFAULT, 0)
         self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
         for character in self.characters:
-            character.actor_type = "None"
+            character.actor_type = ActorType.NONE
         self.inventory = []
         self.slots = START_CHARACTER_SLOT
         self.is_empty_save = True

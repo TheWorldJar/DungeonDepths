@@ -3,7 +3,7 @@ from enum import Enum
 
 from src.const import CHARACTER_BASE_HEALTH, CHARACTER_HEALTH_MULTIPLIER, ABILITY_SLOT
 
-from src.actors.actor import Actor, Attributes, CombatSkills
+from src.actors.actor import Actor, Attributes, CombatSkills, ActorType
 from src.actors.characters.ancestries import Ancestry
 
 from src.actors.characters.classes.classes import Classes
@@ -113,7 +113,7 @@ class Character(Actor):
 
         # Call parent constructor
         super().__init__(
-            name, "character", health, 0, abilities, attributes, combat_skills
+            name, ActorType.CHARACTER, health, 0, abilities, attributes, combat_skills
         )
 
         # Check for Passive Ability effects
@@ -127,7 +127,7 @@ class Character(Actor):
     def from_save(cls, data: dict):
         new_character = cls(Classes.MARAUDER, "New")
         new_character.name = data["name"]
-        new_character.actor_type = data["actor_type"]
+        new_character.actor_type = ActorType[data["actor_type"]]
         new_character.max_health = data["max_health"]
         new_character.current_health = data["current_health"]
         new_character.armour = data["armour"]
