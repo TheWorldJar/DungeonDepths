@@ -3,7 +3,7 @@ from asciimatics.renderers import FigletText
 from asciimatics.exceptions import NextScene
 from asciimatics.screen import Screen
 
-from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH
+from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, START_SCENE
 
 from .compositions.screensize import print_screen_size
 
@@ -22,8 +22,8 @@ class SettingsEffect(Print):
     def process_event(self, event):
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
-                self.game.current_scene = "Start"
-                raise NextScene("Start")
+                self.game.current_scene = START_SCENE
+                raise NextScene(START_SCENE)
             if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables global exit from this screen.
             if event.key_code in (ord("\n"), ord("\r")):

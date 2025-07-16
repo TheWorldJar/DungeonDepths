@@ -10,6 +10,14 @@ MIN_SCREEN_HEIGHT = 30
 SAVE_PATH = "./save"
 SAVE_FILE = SAVE_PATH + "/save.json"
 
+# Scene Names
+START_SCENE = "Start"
+PLAY_SCENE = "Play"
+LICENSE_SCENE = "License"
+MANAGE_SAVE_SCENE = "Manage"
+SETTINGS_SCENE = "Settings"
+WARRANTY_SCENE = "Warranty"
+
 # Dice Rolls
 DICE_MIN = 1
 DICE_MAX = 6
@@ -46,7 +54,7 @@ PALETTE = {
     "shadow": (Screen.COLOUR_BLACK, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     "disabled": (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     "invalid": (Screen.COLOUR_RED, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-    "label": (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
+    "label": (Screen.COLOUR_WHITE, Screen.A_UNDERLINE, Screen.COLOUR_BLACK),
     "borders": (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     "scroll": (Screen.COLOUR_YELLOW, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     "title": (Screen.COLOUR_RED, Screen.A_BOLD, Screen.COLOUR_BLACK),

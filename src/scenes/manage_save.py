@@ -6,7 +6,13 @@ from asciimatics.exceptions import NextScene
 from asciimatics.screen import Screen
 from asciimatics.widgets import PopUpDialog
 
-from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, SAVE_FILE, PALETTE
+from src.const import (
+    MIN_SCREEN_HEIGHT,
+    MIN_SCREEN_WIDTH,
+    SAVE_FILE,
+    PALETTE,
+    START_SCENE,
+)
 from src.save import set_save_status
 
 from src.scenes.compositions.screensize import print_screen_size
@@ -61,8 +67,8 @@ class ManageEffect(Print):
     def process_event(self, event):
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
-                self.game.current_scene = "Start"
-                raise NextScene("Start")
+                self.game.current_scene = START_SCENE
+                raise NextScene(START_SCENE)
             if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables global exit from this screen.
             if event.key_code in (ord("\n"), ord("\r")):

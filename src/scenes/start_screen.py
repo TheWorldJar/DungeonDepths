@@ -3,7 +3,15 @@ from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene, StopApplication
 from asciimatics.screen import Screen
 
-from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH
+from src.const import (
+    MIN_SCREEN_HEIGHT,
+    MIN_SCREEN_WIDTH,
+    SETTINGS_SCENE,
+    PLAY_SCENE,
+    MANAGE_SAVE_SCENE,
+    WARRANTY_SCENE,
+    LICENSE_SCENE,
+)
 
 from src.save import check_save, load_save, set_save_status
 
@@ -27,26 +35,26 @@ class StartEffect(Print):
     def process_event(self, event):
         if hasattr(event, "key_code"):
             if event.key_code in (ord("s"), ord("S")):
-                self.game.current_scene = "Settings"
-                raise NextScene("Settings")
+                self.game.current_scene = SETTINGS_SCENE
+                raise NextScene(SETTINGS_SCENE)
             if event.key_code in (ord("q"), ord("Q")):
                 raise StopApplication("User quit")
             if event.key_code in (ord("p"), ord("P")):
                 save = check_save(self.game)
                 if save is not None:
                     load_save(self.game, save)
-                self.game.current_scene = "Play"
-                raise NextScene("Play")
+                self.game.current_scene = PLAY_SCENE
+                raise NextScene(PLAY_SCENE)
             if event.key_code in (ord("m"), ord("M")):
                 set_save_status(self.game)
-                self.game.current_scene = "Manage"
-                raise NextScene("Manage")
+                self.game.current_scene = MANAGE_SAVE_SCENE
+                raise NextScene(MANAGE_SAVE_SCENE)
             if event.key_code in (ord("w"), ord("W")):
-                self.game.current_scene = "Warranty"
-                raise NextScene("Warranty")
+                self.game.current_scene = WARRANTY_SCENE
+                raise NextScene(WARRANTY_SCENE)
             if event.key_code in (ord("l"), ord("L")):
-                self.game.current_scene = "License"
-                raise NextScene("License")
+                self.game.current_scene = LICENSE_SCENE
+                raise NextScene(LICENSE_SCENE)
             if event.key_code in (ord("\n"), ord("\r")):
                 return None  # Disables global scene cycling.
         return event

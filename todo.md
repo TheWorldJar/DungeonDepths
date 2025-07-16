@@ -1,13 +1,9 @@
 # TODO
 
-- Implement the seven other classes to the save system.
-- Change const PALETTE to improve display for popups and other layouts.
-- Remove state tracking from the play scene and migrate over to the game state.
-- Put scene names into const file for better tracking across modules.
 - In the Play Scene, change the header text to the selected character's name.
 - Make an Enum for the Actor Types.
 - Refactor the Charcter & Actor classes to user getters and setters.
--Finish implementing ability functions for all classes.
+- Finish implementing ability functions for all classes.
 
 ## Priority Modifers
 

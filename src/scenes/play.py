@@ -19,6 +19,7 @@ from src.const import (
     PALETTE,
     MAX_CHARACTER_SLOT,
     DEBUG,
+    START_SCENE,
 )
 
 from src.save import write_save
@@ -55,8 +56,8 @@ class QuitPopup(PopUpDialog):
         write_save(self.game)
         self.screen.clear_buffer(0, 0, 0)
         self.scene.reset()
-        self.game.current_scene = "Start"
-        raise NextScene("Start")
+        self.game.current_scene = START_SCENE
+        raise NextScene(START_SCENE)
 
     def _cancel(self):
         self.screen.clear_buffer(0, 0, 0)
