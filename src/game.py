@@ -2,10 +2,34 @@ import logging
 import os
 import json
 
+from enum import Enum
+
 from src.const import MAX_CHARACTER_SLOT, START_CHARACTER_SLOT, DEBUG, SAVE_FILE
 
 from src.actors.characters.character import Character
 from src.actors.characters.classes.classes import Classes
+
+
+class SubScreen(Enum):
+    # Global Subs
+    DEFAULT = "Default"
+    QUIT = "Quit"
+
+    # Play Scene Subs
+    CHAR_CREATION = "Char_Creation"
+    GUIDE = "Guide"
+    ACTIVITY_MENU = "Activity_Menu"
+    PARTY_MENU = "Party_Menu"
+    DUNGEON_MENU = "Dungeon_Menu"
+    COMBAT_SCREEN = "Combat_Screen"
+    EQUIP_MENU = "Equip_Menu"
+    COMBAT_TRAIN = "Combat_Train"
+    CRAFTING_MENU = "Crafting_Menu"
+    SECONDARY_TRAIN = "Secondary_Train"
+    INVENTORY = "Inventory"
+    CHAR_DISMISS = "Char_Dismiss"
+
+    # Other Scene Subs Go Here.
 
 
 class GameState:
@@ -14,7 +38,7 @@ class GameState:
     def __init__(self):
         # These values are saved to file.
         self.current_scene = "Start"
-        self.current_sub = ("Default", 0)
+        self.current_sub = (SubScreen.DEFAULT, 0)
         self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
         for character in self.characters:
             character.actor_type = "None"
@@ -47,7 +71,7 @@ class GameState:
 
     def reset(self):
         self.current_scene = "Start"
-        self.current_sub = ("Default", 0)
+        self.current_sub = (SubScreen.DEFAULT, 0)
         self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
         for character in self.characters:
             character.actor_type = "None"

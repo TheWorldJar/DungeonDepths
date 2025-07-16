@@ -23,6 +23,8 @@ from src.const import (
 
 from src.save import write_save
 
+from src.game import SubScreen
+
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.verticalbar import print_vertical_bar
 from src.scenes.compositions.screensize import print_screen_size
@@ -50,7 +52,6 @@ class QuitPopup(PopUpDialog):
             self._cancel()
 
     def _ok(self):
-        self.game.current_sub = ("Default", 0)
         write_save(self.game)
         self.screen.clear_buffer(0, 0, 0)
         self.scene.reset()
@@ -58,7 +59,6 @@ class QuitPopup(PopUpDialog):
         raise NextScene("Start")
 
     def _cancel(self):
-        self.game.current_sub = ("Default", 0)
         self.screen.clear_buffer(0, 0, 0)
 
 
@@ -330,7 +330,7 @@ class PlayEffect(Print):
         self.game = game_state
 
     def process_event(self, event):
-        if self.game.current_sub[0] in ("char_creation", "quit"):
+        if self.game.current_sub[0] in (SubScreen.CHAR_CREATION, SubScreen.GUIDE):
             return event
 
         if hasattr(event, "key_code"):
@@ -344,7 +344,6 @@ class PlayEffect(Print):
             if ord("1") <= event.key_code <= ord(str(MAX_CHARACTER_SLOT)):
                 slot = event.key_code - ord("0")
                 self.activate_character_creator(slot)
-                self.current_header = (f"Character {slot}", slot)
             if event.key_code in (ord("g"), ord("G")):
                 self.activate_guide()
         return event
@@ -416,25 +415,21 @@ class PlayEffect(Print):
                         y=line_above + 1,
                     )
 
-            # Enter a sub-screen.
-            # OPTIONS NEED TO BE ENUMERATED LATER
-            match self.game.current_sub[0]:
-                case "char_creation":
-                    self.scene
-                case "quit":
-                    pass
-                case "default":
-                    pass
-                case _:
-                    self.screen.print_at(
-                        "Default",
-                        50,
-                        (self.screen.height // 2) + 4,
-                        Screen.COLOUR_WHITE,
-                        1,
-                    )
+    def reset(self):
+        super().reset()
+        sub, data = self.game.current_sub
+        match sub:
+            case SubScreen.DEFAULT | SubScreen.GUIDE:
+                self.activate_guide()
+            case SubScreen.CHAR_CREATION:
+                self.activate_character_creator(data)
+            # Other Cases will go here.
 
     def activate_character_creator(self, slot):
+        self.current_header = (
+            f"Character {slot}",
+            slot,
+        )  # Change to Character's Name
         if (
             self.game.characters[slot - 1].actor_type == "None"
             and self.game.slots >= slot
@@ -445,9 +440,9 @@ class PlayEffect(Print):
             )
 
     def activate_quit_confirm(self):
-        self.game.current_sub = ("quit", 1000)
         self.scene.add_effect(QuitPopup(self.screen, self.game))
 
     def activate_guide(self):
-        self.game.current_sub = ("Default", 0)
+        self.game.current_sub = (SubScreen.GUIDE, 0)
+        self.current_header = "Guide"
         self.scene.add_effect(GuideView(self.screen, self.game, self))
