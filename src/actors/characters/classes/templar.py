@@ -1,6 +1,6 @@
 from enum import Enum
 
-from src.const import NO_DURATION, NEXT_TURN_DURATION, SUCCESS_DURATION
+from src.const import NO_DURATION, SUCCESS_DURATION
 
 from src.actors.actor import Actor, Attributes, CombatSkills
 from src.actors.roll import roll

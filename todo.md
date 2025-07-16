@@ -1,6 +1,5 @@
 # TODO
 
-- Implement ability sets for the seven other classes.
 - Finish a full character creation.
     1. Implement the Ability and Status classes.
         1. Each ability needs to be able to change its own priority based on specific conditions from the other actors in the combat. (e.g.: Low enemies increase the priority of skills that target low).
@@ -21,6 +20,7 @@
 - In the Play Scene, change the header text to the selected character's name.
 - Make an Enum for the Actor Types.
 - Refactor the Charcter & Actor classes to user getters and setters.
+-Finish implementing ability functions for all classes.
 
 ## Priority Modifers
 
