@@ -46,6 +46,15 @@ def load_save(game_state, save):
     scene_data, sub_data, char_data, inv_data, slot_data = validate_save(
         game_state, save
     )
+    if (
+        scene_data is None
+        or sub_data is None
+        or char_data is None
+        or inv_data is None
+        or slot_data is None
+    ):
+        game_state.logger.info("Something is wrong with this save file!")
+        return None
     game_state.logger.info("Loading Save...")
     game_state.current_scene = scene_data
     game_state.current_sub = sub_data
@@ -63,9 +72,13 @@ def validate_save(game_state, save):
     char_data = []
     try:
         scene_data = save["current_scene"]
-        sub, data = save["current_sub"].items()
-        sub_enum_member = SubScreen[sub]
-        sub_data = (sub_enum_member, data)
+        sub = save["current_sub"]
+        sub_enum_member = SubScreen[sub[0]]
+        sub_data = (sub_enum_member, sub[1])
+        if DEBUG:
+            game_state.logger.debug(sub)
+            game_state.logger.debug(sub_enum_member)
+            game_state.logger.debug(sub_data)
         slot_data = save["slots"]
         for i in range(0, slot_data):
             char_save_data = save["characters"][str(i)]

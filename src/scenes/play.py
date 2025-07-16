@@ -53,7 +53,8 @@ class QuitPopup(PopUpDialog):
             self._cancel()
 
     def _ok(self):
-        write_save(self.game)
+        if not self.game.is_empty_save:
+            write_save(self.game)
         self.screen.clear_buffer(0, 0, 0)
         self.scene.reset()
         self.game.current_scene = START_SCENE
@@ -122,12 +123,11 @@ GUIDE
                 slot = event.key_code - ord("0")
                 self.scene.remove_effect(self)
                 self.parent.activate_character_creator(slot)
-                self.parent.current_header = (f"Character {slot}", slot)
         return event
 
 
 class CharacterCreationView(Frame):
-    def __init__(self, screen, game_state, slot):
+    def __init__(self, screen, game_state, slot, parent):
         super().__init__(
             screen,
             screen.height - 4,  # The top bar occupies the first 4 lines.
@@ -143,6 +143,7 @@ class CharacterCreationView(Frame):
         self.palette = PALETTE
         self.game = game_state
         self.slot = slot
+        self.parent = parent
 
         layout = Layout([1, 1], fill_frame=True, gutter=1)
         self.add_layout(layout)
@@ -224,14 +225,14 @@ class CharacterCreationView(Frame):
             self.game.logger.debug(self.game.characters[self.slot - 1].to_json())
         if self.game.is_empty_save:
             self.game.is_empty_save = False
-        self.game.current_sub = ("Default", 0)
         self.scene.remove_effect(self)
         self.screen.clear_buffer(0, 0, 0)
+        self.parent.activate_guide()
 
     def _cancel(self):
-        self.game.current_sub = ("Default", 0)
         self.scene.remove_effect(self)
         self.screen.clear_buffer(0, 0, 0)
+        self.parent.activate_guide()
 
     def process_event(self, event):
         if hasattr(event, "key_code"):
@@ -327,12 +328,14 @@ class PlayEffect(Print):
             y=screen.height - 4,
         )
         self.play_y = self.screen.height - 4
-        self.current_header = ("Dungeon Depths", 0)
+        self.current_header = "Dungeon Depths"
         self.game = game_state
 
     def process_event(self, event):
+        """
         if self.game.current_sub[0] in (SubScreen.CHAR_CREATION, SubScreen.GUIDE):
             return event
+        """
 
         if hasattr(event, "key_code"):
             self.screen.clear_buffer(0, 0, 0)
@@ -356,7 +359,7 @@ class PlayEffect(Print):
         ):
             print_screen_size(self)
         else:
-            print_top_bar(self, self.current_header[0])
+            print_top_bar(self, self.current_header)
             print_vertical_bar(self, self.screen.width // 5, self.screen.height)
 
             horizontal_sep = "=" * ((self.screen.width // 5) - 1)
@@ -433,17 +436,16 @@ class PlayEffect(Print):
             # Other Cases will go here.
 
     def activate_character_creator(self, slot):
-        self.current_header = (
-            f"Character {slot}",
-            slot,
-        )  # Change to Character's Name
+        self.current_header = f"{slot}—{self.game.characters[slot - 1].name}"
         if (
             self.game.characters[slot - 1].actor_type == "None"
             and self.game.slots >= slot
         ):
             self.game.current_sub = ("char_creation", slot)
             self.scene.add_effect(
-                CharacterCreationView(self.screen, self.game, self.game.current_sub[1])
+                CharacterCreationView(
+                    self.screen, self.game, self.game.current_sub[1], self
+                )
             )
 
     def activate_quit_confirm(self):
