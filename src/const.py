@@ -37,6 +37,8 @@ MARAUDER_BASE_REGEN = 1
 # Effect Durations
 NO_DURATION = float("inf")
 END_DURATION = 0
+SUCCESS_DURATION = -1
+NEXT_TURN_DURATION = float("-inf")
 
 # Colour Palette
 PALETTE = {

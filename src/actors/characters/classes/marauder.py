@@ -1,6 +1,11 @@
 from enum import Enum
 
-from src.const import MARAUDER_BASE_REGEN, MARAUDER_HEALTH_MULTIPLIER, NO_DURATION
+from src.const import (
+    MARAUDER_BASE_REGEN,
+    MARAUDER_HEALTH_MULTIPLIER,
+    NO_DURATION,
+    SUCCESS_DURATION,
+)
 
 from src.actors.actor import Actor, Attributes, CombatSkills
 from src.actors.roll import roll
@@ -14,9 +19,7 @@ def strongman(source: Actor):
 
 
 def regenerate(source: Actor):
-    source.change_health(
-        MARAUDER_BASE_REGEN + roll(source.attributes[Attributes.RESILIENCE])[0]
-    )
+    raise NotImplementedError
 
 
 def cleave(source: Actor, target: list[Actor]):
@@ -103,7 +106,7 @@ class Marauder(Enum):
         "has_target": False,
         "func": regenerate,
         "pref_targ": PrefTarget.SELF,
-        "duration": NO_DURATION,
+        "duration": SUCCESS_DURATION,
     }
     CLEAVE = {
         "name": "cleave",
