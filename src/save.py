@@ -3,7 +3,7 @@ import json
 
 from src.const import SAVE_FILE, SAVE_PATH, DEBUG
 
-from src.game import GameState
+from src.game import SubScreen
 from src.actors.characters.character import Character
 
 
@@ -63,7 +63,9 @@ def validate_save(game_state, save):
     char_data = []
     try:
         scene_data = save["current_scene"]
-        sub_data = save["current_sub"]
+        sub, data = save["current_sub"].items()
+        sub_enum_member = SubScreen[sub]
+        sub_data = (sub_enum_member, data)
         slot_data = save["slots"]
         for i in range(0, slot_data):
             char_save_data = save["characters"][str(i)]
