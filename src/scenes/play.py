@@ -414,6 +414,12 @@ class PlayEffect(Print):
                         x=7,
                         y=line_above + 1,
                     )
+                    if self.game.characters[i - 1].actor_type == "character":
+                        self.screen.print_at(
+                            text=f"{self.game.characters[i - 1].char_class.value.upper()}",  # Add the character's current activity later.
+                            x=7,
+                            y=line_above + 2,
+                        )
 
     def reset(self):
         super().reset()

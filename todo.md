@@ -1,7 +1,5 @@
 # TODO
 
-- Enumerate the sub-screen options for the Play Scene.
-- Write the character's class under its name in the character menu.
 - Implement ability sets for the seven other classes.
 - Finish a full character creation.
     1. Implement the Ability and Status classes.
@@ -21,6 +19,7 @@
 - Remove state tracking from the play scene and migrate over to the game state.
 - Put scene names into const file for better tracking across modules.
 - In the Play Scene, change the header text to the selected character's name.
+- Make an Enum for the Actor Types.
 
 ## Priority Modifers
 
