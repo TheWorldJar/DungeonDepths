@@ -169,5 +169,9 @@ class ManageEffect(Print):
                 colour_map=colour_map,
             )
 
+    def reset(self):
+        super().reset()
+        set_save_status(self.game)
+
     def activate_delete_confirm(self):
         self.scene.add_effect(DeletePopup(self.screen, self.game))
