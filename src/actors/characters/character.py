@@ -147,8 +147,20 @@ class Character(Actor):
             match new_character.char_class:
                 case Classes.MARAUDER:
                     ability_enum_member = Marauder[ability_name]
-                case _:
-                    raise NotImplementedError
+                case Classes.SENTINEL:
+                    ability_enum_member = Sentinel[ability_name]
+                case Classes.STALKER:
+                    ability_enum_member = Stalker[ability_name]
+                case Classes.TEMPLAR:
+                    ability_enum_member = Templar[ability_name]
+                case Classes.PRIMALIST:
+                    ability_enum_member = Primalist[ability_name]
+                case Classes.OCCULTIST:
+                    ability_enum_member = Occultist[ability_name]
+                case Classes.CENOBITE:
+                    ability_enum_member = Cenobite[ability_name]
+                case Classes.PENITENT:
+                    ability_enum_member = Penitent[ability_name]
             ability_data = ability_enum_member.value
             new_character.abilities.add(
                 Ability(
