@@ -30,6 +30,7 @@ def cleave(source: Actor, target: list[Actor]):
         )[0]
         defence = roll(t.combat_skills[CombatSkills.DEFENCE])[0] + t.get_armour()
 
+        # I don't know about this
         for e in source.effects:
             if hasattr(e, "empower") or hasattr(e, "weakness"):
                 attack += e.value

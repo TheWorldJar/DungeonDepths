@@ -8,15 +8,11 @@ from src.actors.ability import PrefTarget
 
 
 def dextrous(source: Actor):
-    source.attributes[Attributes.DEXTERITY] += (
-        source.attributes[Attributes.PERCEPTION] // 3
-    )
+    raise NotImplementedError
 
 
 def perceptive(source: Actor):
-    source.attributes[Attributes.PERCEPTION] += (
-        source.attributes[Attributes.DEXTERITY] // 3
-    )
+    raise NotImplementedError
 
 
 def avoidance(source: Actor):
