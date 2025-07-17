@@ -4,6 +4,7 @@ from asciimatics.exceptions import NextScene
 from asciimatics.screen import Screen
 
 from src.const import MIN_SCREEN_WIDTH, MIN_SCREEN_HEIGHT, START_SCENE
+from src.game import GameState
 
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.screensize import print_screen_size
@@ -12,7 +13,7 @@ from src.scenes.compositions.screensize import print_screen_size
 class LicenseEffect(Print):
     """The Game's License Information"""
 
-    def __init__(self, screen, game_state):
+    def __init__(self, screen, game_state: GameState):
         self.game = game_state
         preamble = """
                       GNU GENERAL PUBLIC LICENSE
@@ -33,7 +34,7 @@ class LicenseEffect(Print):
     def process_event(self, event):
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
-                self.game.current_scene = START_SCENE
+                self.game.set_scene(START_SCENE)
                 raise NextScene(START_SCENE)
             if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables global exit from this screen.

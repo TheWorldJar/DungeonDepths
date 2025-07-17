@@ -12,6 +12,7 @@ from src.const import (
     WARRANTY_SCENE,
     LICENSE_SCENE,
 )
+from src.game import GameState
 
 from src.save import check_save, load_save, set_save_status
 
@@ -22,7 +23,7 @@ from src.scenes.compositions.screensize import print_screen_size
 class StartEffect(Print):
     """The Game's Start Screen"""
 
-    def __init__(self, screen, game_state):
+    def __init__(self, screen, game_state: GameState):
         self.game = game_state
 
         # This is only for initilization.
@@ -35,7 +36,7 @@ class StartEffect(Print):
     def process_event(self, event):
         if hasattr(event, "key_code"):
             if event.key_code in (ord("s"), ord("S")):
-                self.game.current_scene = SETTINGS_SCENE
+                self.game.set_scene(SETTINGS_SCENE)
                 raise NextScene(SETTINGS_SCENE)
             if event.key_code in (ord("q"), ord("Q")):
                 raise StopApplication("User quit")
@@ -43,17 +44,17 @@ class StartEffect(Print):
                 save = check_save(self.game)
                 if save is not None:
                     load_save(self.game, save)
-                self.game.current_scene = PLAY_SCENE
+                self.game.set_scene(PLAY_SCENE)
                 raise NextScene(PLAY_SCENE)
             if event.key_code in (ord("m"), ord("M")):
                 set_save_status(self.game)
-                self.game.current_scene = MANAGE_SAVE_SCENE
+                self.game.set_scene(MANAGE_SAVE_SCENE)
                 raise NextScene(MANAGE_SAVE_SCENE)
             if event.key_code in (ord("w"), ord("W")):
-                self.game.current_scene = WARRANTY_SCENE
+                self.game.set_scene(WARRANTY_SCENE)
                 raise NextScene(WARRANTY_SCENE)
             if event.key_code in (ord("l"), ord("L")):
-                self.game.current_scene = LICENSE_SCENE
+                self.game.set_scene(LICENSE_SCENE)
                 raise NextScene(LICENSE_SCENE)
             if event.key_code in (ord("\n"), ord("\r")):
                 return None  # Disables global scene cycling.

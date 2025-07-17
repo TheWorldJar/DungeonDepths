@@ -3,7 +3,8 @@ from asciimatics.renderers import SpeechBubble
 from asciimatics.exceptions import NextScene
 from asciimatics.screen import Screen
 
-from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH
+from src.const import MIN_SCREEN_HEIGHT, MIN_SCREEN_WIDTH, START_SCENE
+from src.game import GameState
 
 from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.screensize import print_screen_size
@@ -12,7 +13,7 @@ from src.scenes.compositions.screensize import print_screen_size
 class WarrantyEffect(Print):
     """The Game's Warranty Information"""
 
-    def __init__(self, screen, game_state):
+    def __init__(self, screen, game_state: GameState):
         warranty = """THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
 APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
 HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY
@@ -51,7 +52,8 @@ For more information, please consult the LICENSE file found in the root of this 
     def process_event(self, event):
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
-                raise NextScene("Start")
+                self.game.set_scene(START_SCENE)
+                raise NextScene(START_SCENE)
             if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables gloabl exit from this screen.
             if event.key_code in (ord("\n"), ord("\r")):

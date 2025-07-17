@@ -13,6 +13,7 @@ from src.const import (
     PALETTE,
     START_SCENE,
 )
+from src.game import GameState
 from src.save import set_save_status
 
 from src.scenes.compositions.screensize import print_screen_size
@@ -20,7 +21,7 @@ from src.scenes.compositions.topbar import print_top_bar
 
 
 class DeletePopup(PopUpDialog):
-    def __init__(self, screen, game_state):
+    def __init__(self, screen, game_state: GameState):
         self.game = game_state
         super().__init__(
             screen,
@@ -39,11 +40,11 @@ class DeletePopup(PopUpDialog):
 
     def _ok(self):
         try:
-            self.game.logger.info("Deleting Save File...")
+            self.game.info_log("Deleting Save File...")
             os.remove(SAVE_FILE)
-            self.game.logger.info("Save File Deleted!")
+            self.game.info_log("Save File Deleted!")
         except Exception as e:
-            self.game.logger.warning(f"Unknown Exception While Deleting Save File: {e}")
+            self.game.warn_log(f"Unknown Exception While Deleting Save File: {e}")
         set_save_status(self.game)
         self.screen.clear_buffer(0, 0, 0)
 
@@ -54,7 +55,7 @@ class DeletePopup(PopUpDialog):
 class ManageEffect(Print):
     """The Game's Manage Savegame Screen"""
 
-    def __init__(self, screen, game_state):
+    def __init__(self, screen, game_state: GameState):
         self.game = game_state
 
         # This is only for initilization.
@@ -67,7 +68,7 @@ class ManageEffect(Print):
     def process_event(self, event):
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
-                self.game.current_scene = START_SCENE
+                self.game.set_scene(START_SCENE)
                 raise NextScene(START_SCENE)
             if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables global exit from this screen.

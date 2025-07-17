@@ -4,7 +4,18 @@ import json
 
 from enum import Enum
 
-from src.const import MAX_CHARACTER_SLOT, START_CHARACTER_SLOT, DEBUG, SAVE_FILE
+from src.const import (
+    MAX_CHARACTER_SLOT,
+    START_CHARACTER_SLOT,
+    DEBUG,
+    SAVE_FILE,
+    START_SCENE,
+    PLAY_SCENE,
+    SETTINGS_SCENE,
+    WARRANTY_SCENE,
+    LICENSE_SCENE,
+    MANAGE_SAVE_SCENE,
+)
 
 from src.actors.actor import ActorType
 from src.actors.characters.character import Character
@@ -38,13 +49,13 @@ class GameState:
 
     def __init__(self):
         # These values are saved to file.
-        self.current_scene = "Start"
-        self.current_sub = (SubScreen.DEFAULT, 0)
-        self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
-        for character in self.characters:
+        self._current_scene = START_SCENE
+        self._current_sub = (SubScreen.DEFAULT, 0)
+        self._characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
+        for character in self._characters:
             character.actor_type = ActorType.NONE
-        self.inventory = []
-        self.slots = START_CHARACTER_SLOT
+        self._inventory = []
+        self._slots = START_CHARACTER_SLOT
         self.is_empty_save = True
 
         # These values are not saved to file.
@@ -57,7 +68,7 @@ class GameState:
                 level=logging.DEBUG,
                 format="%(asctime)s - %(levelname)s - %(message)s",
             )
-            self.logger = logging.getLogger("game_state")
+            self._logger = logging.getLogger("game_state")
         else:
             if os.path.exists(os.path.realpath("debug.log")):
                 os.remove(os.path.realpath("debug.log"))
@@ -67,33 +78,33 @@ class GameState:
                 level=logging.INFO,
                 format="%(asctime)s - %(levelname)s - %(message)s",
             )
-            self.logger = logging.getLogger("game_state")
-        self.save_status = "Empty"
+            self._logger = logging.getLogger("game_state")
+        self.save_status = "Empty"  # Helper functions in the Save module
 
     def reset(self):
-        self.current_scene = "Start"
-        self.current_sub = (SubScreen.DEFAULT, 0)
-        self.characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
-        for character in self.characters:
+        self.set_scene(START_SCENE)
+        self.set_sub((SubScreen.DEFAULT, 0))
+        self._characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
+        for character in self._characters:
             character.actor_type = ActorType.NONE
-        self.inventory = []
-        self.slots = START_CHARACTER_SLOT
+        self._inventory = []
+        self.set_slots(START_CHARACTER_SLOT)
         self.is_empty_save = True
         self.save_status = "Empty"
 
     def save_to_json(self):
-        current_scene = {"current_scene": self.current_scene}
+        current_scene = {"current_scene": self.get_scene()}
         current_sub = {
-            "current_sub": [self.current_sub[0].value.upper(), self.current_sub[1]]
+            "current_sub": [self.get_sub_screen().value.upper(), self.get_sub_data()]
         }
         char_in_slot = {}
-        for i, c in enumerate(self.characters):
+        for i, c in enumerate(self.get_all_characters()):
             char_in_slot[i] = c.to_json()
         characters = {"characters": char_in_slot}
 
         # Placeholder for inventory
-        inventory = {"inventory": self.inventory}
-        slots = {"slots": self.slots}
+        inventory = {"inventory": self.get_all_inventory()}
+        slots = {"slots": self.get_slots()}
         empty_save = {"is_empty_save": self.is_empty_save}
 
         save_data = {
@@ -104,8 +115,86 @@ class GameState:
             **slots,
             **empty_save,
         }
-        if DEBUG:
-            self.logger.debug(save_data)
+        self.debug_log(save_data)
 
         with open(SAVE_FILE, "w", encoding="utf-8") as s:
             json.dump(save_data, s, indent=4)
+
+    def debug_log(self, log: str):
+        if DEBUG:
+            self._logger.debug(log)
+
+    def info_log(self, log: str):
+        self._logger.info(log)
+
+    def warn_log(self, log: str):
+        self._logger.warning(log)
+
+    def err_log(self, log: str):
+        self._logger.error(log)
+
+    # Nothing but getters and setters below this line
+
+    # _current Scene
+    def get_scene(self) -> str:
+        return self._current_scene
+
+    def set_scene(self, scene: str):
+        if scene not in (
+            START_SCENE,
+            PLAY_SCENE,
+            SETTINGS_SCENE,
+            MANAGE_SAVE_SCENE,
+            WARRANTY_SCENE,
+            LICENSE_SCENE,
+        ):
+            self.warn_log("Unknown Scene: Switching to Main Menu Instead...")
+            self._current_scene = START_SCENE
+        else:
+            self._current_scene = scene
+
+    # _current Sub
+    def get_sub(self) -> tuple[SubScreen, int]:
+        return self._current_sub
+
+    def get_sub_screen(self) -> SubScreen:
+        return self._current_sub[0]
+
+    def get_sub_data(self) -> int:
+        return self._current_sub[1]
+
+    def set_sub(self, sub: tuple[SubScreen, int]):
+        self._current_sub = sub
+
+    # _characters
+    def get_character(self, slot: int) -> Character:
+        return self._characters[slot]
+
+    def get_all_characters(self) -> list[Character]:
+        return self._characters
+
+    def set_character(self, character: Character, slot: int):
+        self._characters[slot] = character
+
+    # _inventory
+    # Update when the rest of the inventory system is implemented
+    def get_item(self, slot: int):
+        return self._inventory[slot]
+
+    def get_all_inventory(self):
+        return self._inventory
+
+    def set_item(self, item, slot):
+        self._inventory[slot] = item
+
+    def add_item(self, item):
+        self._inventory.append(item)
+
+    def remove_item(self, slot):
+        self._inventory.pop(slot)
+
+    def get_slots(self) -> int:
+        return self._slots
+
+    def set_slots(self, slots: int):
+        self._slots = slots

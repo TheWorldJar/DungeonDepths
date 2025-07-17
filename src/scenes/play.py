@@ -18,10 +18,9 @@ from src.const import (
     MIN_SCREEN_WIDTH,
     PALETTE,
     MAX_CHARACTER_SLOT,
-    DEBUG,
     START_SCENE,
 )
-
+from src.game import GameState
 from src.save import write_save
 
 from src.game import SubScreen
@@ -36,7 +35,7 @@ from src.actors.characters.character import Character
 
 
 class QuitPopup(PopUpDialog):
-    def __init__(self, screen, game_state):
+    def __init__(self, screen, game_state: GameState):
         self.game = game_state
         super().__init__(
             screen,
@@ -58,7 +57,7 @@ class QuitPopup(PopUpDialog):
             write_save(self.game)
         self.screen.clear_buffer(0, 0, 0)
         self.scene.reset()
-        self.game.current_scene = START_SCENE
+        self.game.set_scene(START_SCENE)
         raise NextScene(START_SCENE)
 
     def _cancel(self):
@@ -66,7 +65,7 @@ class QuitPopup(PopUpDialog):
 
 
 class GuideView(Frame):
-    def __init__(self, screen, game_state, parent):
+    def __init__(self, screen, game_state: GameState, parent):
         super().__init__(
             screen,
             screen.height - 4,  # The top bar occupies the first 4 lines.
@@ -128,7 +127,7 @@ GUIDE
 
 
 class CharacterCreationView(Frame):
-    def __init__(self, screen, game_state, slot, parent):
+    def __init__(self, screen, game_state: GameState, slot, parent):
         super().__init__(
             screen,
             screen.height - 4,  # The top bar occupies the first 4 lines.
@@ -221,9 +220,10 @@ class CharacterCreationView(Frame):
         selected_class = self.data.get("character_class")
         if not selected_class:
             selected_class = Classes.MARAUDER
-        self.game.characters[self.slot - 1] = Character(selected_class, character_name)
-        if DEBUG:
-            self.game.logger.debug(self.game.characters[self.slot - 1].to_json())
+        self.game.set_character(
+            Character(selected_class, character_name), self.slot - 1
+        )
+        self.game.debug_log(self.game.get_character(self.slot - 1).to_json())
         if self.game.is_empty_save:
             self.game.is_empty_save = False
         self.scene.remove_effect(self)
@@ -320,7 +320,7 @@ class CharacterCreationView(Frame):
 class PlayEffect(Print):
     """The Game's Play Screen"""
 
-    def __init__(self, screen, game_state):
+    def __init__(self, screen, game_state: GameState):
 
         # This is only used for initialization and isn't displayed during normal operations.
         super().__init__(
@@ -333,7 +333,7 @@ class PlayEffect(Print):
         self.game = game_state
 
     def process_event(self, event):
-        if self.game.current_sub[0] in (SubScreen.CHAR_CREATION, SubScreen.GUIDE):
+        if self.game.get_sub_screen() in (SubScreen.CHAR_CREATION, SubScreen.GUIDE):
             return event
 
         if hasattr(event, "key_code"):
@@ -412,21 +412,22 @@ class PlayEffect(Print):
                         y=line_above + 1,
                     )
                 else:
+                    chara = self.game.get_character(i - 1)
                     self.screen.print_at(
-                        text=f"{self.game.characters[i - 1].name}",
+                        text=f"{chara.name}",
                         x=7,
                         y=line_above + 1,
                     )
-                    if self.game.characters[i - 1].actor_type == ActorType.CHARACTER:
+                    if chara.actor_type == ActorType.CHARACTER:
                         self.screen.print_at(
-                            text=f"{self.game.characters[i - 1].char_class.value.upper()}",  # Add the character's current activity later.
+                            text=f"{chara.char_class.value.upper()}",  # Add the character's current activity later.
                             x=7,
                             y=line_above + 2,
                         )
 
     def reset(self):
         super().reset()
-        sub, data = self.game.current_sub
+        sub, data = self.game.get_sub()
         match sub:
             case SubScreen.DEFAULT | SubScreen.GUIDE:
                 self.activate_guide()
@@ -435,16 +436,14 @@ class PlayEffect(Print):
             # Other Cases will go here.
 
     def activate_character_creator(self, slot):
-        self.current_header = f"{slot}—{self.game.characters[slot - 1].name}"
-        if (
-            self.game.characters[slot - 1].actor_type == ActorType.NONE
-            and self.game.slots >= slot
-        ):
-            self.game.logger.info("Activating Character Creator...")
-            self.game.current_sub = (SubScreen.CHAR_CREATION, slot)
+        chara = self.game.get_character(slot - 1)
+        self.current_header = f"{slot}—{chara.name}"
+        if chara.actor_type == ActorType.NONE and self.game.slots >= slot:
+            self.game.info_log("Activating Character Creator...")
+            self.game.set_sub((SubScreen.CHAR_CREATION, slot))
             self.scene.add_effect(
                 CharacterCreationView(
-                    self.screen, self.game, self.game.current_sub[1], self
+                    self.screen, self.game, self.game.get_sub_data(), self
                 )
             )
 
@@ -452,7 +451,7 @@ class PlayEffect(Print):
         self.scene.add_effect(QuitPopup(self.screen, self.game))
 
     def activate_guide(self):
-        self.game.logger.info("Activating Guide...")
-        self.game.current_sub = (SubScreen.GUIDE, 0)
+        self.game.info_log("Activating Guide...")
+        self.game.set_sub((SubScreen.GUIDE, 0))
         self.current_header = "Guide"
         self.scene.add_effect(GuideView(self.screen, self.game, self))
