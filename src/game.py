@@ -151,6 +151,7 @@ class GameState:
             self.warn_log("Unknown Scene: Switching to Main Menu Instead...")
             self._current_scene = START_SCENE
         else:
+            self.debug_log(f"Setting Current Scene: {scene}")
             self._current_scene = scene
 
     # _current Sub
@@ -164,6 +165,7 @@ class GameState:
         return self._current_sub[1]
 
     def set_sub(self, sub: tuple[SubScreen, int]):
+        self.debug_log(f"Setting Current Sub: {sub}")
         self._current_sub = sub
 
     # _characters
@@ -174,6 +176,7 @@ class GameState:
         return self._characters
 
     def set_character(self, character: Character, slot: int):
+        self.debug_log(f"Setting Character[{slot}]: {Character}")
         self._characters[slot] = character
 
     # _inventory
@@ -185,16 +188,21 @@ class GameState:
         return self._inventory
 
     def set_item(self, item, slot):
+        self.debug_log(f"Setting Inventory[{slot}]: {item}")
         self._inventory[slot] = item
 
     def add_item(self, item):
+        self.debug_log(f"Adding to Inventory: {item}")
         self._inventory.append(item)
 
     def remove_item(self, slot):
+        self.debug_log(f"Removing Inventory[{slot}]")
         self._inventory.pop(slot)
 
+    # _slots
     def get_slots(self) -> int:
         return self._slots
 
     def set_slots(self, slots: int):
+        self.debug_log(f"Setting Slots: {slots}")
         self._slots = slots
