@@ -93,7 +93,7 @@ class Sentinel(Enum):
         "duration": NO_DURATION,
     }
     PRECISE_STRIKE = {
-        "name": "preceise_strike",
+        "name": "precise_strike",
         "is_active": True,
         "has_target": True,
         "func": precise_strike,
