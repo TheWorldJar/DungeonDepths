@@ -405,7 +405,7 @@ class PlayEffect(Print):
 
                 # Writes a buy offer if the slot is above the current maximum slot.
                 # Otherwise, writes the character's name.
-                if i > self.game.slots:
+                if i > self.game.get_slots():
                     self.screen.print_at(
                         text="Purchase: 200 Silver",  # Placeholder
                         x=7,
@@ -418,9 +418,9 @@ class PlayEffect(Print):
                         x=7,
                         y=line_above + 1,
                     )
-                    if chara.actor_type == ActorType.CHARACTER:
+                    if chara.get_actor_type() == ActorType.CHARACTER:
                         self.screen.print_at(
-                            text=f"{chara.get_char_class().value.upper()}",  # Add the character's current activity later.
+                            text=f"{chara.get_char_class().name}",  # Add the character's current activity later.
                             x=7,
                             y=line_above + 2,
                         )
@@ -437,8 +437,8 @@ class PlayEffect(Print):
 
     def activate_character_creator(self, slot):
         chara = self.game.get_character(slot - 1)
-        self.current_header = f"{slot}—{chara.name}"
-        if chara.actor_type == ActorType.NONE and self.game.slots >= slot:
+        self.current_header = f"{slot}—{chara.get_name()}"
+        if chara.get_actor_type() == ActorType.NONE and self.game.get_slots() >= slot:
             self.game.info_log("Activating Character Creator...")
             self.game.set_sub((SubScreen.CHAR_CREATION, slot))
             self.scene.add_effect(
