@@ -27,11 +27,11 @@ def inspire(source: Actor, target: list[Actor]):
     for t in target:
         heal = (
             roll(
-                source.attributes[Attributes.RESILIENCE]
-                + source.combat_skills[CombatSkills.DEFENCE]
+                source.get_attribute(Attributes.RESILIENCE)
+                + source.get_combat_skill(CombatSkills.DEFENCE)
             )[0]
         ) // 2
-        t.change_health(heal)
+        t.change_current_health(heal)
 
 
 def punish(source: Actor, target: Actor):
@@ -44,11 +44,11 @@ def transferance(source: Actor, target: Actor):
 
 def martyr(source: Actor, target: Actor):
     heal = roll(
-        source.attributes[Attributes.RESILIENCE]
-        + source.combat_skills[CombatSkills.DEFENCE]
+        source.get_attribute(Attributes.RESILIENCE)
+        + source.get_combat_skill(CombatSkills.DEFENCE)
     )[0]
-    target.change_health(heal)
-    source.change_health(-(heal))
+    target.change_current_health(heal)
+    source.change_current_health(-(heal))
 
 
 class Penitent(Enum):

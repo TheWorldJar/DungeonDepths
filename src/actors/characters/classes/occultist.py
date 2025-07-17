@@ -17,10 +17,10 @@ def glass_cannon(source: Actor):
 
 def reconstitute(source: Actor, target: Actor):
     heal = roll(
-        source.attributes[Attributes.WILLPOWER]
-        + source.combat_skills[CombatSkills.MAGIC]
+        source.get_attribute(Attributes.WILLPOWER)
+        + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
-    target.change_health(heal)
+    target.change_current_health(heal)
 
 
 def dark_pact(source: Actor, target: Actor):
@@ -33,32 +33,32 @@ def suppress(source: Actor, target: Actor):
 
 def eldritch_blast(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.INTELLIGENCE]
-        + source.combat_skills[CombatSkills.MAGIC]
+        source.get_attribute(Attributes.INTELLIGENCE)
+        + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
     defence = (
-        roll(target.combat_skills[CombatSkills.DEFENCE])[0]
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
-        + (target.attributes[Attributes.INTELLIGENCE] // 3)
+        + (target.get_attribute(Attributes.INTELLIGENCE) // 3)
     )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(
-            -(1 + delta + (source.attributes[Attributes.INTELLIGENCE] // 3))
+        target.change_current_health(
+            -(1 + delta + (source.get_attribute(Attributes.INTELLIGENCE) // 3))
         )
 
 
 def shadow_pool(source: Actor, target: list[Actor]):
     for t in target:
         attack = roll(
-            source.attributes[Attributes.STRENGTH]
-            + source.combat_skills[CombatSkills.MELEE]
+            source.get_attribute(Attributes.STRENGTH)
+            + source.get_combat_skill(CombatSkills.MELEE)
         )[0]
-        defence = roll(t.combat_skills[CombatSkills.DEFENCE])[0] + t.get_armour()
+        defence = roll(t.get_combat_skill(CombatSkills.DEFENCE))[0] + t.get_armour()
 
         delta = attack - defence
         if delta >= 0:
-            t.change_health(-(1 + (delta // 2)))
+            t.change_current_health(-(1 + (delta // 2)))
 
 
 def arcane_bomb(source: Actor, target: Actor):

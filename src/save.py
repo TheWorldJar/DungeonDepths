@@ -2,12 +2,13 @@ import os
 import json
 
 from src.const import SAVE_FILE, SAVE_PATH, START_SCENE, START_CHARACTER_SLOT
+from src.game import GameState
 
 from src.game import SubScreen
 from src.actors.characters.character import Character
 
 
-def check_save(game_state) -> str | None:
+def check_save(game_state: GameState) -> str | None:
     # If there is no save file directory, create it.
     if not os.path.exists(SAVE_PATH) or not os.path.isdir(SAVE_PATH):
         game_state.info_log("Creating Save Folder...")
@@ -38,7 +39,7 @@ def check_save(game_state) -> str | None:
     return save
 
 
-def load_save(game_state, save):
+def load_save(game_state: GameState, save):
     empty_save_data = is_empty_save(game_state, save)
     if empty_save_data:
         game_state.reset()
@@ -53,19 +54,21 @@ def load_save(game_state, save):
         or inv_data is None
         or slot_data is None
     ):
-        game_state.info_log("Something is wrong with this save file!")
+        game_state.info_log("Something is wrong with the save's data!")
         return None
     game_state.info_log("Loading Save...")
-    game_state.current_scene = scene_data
-    game_state.current_sub = sub_data
-    game_state.characters = char_data
-    game_state.inventory = inv_data
-    game_state.slots = slot_data
+    game_state.set_scene(scene_data)
+    game_state.set_sub(sub_data)
+    for i, c in enumerate(char_data):
+        game_state.set_character(c, i)
+    for item in inv_data:
+        game_state.add_item(item)
+    game_state.set_slots(slot_data)
     game_state.is_empty_save = empty_save_data
     game_state.info_log("Finished Loading Save")
 
 
-def validate_save(game_state, save):
+def validate_save(game_state: GameState, save):
     game_state.info_log("Validating Save...")
     game_state.debug_log(save)
     char_data = []
@@ -87,7 +90,7 @@ def validate_save(game_state, save):
     return scene_data, sub_data, char_data, inv_data, slot_data
 
 
-def is_empty_save(game_state, save):
+def is_empty_save(game_state: GameState, save):
     try:
         empty_save_data = save["is_empty_save"]
     except KeyError:
@@ -98,7 +101,7 @@ def is_empty_save(game_state, save):
     return empty_save_data
 
 
-def set_save_status(game_state):
+def set_save_status(game_state: GameState):
     save_status = "Empty"
     save = check_save(game_state)
     if save is None:
@@ -114,6 +117,6 @@ def set_save_status(game_state):
     game_state.save_status = save_status
 
 
-def write_save(game_state):
+def write_save(game_state: GameState):
     game_state.info_log("Saving to Disk...")
     game_state.save_to_json()

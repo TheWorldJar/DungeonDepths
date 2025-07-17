@@ -53,7 +53,7 @@ class GameState:
         self._current_sub = (SubScreen.DEFAULT, 0)
         self._characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
         for character in self._characters:
-            character.actor_type = ActorType.NONE
+            character.set_actor_type(ActorType.NONE)
         self._inventory = []
         self._slots = START_CHARACTER_SLOT
         self.is_empty_save = True
@@ -86,7 +86,7 @@ class GameState:
         self.set_sub((SubScreen.DEFAULT, 0))
         self._characters = [Character(Classes.MARAUDER, "Empty")] * MAX_CHARACTER_SLOT
         for character in self._characters:
-            character.actor_type = ActorType.NONE
+            character.set_actor_type(ActorType.NONE)
         self._inventory = []
         self.set_slots(START_CHARACTER_SLOT)
         self.is_empty_save = True

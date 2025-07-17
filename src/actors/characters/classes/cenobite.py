@@ -9,11 +9,11 @@ from src.actors.ability import PrefTarget
 
 def martyr(source: Actor, target: Actor):
     heal = roll(
-        source.attributes[Attributes.RESILIENCE]
-        + source.combat_skills[CombatSkills.DEFENCE]
+        source.get_attribute(Attributes.RESILIENCE)
+        + source.get_combat_skill(CombatSkills.DEFENCE)
     )[0]
-    target.change_health(heal)
-    source.change_health(-(heal))
+    target.change_current_health(heal)
+    source.change_current_health(-(heal))
 
 
 def passion(source: Actor):
@@ -30,17 +30,17 @@ def suppress(source: Actor, target: Actor):
 
 def lightning_bolt(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.INTELLIGENCE]
-        + source.combat_skills[CombatSkills.MAGIC]
+        source.get_attribute(Attributes.INTELLIGENCE)
+        + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
     defence = (
-        roll(target.combat_skills[CombatSkills.DEFENCE])[0]
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
-        - (source.attributes[Attributes.DEXTERITY] // 3)
+        - (source.get_attribute(Attributes.INTELLIGENCE) // 3)
     )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(-(1 + (delta // 2)))
+        target.change_current_health(-(1 + (delta // 2)))
 
 
 def radiance(source: Actor):
@@ -49,18 +49,18 @@ def radiance(source: Actor):
 
 def ball_lightning(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.INTELLIGENCE]
-        + source.combat_skills[CombatSkills.MAGIC]
+        source.get_attribute(Attributes.INTELLIGENCE)
+        + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
     defence = (
-        roll(target.combat_skills[CombatSkills.DEFENCE])[0]
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
-        + (target.attributes[Attributes.INTELLIGENCE] // 3)
+        + (target.get_attribute(Attributes.INTELLIGENCE) // 3)
     )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(
-            -(1 + delta + (source.attributes[Attributes.INTELLIGENCE] // 3))
+        target.change_current_health(
+            -(1 + delta + (source.get_attribute(Attributes.INTELLIGENCE) // 3))
         )
 
 

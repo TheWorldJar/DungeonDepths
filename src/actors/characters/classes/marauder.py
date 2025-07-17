@@ -13,8 +13,8 @@ from src.actors.ability import PrefTarget
 
 
 def strongman(source: Actor):
-    source.max_health += (
-        source.attributes[Attributes.STRENGTH] * MARAUDER_HEALTH_MULTIPLIER
+    source.change_max_health(
+        source.get_attribute(Attributes.STRENGTH) * MARAUDER_HEALTH_MULTIPLIER
     )
 
 
@@ -25,47 +25,44 @@ def regenerate(source: Actor):
 def cleave(source: Actor, target: list[Actor]):
     for t in target:
         attack = roll(
-            source.attributes[Attributes.STRENGTH]
-            + source.combat_skills[CombatSkills.MELEE]
+            source.get_attribute(Attributes.STRENGTH)
+            + source.get_combat_skill(CombatSkills.MELEE)
         )[0]
-        defence = roll(t.combat_skills[CombatSkills.DEFENCE])[0] + t.get_armour()
-
-        # I don't know about this
-        for e in source.effects:
-            if hasattr(e, "empower") or hasattr(e, "weakness"):
-                attack += e.value
+        defence = roll(t.get_combat_skill(CombatSkills.DEFENCE))[0] + t.get_armour()
 
         delta = attack - defence
         if delta >= 0:
-            t.change_health(-(1 + delta))
+            t.change_current_health(-(1 + delta))
 
 
 def power_strike(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.STRENGTH]
-        + source.combat_skills[CombatSkills.MELEE]
+        source.get_attribute(Attributes.STRENGTH)
+        + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
     defence = (
-        roll(target.combat_skills[CombatSkills.DEFENCE])[0]
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
-        + (target.attributes[Attributes.STRENGTH] // 3)
+        + (target.get_attribute(Attributes.STRENGTH) // 3)
     )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(
-            -(1 + delta + (source.attributes[Attributes.STRENGTH] // 3))
+        target.change_current_health(
+            -(1 + delta + (source.get_attribute(Attributes.STRENGTH) // 3))
         )
 
 
 def decapitate(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.STRENGTH]
-        + source.combat_skills[CombatSkills.MELEE]
+        source.get_attribute(Attributes.STRENGTH)
+        + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
-    defence = roll(target.combat_skills[CombatSkills.DEFENCE])[0] + target.get_armour()
+    defence = (
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+    )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(-(1 + delta))
+        target.change_current_health(-(1 + delta))
 
 
 def empower(source: Actor):
@@ -74,21 +71,27 @@ def empower(source: Actor):
 
 def slam(source: Actor, target: list[Actor]):
     for t in target:
-        t.initiative -= roll(
-            source.attributes[Attributes.RESILIENCE]
-            + source.combat_skills[CombatSkills.MELEE]
-        )[0]
+        t.change_initiative(
+            -(
+                roll(
+                    source.get_attribute(Attributes.RESILIENCE)
+                    + source.get_combat_skill(CombatSkills.MELEE)
+                )[0]
+            )
+        )
 
 
 def overkill(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.STRENGTH]
-        + source.combat_skills[CombatSkills.MELEE]
+        source.get_attribute(Attributes.STRENGTH)
+        + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
-    defence = roll(target.combat_skills[CombatSkills.DEFENCE])[0] + target.get_armour()
+    defence = (
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+    )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(-(1 + delta))
+        target.change_current_health(-(1 + delta))
 
 
 class Marauder(Enum):

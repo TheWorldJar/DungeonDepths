@@ -29,13 +29,15 @@ def take_aim(source: Actor):
 
 def strangle(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.PERCEPTION]
-        + source.combat_skills[CombatSkills.RANGED]
+        source.get_attribute(Attributes.PERCEPTION)
+        + source.get_combat_skill(CombatSkills.RANGED)
     )[0]
-    defence = roll(target.combat_skills[CombatSkills.DEFENCE])[0] + target.get_armour()
+    defence = (
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+    )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(-(1 + delta))
+        target.change_current_health(-(1 + delta))
 
 
 def puncture(source: Actor, target: list[Actor]):

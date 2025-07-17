@@ -17,13 +17,15 @@ def multistrike(source: Actor, target: Actor):
 
 def high_slash(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.DEXTERITY]
-        + source.combat_skills[CombatSkills.MELEE]
+        source.get_attribute(Attributes.DEXTERITY)
+        + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
-    defence = roll(target.combat_skills[CombatSkills.DEFENCE])[0] + target.get_armour()
+    defence = (
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+    )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(-(1 + delta))
+        target.change_current_health(-(1 + delta))
 
 
 def vengeance(source: Actor, target: Actor):
@@ -32,17 +34,17 @@ def vengeance(source: Actor, target: Actor):
 
 def precise_strike(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.DEXTERITY]
-        + source.combat_skills[CombatSkills.MELEE]
+        source.get_attribute(Attributes.DEXTERITY)
+        + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
     defence = (
-        roll(target.combat_skills[CombatSkills.DEFENCE])[0]
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
-        - (source.attributes[Attributes.DEXTERITY] // 3)
+        - (source.get_attribute(Attributes.DEXTERITY) // 3)
     )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(-(1 + (delta // 2)))
+        target.change_current_health(-(1 + (delta // 2)))
 
 
 def critical_strike(source: Actor, target: Actor):

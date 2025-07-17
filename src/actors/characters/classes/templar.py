@@ -38,13 +38,13 @@ def regenerate(source: Actor):
 def exorcism(source: Actor, target: list[Actor]):
     for t in target:
         attack = roll(
-            source.attributes[Attributes.STRENGTH]
-            + source.combat_skills[CombatSkills.MELEE]
+            source.get_attribute(Attributes.STRENGTH)
+            + source.get_combat_skill(CombatSkills.MELEE)
         )[0]
-        defence = roll(t.combat_skills[CombatSkills.DEFENCE])[0] + t.get_armour()
+        defence = roll(t.get_combat_skill(CombatSkills.DEFENCE))[0] + t.get_armour()
         delta = attack - defence
         if delta >= 0:
-            t.change_health(-(1 + delta))
+            t.change_current_health(-(1 + delta))
 
 
 class Templar(Enum):

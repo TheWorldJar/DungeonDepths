@@ -21,10 +21,14 @@ def vulture_totem(source: Actor):
 
 def grasping_roots(source: Actor, target: list[Actor]):
     for t in target:
-        t.initiative -= roll(
-            source.attributes[Attributes.PERCEPTION]
-            + source.combat_skills[CombatSkills.MAGIC]
-        )[0]
+        t.change_initiative(
+            -(
+                roll(
+                    source.get_attribute(Attributes.PERCEPTION)
+                    + source.get_combat_skill(CombatSkills.MAGIC)
+                )[0]
+            )
+        )
 
 
 def vitality_totem(source: Actor, target: list[Actor]):
@@ -41,13 +45,15 @@ def summon_wolf(source: Actor):
 
 def rock_bite(source: Actor, target: Actor):
     attack = roll(
-        source.attributes[Attributes.PERCEPTION]
-        + source.combat_skills[CombatSkills.MAGIC]
+        source.get_attribute(Attributes.PERCEPTION)
+        + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
-    defence = roll(target.combat_skills[CombatSkills.DEFENCE])[0] + target.get_armour()
+    defence = (
+        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+    )
     delta = attack - defence
     if delta >= 0:
-        target.change_health(-(1 + delta))
+        target.change_current_health(-(1 + delta))
 
 
 class Primalist(Enum):

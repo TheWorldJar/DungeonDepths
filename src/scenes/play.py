@@ -414,13 +414,13 @@ class PlayEffect(Print):
                 else:
                     chara = self.game.get_character(i - 1)
                     self.screen.print_at(
-                        text=f"{chara.name}",
+                        text=f"{chara.get_name()}",
                         x=7,
                         y=line_above + 1,
                     )
                     if chara.actor_type == ActorType.CHARACTER:
                         self.screen.print_at(
-                            text=f"{chara.char_class.value.upper()}",  # Add the character's current activity later.
+                            text=f"{chara.get_char_class().value.upper()}",  # Add the character's current activity later.
                             x=7,
                             y=line_above + 2,
                         )
