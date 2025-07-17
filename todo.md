@@ -1,6 +1,5 @@
 # TODO
 
-- Refactor the Charcter & Actor classes to user getters and setters.
 - Finish implementing ability functions for all classes.
 
 ## Priority Modifers

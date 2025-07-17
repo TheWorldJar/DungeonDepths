@@ -94,9 +94,7 @@ class GameState:
 
     def save_to_json(self):
         current_scene = {"current_scene": self.get_scene()}
-        current_sub = {
-            "current_sub": [self.get_sub_screen().value.upper(), self.get_sub_data()]
-        }
+        current_sub = {"current_sub": [self.get_sub_screen().name, self.get_sub_data()]}
         char_in_slot = {}
         for i, c in enumerate(self.get_all_characters()):
             char_in_slot[i] = c.to_json()

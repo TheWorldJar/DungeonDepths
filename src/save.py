@@ -19,7 +19,7 @@ def check_save(game_state: GameState) -> str | None:
         game_state.info_log("Creating Blank Save...")
         data = {
             "current_scene": START_SCENE,
-            "current_sub": (SubScreen.DEFAULT, 0),
+            "current_sub": (SubScreen.DEFAULT.name, 0),
             "characters": [],
             "inventory": [],
             "slots": START_CHARACTER_SLOT,
