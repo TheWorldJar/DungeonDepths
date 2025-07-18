@@ -66,7 +66,9 @@ class Actor:
             )
         self._effects: list[Status] = []
         self._attributes = attributes
+        self._enhanced_attributes = attributes.copy()
         self._combat_skills = combat_skills
+        self._enhanced_combat_skills = combat_skills.copy()
         self._initiative = 0
 
     def to_json(self):
@@ -78,9 +80,17 @@ class Actor:
         for t in self.get_all_attributes():
             attributes_data[t.name] = self.get_attribute(t)
 
+        enhanced_attributes_data = {}
+        for e in self.get_all_enhanced_attributes():
+            enhanced_attributes_data[e.name] = self.get_enhanced_attribute(e)
+
         combat_skills_data = {}
         for c in self.get_all_combat_skills():
             combat_skills_data[c.name] = self.get_combat_skill(c)
+
+        enhanced_combat_skills_data = {}
+        for ec in self.get_all_enhanced_combat_skills():
+            enhanced_combat_skills_data[ec.name] = self.get_enhanced_combat_skill(ec)
 
         return {
             "name": self.get_name(),
@@ -90,7 +100,9 @@ class Actor:
             "armour": self.get_armour(),
             "abilities": abilities_data,
             "attributes": attributes_data,
+            "enhanced_attributes": enhanced_attributes_data,
             "combat_skills": combat_skills_data,
+            "enhanced_combat_skills": enhanced_combat_skills_data,
         }
 
     # Nothing but getters and setters below this line
@@ -192,6 +204,19 @@ class Actor:
     def change_attribute(self, attribute: Attributes, change: int):
         self._attributes[attribute] += change
 
+    # _enhanced_attributes
+    def get_enhanced_attribute(self, attribute: Attributes) -> int:
+        return self._enhanced_attributes[attribute]
+
+    def get_all_enhanced_attributes(self) -> dict:
+        return self._enhanced_attributes
+
+    def set_enhanced_attribute(self, attribute: Attributes, value: int):
+        self._enhanced_attributes[attribute] = value
+
+    def change_enhanced_attribute(self, attribute: Attributes, change: int):
+        self._enhanced_attributes[attribute] += change
+
     # _combat_skills
     def get_combat_skill(self, skill: CombatSkills) -> int:
         return self._combat_skills[skill]
@@ -204,6 +229,19 @@ class Actor:
 
     def change_combat_skill(self, skill: CombatSkills, change: int):
         self._combat_skills[skill] += change
+
+    # _enhanced_combat_skills
+    def get_enhanced_combat_skill(self, skill: CombatSkills) -> int:
+        return self._enhanced_combat_skills[skill]
+
+    def get_all_enhanced_combat_skills(self) -> dict:
+        return self._enhanced_combat_skills
+
+    def set_enhanced_combat_skill(self, skill: CombatSkills, value: int):
+        self._enhanced_combat_skills[skill] = value
+
+    def change_enhanced_combat_skill(self, skill: CombatSkills, change: int):
+        self._enhanced_combat_skills[skill] += change
 
     # _initiative
     def get_initiative(self) -> int:

@@ -1,5 +1,13 @@
 # TODO
 
+- Implement basic items.
+    - Use Statuses to apply item effects.
+    - Add basic equipement to character creation.
+- Implement the activity menu.
+- Implement combat sub screen.
+- Implement basic enemy.
+- Implement combat class.
+- Run a combat.
 - Finish implementing ability functions for all classes.
 
 ## Priority Modifers

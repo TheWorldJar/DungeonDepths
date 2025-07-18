@@ -116,6 +116,9 @@ class Character(Actor):
             name, ActorType.CHARACTER, health, 0, abilities, attributes, combat_skills
         )
 
+        self._enhanced_crafting_skills = self._crafting_skills.copy()
+        self._enhanced_secondary_skills = self._secondary_skills.copy()
+
         # Check for Passive Ability effects
 
     @classmethod
@@ -171,12 +174,28 @@ class Character(Actor):
         ].items():
             craft_enum_member = CraftingSkills[crafting_skill_name]
             new_character.set_crafting_skill(craft_enum_member, crafting_skill_value)
+        for enhanced_crafting_skill_name, enhanced_crafting_skill_value in data[
+            "enhanced_crafting_skills"
+        ].items():
+            enhanced_craft_enum_member = CraftingSkills[enhanced_crafting_skill_name]
+            new_character.set_enhanced_crafting_skill(
+                enhanced_craft_enum_member, enhanced_crafting_skill_value
+            )
         for secondary_skill_name, secondary_skill_value in data[
             "secondary_skills"
         ].items():
             secondary_enum_member = SecondarySkills[secondary_skill_name]
             new_character.set_secondary_skill(
                 secondary_enum_member, secondary_skill_value
+            )
+        for enhanced_secondary_skill_name, enhanced_secondary_skill_value in data[
+            "enhanced_secondary_skills"
+        ].items():
+            enhanced_secondary_enum_member = SecondarySkills[
+                enhanced_secondary_skill_name
+            ]
+            new_character.set_secondary_skill(
+                enhanced_secondary_enum_member, enhanced_secondary_skill_value
             )
         return new_character
 
@@ -270,15 +289,27 @@ class Character(Actor):
         for c in self.get_all_crafting_skills():
             crafting_skills_data[c.name] = self.get_crafting_skill(c)
 
+        enhanced_crafting_skills_data = {}
+        for ec in self.get_all_enhanced_crafting_skills():
+            enhanced_crafting_skills_data[ec.name] = self.get_ehanced_crafting_skill(ec)
+
         secondary_skills_data = {}
         for s in self.get_all_secondary_skills():
             secondary_skills_data[s.name] = self.get_secondary_skill(s)
+
+        enhanced_secondary_skills_data = []
+        for es in self.get_all_enhanced_secondary_skill():
+            enhanced_secondary_skills_data[es.name] = self.get_enhanced_secondary_skill(
+                es
+            )
 
         char_data = {
             "ancestry": self.get_ancestry().name,
             "class": self.get_char_class().name,
             "crafting_skills": crafting_skills_data,
+            "enhanced_crafting_skills": enhanced_crafting_skills_data,
             "secondary_skills": secondary_skills_data,
+            "enhanced_secondary_skills": enhanced_secondary_skills_data,
         }
         return {**super().to_json(), **char_data}
 
@@ -297,6 +328,19 @@ class Character(Actor):
     def change_crafting_skill(self, skill: CraftingSkills, change: int):
         self._crafting_skills[skill] += change
 
+    # _enhanced_crafting_skills
+    def get_ehanced_crafting_skill(self, skill: CraftingSkills) -> int:
+        return self._enhanced_crafting_skills[skill]
+
+    def get_all_enhanced_crafting_skills(self) -> dict:
+        return self._enhanced_crafting_skills
+
+    def set_enhanced_crafting_skill(self, skill: CraftingSkills, value: int):
+        self._enhanced_crafting_skills[skill] = value
+
+    def change_enhanced_crafting_skill(self, skill: CraftingSkills, change: int):
+        self._enhanced_crafting_skills[skill] += change
+
     # _secondary_skills
     def get_secondary_skill(self, skill: SecondarySkills) -> int:
         return self._secondary_skills[skill]
@@ -309,6 +353,19 @@ class Character(Actor):
 
     def change_secondary_skill(self, skill: SecondarySkills, change: int):
         self._secondary_skills[skill] += change
+
+    # _enhanced_secondary_skills
+    def get_enhanced_secondary_skill(self, skill: SecondarySkills) -> int:
+        return self._enhanced_secondary_skills[skill]
+
+    def get_all_enhanced_secondary_skill(self) -> dict:
+        return self._enhanced_secondary_skills
+
+    def set_enhanced_secondary_skill(self, skill: SecondarySkills, value: int):
+        self._enhanced_secondary_skills[skill] = value
+
+    def change_enhanced_secondary_skill(self, skill: SecondarySkills, change: int):
+        self._enhanced_secondary_skills[skill] += change
 
     # _ancestry
     def get_ancestry(self) -> Ancestry:
