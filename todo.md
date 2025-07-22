@@ -9,6 +9,7 @@
 - Implement combat class.
 - Run a combat.
 - Finish implementing ability functions for all classes.
+- Implement the rat amulet effect
 
 ## Priority Modifers
 
