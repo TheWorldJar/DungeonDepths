@@ -1,8 +1,6 @@
 # TODO
 
-- Implement basic items.
-    - Use Statuses to apply item effects.
-    - Add basic equipement to character creation.
+- Test equipment system
 - Implement the activity menu.
 - Implement combat sub screen.
 - Implement basic enemy.

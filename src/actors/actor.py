@@ -70,6 +70,7 @@ class Actor:
         self._combat_skills = combat_skills
         self._enhanced_combat_skills = combat_skills.copy()
         self._initiative = 0
+        self._initiative_mod = 0
 
     def to_json(self):
         abilities_data = {}
@@ -103,6 +104,7 @@ class Actor:
             "enhanced_attributes": enhanced_attributes_data,
             "combat_skills": combat_skills_data,
             "enhanced_combat_skills": enhanced_combat_skills_data,
+            "initiative_mod": self.get_initiative_mod(),
         }
 
     # Nothing but getters and setters below this line
@@ -252,3 +254,13 @@ class Actor:
 
     def change_initiative(self, change: int):
         self._initiative += change
+
+    # _initiative_mod
+    def get_initiative_mod(self) -> int:
+        return self._initiative_mod
+
+    def set_initiative_mod(self, value: int):
+        self._initiative_mod = value
+
+    def change_initiative_mod(self, change: int):
+        self._initiative_mod += change

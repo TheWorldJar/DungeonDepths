@@ -16,8 +16,10 @@ from src.actors.characters.classes.sentinel import Sentinel
 from src.actors.characters.classes.templar import Templar
 from src.actors.characters.classes.cenobite import Cenobite
 
-
 from src.actors.ability import Ability, PrefTarget
+
+from src.equipment.equipment import Equipment, ItemType
+from src.equipment.t0gear import get_starting_gear
 
 
 class CraftingSkills(Enum):
@@ -92,11 +94,21 @@ class Character(Actor):
             SecondarySkills.SPEECHCRAFT: 0,
         }
 
+        self._equipment = {
+            ItemType.HELMET: None,
+            ItemType.CHESTPIECE: None,
+            ItemType.GLOVES: None,
+            ItemType.BOOTS: None,
+            ItemType.WEAPON: None,
+            ItemType.AMULET: None,
+            ItemType.RING: {"left": None, "right": None},
+        }
+
         # Generate a race at random.
         self._ancestry = random.choice(list(Ancestry))
         self._change_on_ancestry(attributes)
 
-        # Change starting attributes & skills based on class and ancestry
+        # Change starting attributes and skills based on class
         self._char_class = char_class
         self._change_on_class(attributes, combat_skills)
 
@@ -119,6 +131,9 @@ class Character(Actor):
         self._enhanced_crafting_skills = self._crafting_skills.copy()
         self._enhanced_secondary_skills = self._secondary_skills.copy()
 
+        # Find the correct starting gear and apply it
+        self._get_initial_gear()
+
         # Check for Passive Ability effects
 
     @classmethod
@@ -132,11 +147,16 @@ class Character(Actor):
         for attribute_name, attribute_value in data["attributes"].items():
             attr_enum_member = Attributes[attribute_name]
             new_character.set_attribute(attr_enum_member, attribute_value)
+            new_character.set_enhanced_attribute(attr_enum_member, attribute_value)
         for combat_skill_name, combat_skill_value in data["combat_skills"].items():
             combat_enum_member = CombatSkills[combat_skill_name]
             new_character.set_combat_skill(combat_enum_member, combat_skill_value)
+            new_character.set_enhanced_combat_skill(
+                combat_enum_member, combat_skill_value
+            )
         new_character.set_ancestry(Ancestry[data["ancestry"]])
         new_character.set_char_class(Classes[data["class"]])
+        new_character.set_initiative_mod(data["initiative_mod"])
 
         new_character.clear_abilities()
         for _, ability_name in data["abilities"].items():
@@ -174,12 +194,8 @@ class Character(Actor):
         ].items():
             craft_enum_member = CraftingSkills[crafting_skill_name]
             new_character.set_crafting_skill(craft_enum_member, crafting_skill_value)
-        for enhanced_crafting_skill_name, enhanced_crafting_skill_value in data[
-            "enhanced_crafting_skills"
-        ].items():
-            enhanced_craft_enum_member = CraftingSkills[enhanced_crafting_skill_name]
             new_character.set_enhanced_crafting_skill(
-                enhanced_craft_enum_member, enhanced_crafting_skill_value
+                craft_enum_member, crafting_skill_value
             )
         for secondary_skill_name, secondary_skill_value in data[
             "secondary_skills"
@@ -188,15 +204,19 @@ class Character(Actor):
             new_character.set_secondary_skill(
                 secondary_enum_member, secondary_skill_value
             )
-        for enhanced_secondary_skill_name, enhanced_secondary_skill_value in data[
-            "enhanced_secondary_skills"
-        ].items():
-            enhanced_secondary_enum_member = SecondarySkills[
-                enhanced_secondary_skill_name
-            ]
-            new_character.set_secondary_skill(
-                enhanced_secondary_enum_member, enhanced_secondary_skill_value
+            new_character.set_enhanced_secondary_skill(
+                secondary_enum_member, secondary_skill_value
             )
+
+        new_character.clear_gear()
+        for slot, item in data["equipment"].items():
+            item_type_enum_member = ItemType[slot]
+            if item_type_enum_member == ItemType.RING:
+                new_character.equip_gear(Equipment(item["left"]), "left")
+                new_character.equip_gear(Equipment(item["right"]), "right")
+            else:
+                new_character.equip_gear(Equipment(item))
+
         return new_character
 
     def _change_on_ancestry(self, attributes):
@@ -284,6 +304,15 @@ class Character(Actor):
             case Classes.PENITENT:
                 return list(random.sample(list(Penitent), ABILITY_SLOT))
 
+    def _get_initial_gear(self):
+        starting_gear = get_starting_gear(self._char_class)
+        for gear_key, gear_item in starting_gear.items():
+            if gear_key == ItemType.RING:
+                self.equip_gear(gear_item["left"], "left")
+                self.equip_gear(gear_item["right"], "right")
+            else:
+                self.equip_gear(gear_item)
+
     def to_json(self):
         crafting_skills_data = {}
         for c in self.get_all_crafting_skills():
@@ -302,6 +331,17 @@ class Character(Actor):
             enhanced_secondary_skills_data[es.name] = self.get_enhanced_secondary_skill(
                 es
             )
+        gear_data = {}
+        for slot, _ in self.get_all_equipment().items():
+            if slot == ItemType.RING:
+                gear_data[slot.name]["left"] = self.get_equipement(
+                    slot, "left"
+                ).to_json()
+                gear_data[slot.name]["right"] = self.get_equipement(
+                    slot, "right"
+                ).to_json()
+            else:
+                gear_data[slot.name] = self.get_equipement(slot).to_json()
 
         char_data = {
             "ancestry": self.get_ancestry().name,
@@ -310,6 +350,7 @@ class Character(Actor):
             "enhanced_crafting_skills": enhanced_crafting_skills_data,
             "secondary_skills": secondary_skills_data,
             "enhanced_secondary_skills": enhanced_secondary_skills_data,
+            "equipment": gear_data,
         }
         return {**super().to_json(), **char_data}
 
@@ -380,3 +421,44 @@ class Character(Actor):
 
     def set_char_class(self, char_class: Classes):
         self._char_class = char_class
+
+    # _equipment
+    def get_equipement(self, slot: ItemType, side=None) -> Equipment:
+        if side is not None and slot == ItemType.RING:
+            return self._equipment[slot][side]
+        elif side is None and slot != ItemType.RING:
+            return self._equipment[slot]
+        else:
+            raise ValueError(
+                f"Misusing get equipment! {slot} is incompatible with {side}!"
+            )
+
+    def get_all_equipment(self) -> dict:
+        return self._equipment
+
+    def equip_gear(self, gear: Equipment, side=None):
+        slot = gear.get_type()
+        if side is not None and slot == ItemType.RING:
+            self.unequip_gear(slot, side)
+            self._equipment[slot][side] = gear
+            self._equipment[slot][side].on_equip(self)
+        elif side is None and slot != ItemType.RING:
+            self.unequip_gear(slot)
+            self._equipment[slot] = gear
+            self._equipment[slot].on_equip(self)
+        else:
+            raise ValueError(
+                f"Misusing equip gear! {slot} is incompatible with {side} for {gear.get_name()}!"
+            )
+
+    def unequip_gear(self, slot: ItemType, side=None):
+        if self._equipment[slot] is not None:
+            if side is not None:
+                self._equipment[slot][side].on_unequip(self)
+                self._equipment[slot][side] = None
+            else:
+                self._equipment[slot].on_unequip(self)
+                self._equipment[slot] = None
+
+    def clear_gear(self):
+        self._equipment.clear()
