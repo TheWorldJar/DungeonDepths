@@ -194,7 +194,6 @@ class Character(Actor):
                 secondary_enum_member, secondary_skill_value
             )
 
-        new_character.clear_gear()
         for slot, item in data["equipment"].items():
             item_type_enum_member = ItemType[slot]
             if item_type_enum_member == ItemType.RING:

@@ -44,9 +44,14 @@ def load_save(game_state: GameState, save):
     if empty_save_data:
         game_state.reset()
         return None
-    scene_data, sub_data, char_data, inv_data, slot_data = validate_save(
-        game_state, save
-    )
+    try:
+        scene_data, sub_data, char_data, inv_data, slot_data = validate_save(
+            game_state, save
+        )
+    except TypeError as e:
+        game_state.warn_log(f"Aborting Loading: Save File is Malformed! Exception: {e}")
+        return None
+
     if (
         scene_data is None
         or sub_data is None
@@ -80,6 +85,7 @@ def validate_save(game_state: GameState, save):
         slot_data = save["slots"]
         for i in range(0, slot_data):
             char_save_data = save["characters"][str(i)]
+            game_state.debug_log(char_save_data)
             char_data.append(Character.from_save(char_save_data))
         inv_data = save["inventory"]
 

@@ -29,7 +29,7 @@ class T0Gear(Enum):
     LINEN_VEIL = {
         "name": "linen_veil",
         "type": ItemType.HELMET,
-        "stat": "armour",
+        "stat": "ARMOUR",
         "value": 1,
         "effect": None,
         "tier": 0,
@@ -42,7 +42,7 @@ class T0Gear(Enum):
     BONE_MASK = {
         "name": "bone_mask",
         "type": ItemType.HELMET,
-        "stat": "armour",
+        "stat": "ARMOUR",
         "value": 1,
         "effect": None,
         "tier": 0,
@@ -55,7 +55,7 @@ class T0Gear(Enum):
     LEAD_CAP = {
         "name": "lead_cap",
         "type": ItemType.HELMET,
-        "stat": "armour",
+        "stat": "ARMOUR",
         "value": 1,
         "effect": None,
         "tier": 0,
@@ -69,7 +69,7 @@ class T0Gear(Enum):
     LINEN_VESTMENTS = {
         "name": "linen_vestments",
         "type": ItemType.CHESTPIECE,
-        "stat": "armour",
+        "stat": "ARMOUR",
         "value": 1,
         "effect": None,
         "tier": 0,
@@ -82,7 +82,7 @@ class T0Gear(Enum):
     BONE_VEST = {
         "name": "bone_vest",
         "type": ItemType.CHESTPIECE,
-        "stat": "armour",
+        "stat": "ARMOUR",
         "value": 1,
         "effect": None,
         "tier": 0,
@@ -95,7 +95,7 @@ class T0Gear(Enum):
     LEAD_DISK = {
         "name": "lead_disk",
         "type": ItemType.CHESTPIECE,
-        "stat": "armour",
+        "stat": "ARMOUR",
         "value": 1,
         "effect": None,
         "tier": 0,
@@ -201,7 +201,7 @@ class T0Gear(Enum):
     STRAW_SANDALS = {
         "name": "straw_sandals",
         "type": ItemType.BOOTS,
-        "stat": "initiative",
+        "stat": "INITIATIVE",
         "value": 1,
         "effect": None,
         "tier": 0,
@@ -214,7 +214,7 @@ class T0Gear(Enum):
     BONE_GRIEVES = {
         "name": "bone_grieves",
         "type": ItemType.BOOTS,
-        "stat": "initiative",
+        "stat": "INITIATIVE",
         "value": 1,
         "effect": None,
         "tier": 0,
@@ -227,7 +227,7 @@ class T0Gear(Enum):
     LEAD_GRIEVES = {
         "name": "lead_grieves",
         "type": ItemType.BOOTS,
-        "stat": "initiative",
+        "stat": "INITIATIVE",
         "value": 1,
         "effect": None,
         "tier": 0,

@@ -16,8 +16,26 @@ from src.actors.characters.classes.classes import Classes
 class Equipment:
     def __init__(self, gear_info: dict):
         self._name = gear_info["name"]
-        self._type = gear_info["type"]
-        self._stat = gear_info["stat"]
+        if isinstance(gear_info["type"], str):
+            self._type = ItemType[gear_info["type"]]
+        else:
+            self._type = gear_info["type"]
+
+        stat = gear_info["stat"]
+        if isinstance(stat, str):
+            if stat in list(Attributes.__members__.keys()):
+                self._stat = Attributes[stat]
+            elif stat in list(CombatSkills.__members__.keys()):
+                self._stat = CombatSkills[stat]
+            elif stat in list(CraftingSkills.__members__.keys()):
+                self._stat = CraftingSkills[stat]
+            elif stat in list(SecondarySkills.__members__.keys()):
+                self._stat = SecondarySkills[stat]
+            else:
+                self._stat = stat
+        else:
+            self._stat = stat
+
         self._value = gear_info["value"]
         self._effect = callable
         if isinstance(gear_info["effect"], str):
@@ -29,10 +47,23 @@ class Equipment:
             self._effect = enum_member.value["effect"]
         else:
             self._effect = gear_info["effect"]
+
         self._tier = gear_info["tier"]
-        self._class = gear_info["class"]
+        char_classes = []
+        class_data = gear_info["class"]
+        for c in class_data:
+            if isinstance(c, str):
+                char_classes.append(Classes[c])
+            else:
+                char_classes.append(c)
+        self._class = char_classes
+
         self._recipe = gear_info["recipe"]
-        self._craft = gear_info["craft"]
+        if isinstance(gear_info["craft"], str):
+            self._craft = CraftingSkills[gear_info["craft"]]
+        else:
+            self._craft = gear_info["craft"]
+
         self._sell = gear_info["sell"]
 
         if isinstance(self._stat, list):
@@ -188,9 +219,9 @@ class Equipment:
             source.change_enhanced_secondary_skill(stat, self.get_value())
         elif stat in CraftingSkills:
             source.change_enhanced_crafting_skill(stat, self.get_value())
-        elif stat == "initiative":
+        elif stat == "INITIATIVE":
             source.change_initiative_mod(self.get_value())
-        elif stat == "armour":
+        elif stat == "ARMOUR":
             source.change_armour(self.get_value())
         elif stat is None:
             pass
