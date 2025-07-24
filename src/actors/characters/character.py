@@ -12,6 +12,9 @@ from src.game_types import (
 )
 
 from src.actors.actor import Actor
+
+from src.actors.ability import Ability
+
 from src.actors.characters.ancestries import Ancestry
 
 from src.actors.characters.classes.classes import Classes
