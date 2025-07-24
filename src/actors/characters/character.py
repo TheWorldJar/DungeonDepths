@@ -309,7 +309,7 @@ class Character(Actor):
         for s in self.get_all_secondary_skills():
             secondary_skills_data[s.name] = self.get_secondary_skill(s)
 
-        enhanced_secondary_skills_data = []
+        enhanced_secondary_skills_data = {}
         for es in self.get_all_enhanced_secondary_skill():
             enhanced_secondary_skills_data[es.name] = self.get_enhanced_secondary_skill(
                 es
@@ -317,6 +317,7 @@ class Character(Actor):
         gear_data = {}
         for slot, _ in self.get_all_equipment().items():
             if slot == ItemType.RING:
+                gear_data[slot.name] = {}
                 gear_data[slot.name]["left"] = self.get_equipement(
                     slot, "left"
                 ).to_json()
