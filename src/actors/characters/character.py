@@ -328,8 +328,8 @@ class Character(Actor):
                 gear_data[slot.name] = self.get_equipement(slot).to_json()
 
         char_data = {
-            "ancestry": self.get_ancestry().name,
-            "class": self.get_char_class().name,
+            "ancestry": self.get_ancestry().name.upper(),
+            "class": self.get_char_class().name.upper(),
             "crafting_skills": crafting_skills_data,
             "enhanced_crafting_skills": enhanced_crafting_skills_data,
             "secondary_skills": secondary_skills_data,

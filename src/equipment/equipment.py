@@ -206,17 +206,26 @@ class Equipment:
     def to_json(self):
         effect_data = self.get_effect()
         if effect_data is not None:
-            self.get_name().upper()
+            effect_data = self.get_name().lower()
+
+        class_data = []
+        for c in self.get_class():
+            class_data.append(c.name.upper())
+
+        stat_data = self.get_stat()
+        if stat_data is not None and not isinstance(stat_data, str):
+            stat_data = stat_data.name.upper()
+
         return {
             "name": self.get_name(),
-            "type": self.get_type().name,
-            "stat": self.get_stat(),
+            "type": self.get_type().name.upper(),
+            "stat": stat_data,
             "value": self.get_value(),
             "effect": effect_data,
             "tier": self.get_tier(),
-            "class": self.get_class(),
+            "class": class_data,
             "recipe": self.get_recipe(),
-            "craft": self.get_craft(),
+            "craft": self.get_craft().name.upper(),
             "sell": self.get_sell(),
         }
 
