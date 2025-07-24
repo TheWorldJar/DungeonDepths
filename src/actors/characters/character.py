@@ -203,7 +203,7 @@ class Character(Actor):
         return new_character
 
     def _change_on_ancestry(self, attributes):
-        match self.get_ancestry:
+        match self.get_ancestry():
             case Ancestry.HUMAN:
                 attributes[Attributes.INTUITION] += 1
                 attributes[Attributes.RESILIENCE] += 1
@@ -218,7 +218,7 @@ class Character(Actor):
                 attributes[Attributes.WILLPOWER] += 1
 
     def _change_on_class(self, attributes, combat_skills):
-        match self.get_char_class:
+        match self.get_char_class():
             case Classes.MARAUDER:
                 attributes[Attributes.STRENGTH] += 1
                 attributes[Attributes.RESILIENCE] += 1
