@@ -1,27 +1,25 @@
-from enum import Enum
+import random
 
-from src.actors.actor import CombatSkills, Attributes
-from src.actors.characters.character import SecondarySkills, CraftingSkills
+from src.game_types import (
+    Attributes,
+    CombatSkills,
+    CraftingSkills,
+    SecondarySkills,
+    ItemType,
+)
 
 from src.equipment.t0gear import T0Gear
 
-
-class ItemType(Enum):
-    HELMET = "helmet"
-    CHESTPIECE = "chestpiece"
-    GLOVES = "gloves"
-    BOOTS = "boots"
-    WEAPON = "weapon"
-    RING = "ring"
-    AMULET = "amulet"
+from src.actors.characters.classes.classes import Classes
 
 
 class Equipment:
     def __init__(self, gear_info: dict):
         self._name = gear_info["name"]
-        self._type = ItemType[gear_info["type"]]
+        self._type = gear_info["type"]
         self._stat = gear_info["stat"]
         self._value = gear_info["value"]
+        self._effect = callable
         if isinstance(gear_info["effect"], str):
             match gear_info["tier"]:
                 case 0:
@@ -40,6 +38,146 @@ class Equipment:
         if isinstance(self._stat, list):
             self._effect(self)
 
+    @classmethod
+    def get_starting_gear(cls, char_class: Classes) -> dict:
+        match char_class:
+            case Classes.MARAUDER:
+                return {
+                    ItemType.HELMET: Equipment(T0Gear.LEAD_CAP.value),
+                    ItemType.CHESTPIECE: Equipment(T0Gear.LEAD_DISK.value),
+                    ItemType.GLOVES: Equipment(T0Gear.LEAD_KNUCKLES.value),
+                    ItemType.BOOTS: Equipment(T0Gear.LEAD_GRIEVES.value),
+                    ItemType.WEAPON: Equipment(
+                        random.choice(
+                            [T0Gear.RUSTY_MAUL.value, T0Gear.RUSTY_GREATAXE.value]
+                        )
+                    ),
+                    ItemType.AMULET: Equipment(T0Gear.RAT_AMULET.value),
+                    ItemType.RING: {
+                        "left": Equipment(T0Gear.LEAD_RING.value),
+                        "right": Equipment(T0Gear.LEAD_RING.value),
+                    },
+                }
+            case Classes.SENTINEL:
+                return {
+                    ItemType.HELMET: Equipment(T0Gear.BONE_MASK.value),
+                    ItemType.CHESTPIECE: Equipment(T0Gear.BONE_VEST.value),
+                    ItemType.GLOVES: Equipment(T0Gear.BONE_GLOVES.value),
+                    ItemType.BOOTS: Equipment(T0Gear.BONE_GRIEVES.value),
+                    ItemType.WEAPON: Equipment(
+                        random.choice(
+                            [
+                                T0Gear.RUSTY_LONGSWORD.value,
+                                T0Gear.RUSTY_TWIN_DAGGERS.value,
+                            ]
+                        )
+                    ),
+                    ItemType.AMULET: Equipment(T0Gear.RAT_AMULET.value),
+                    ItemType.RING: {
+                        "left": Equipment(T0Gear.LEAD_RING.value),
+                        "right": Equipment(T0Gear.LEAD_RING.value),
+                    },
+                }
+            case Classes.STALKER:
+                return {
+                    ItemType.HELMET: Equipment(T0Gear.BONE_MASK.value),
+                    ItemType.CHESTPIECE: Equipment(T0Gear.BONE_VEST.value),
+                    ItemType.GLOVES: Equipment(T0Gear.BONE_VAMBRACES.value),
+                    ItemType.BOOTS: Equipment(T0Gear.BONE_GRIEVES.value),
+                    ItemType.WEAPON: Equipment(
+                        random.choice(
+                            [T0Gear.OLD_SHORTBOW.value, T0Gear.OLD_LONGBOW.value]
+                        )
+                    ),
+                    ItemType.AMULET: Equipment(T0Gear.RAT_AMULET.value),
+                    ItemType.RING: {
+                        "left": Equipment(T0Gear.LEAD_RING.value),
+                        "right": Equipment(T0Gear.LEAD_RING.value),
+                    },
+                }
+            case Classes.TEMPLAR:
+                return {
+                    ItemType.HELMET: Equipment(T0Gear.LINEN_VEIL.value),
+                    ItemType.CHESTPIECE: Equipment(T0Gear.LINEN_VESTMENTS.value),
+                    ItemType.GLOVES: Equipment(T0Gear.LINEN_WRAPS.value),
+                    ItemType.BOOTS: Equipment(T0Gear.STRAW_SANDALS.value),
+                    ItemType.WEAPON: Equipment(
+                        random.choice(
+                            [
+                                T0Gear.RUSTY_MAUL.value,
+                                T0Gear.RUSTY_MACE_AND_SHIELD.value,
+                            ]
+                        )
+                    ),
+                    ItemType.AMULET: Equipment(T0Gear.RAT_AMULET.value),
+                    ItemType.RING: {
+                        "left": Equipment(T0Gear.LEAD_RING.value),
+                        "right": Equipment(T0Gear.LEAD_RING.value),
+                    },
+                }
+            case Classes.PRIMALIST:
+                return {
+                    ItemType.HELMET: Equipment(T0Gear.BONE_MASK.value),
+                    ItemType.CHESTPIECE: Equipment(T0Gear.BONE_VEST.value),
+                    ItemType.GLOVES: Equipment(T0Gear.BONE_BRACELETS.value),
+                    ItemType.BOOTS: Equipment(T0Gear.BONE_GRIEVES.value),
+                    ItemType.WEAPON: Equipment(
+                        random.choice(
+                            [T0Gear.DUSTY_ROD.value, T0Gear.DUSTY_RITUAL_DAGGER.value]
+                        )
+                    ),
+                    ItemType.AMULET: Equipment(T0Gear.RAT_AMULET.value),
+                    ItemType.RING: {
+                        "left": Equipment(T0Gear.LEAD_RING.value),
+                        "right": Equipment(T0Gear.LEAD_RING.value),
+                    },
+                }
+            case Classes.OCCULTIST:
+                return {
+                    ItemType.HELMET: Equipment(T0Gear.LINEN_VEIL.value),
+                    ItemType.CHESTPIECE: Equipment(T0Gear.LINEN_VESTMENTS.value),
+                    ItemType.GLOVES: Equipment(T0Gear.LINEN_GLOVES.value),
+                    ItemType.BOOTS: Equipment(T0Gear.STRAW_SANDALS.value),
+                    ItemType.WEAPON: Equipment(
+                        random.choice([T0Gear.DUSTY_TOME.value, T0Gear.DUSTY_ORB.value])
+                    ),
+                    ItemType.AMULET: Equipment(T0Gear.RAT_AMULET.value),
+                    ItemType.RING: {
+                        "left": Equipment(T0Gear.LEAD_RING.value),
+                        "right": Equipment(T0Gear.LEAD_RING.value),
+                    },
+                }
+            case Classes.CENOBITE:
+                return {
+                    ItemType.HELMET: Equipment(T0Gear.LINEN_VEIL.value),
+                    ItemType.CHESTPIECE: Equipment(T0Gear.LINEN_VESTMENTS.value),
+                    ItemType.GLOVES: Equipment(T0Gear.LINEN_GLOVES.value),
+                    ItemType.BOOTS: Equipment(T0Gear.STRAW_SANDALS.value),
+                    ItemType.WEAPON: Equipment(
+                        random.choice([T0Gear.OLD_STAFF.value, T0Gear.OLD_WHIP.value])
+                    ),
+                    ItemType.AMULET: Equipment(T0Gear.RAT_AMULET.value),
+                    ItemType.RING: {
+                        "left": Equipment(T0Gear.LEAD_RING.value),
+                        "right": Equipment(T0Gear.LEAD_RING.value),
+                    },
+                }
+            case Classes.PENITENT:
+                return {
+                    ItemType.HELMET: Equipment(T0Gear.LEAD_CAP.value),
+                    ItemType.CHESTPIECE: Equipment(T0Gear.LEAD_DISK.value),
+                    ItemType.GLOVES: Equipment(T0Gear.LEAD_VAMBRACES.value),
+                    ItemType.BOOTS: Equipment(T0Gear.LEAD_GRIEVES.value),
+                    ItemType.WEAPON: Equipment(
+                        random.choice([T0Gear.OLD_WHIP.value, T0Gear.OLD_CLUB.value])
+                    ),
+                    ItemType.AMULET: Equipment(T0Gear.RAT_AMULET.value),
+                    ItemType.RING: {
+                        "left": Equipment(T0Gear.LEAD_RING.value),
+                        "right": Equipment(T0Gear.LEAD_RING.value),
+                    },
+                }
+
     def on_equip(self, source):
         stat = self.get_stat()
         if stat in Attributes:
@@ -54,6 +192,8 @@ class Equipment:
             source.change_initiative_mod(self.get_value())
         elif stat == "armour":
             source.change_armour(self.get_value())
+        elif stat is None:
+            pass
         else:
             raise ValueError(
                 f"{source.get_name()}'s {self.get_name()}'s {stat} is invalid!"

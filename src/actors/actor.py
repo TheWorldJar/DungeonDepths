@@ -1,37 +1,7 @@
-from enum import Enum
+from src.game_types import ActorType, Attributes, CombatSkills
 
 from src.actors.ability import Ability
 from src.actors.status import Status
-
-
-class ActorType(Enum):
-    NONE = "None"
-    CHARACTER = "Character"
-    MONSTER = "Monster"
-    PUZZLE = "Puzzle"
-    SUMMON = "Summon"
-
-
-class Attributes(Enum):
-    """An actor's basic attributes"""
-
-    STRENGTH = "strength"
-    DEXTERITY = "dexterity"
-    ENDURANCE = "endurance"
-    RESILIENCE = "resilience"
-    INTELLIGENCE = "intelligence"
-    WILLPOWER = "willpower"
-    INTUITION = "intuition"
-    PERCEPTION = "perception"
-
-
-class CombatSkills(Enum):
-    """An actor's combat skills"""
-
-    MELEE = "melee"
-    RANGED = "ranged"
-    MAGIC = "magic"
-    DEFENCE = "defence"
 
 
 class Actor:

@@ -17,7 +17,7 @@ from src.const import (
     MANAGE_SAVE_SCENE,
 )
 
-from src.actors.actor import ActorType
+from src.game_types import ActorType
 from src.actors.characters.character import Character
 from src.actors.characters.classes.classes import Classes
 

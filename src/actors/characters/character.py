@@ -1,9 +1,17 @@
 import random
-from enum import Enum
 
 from src.const import CHARACTER_BASE_HEALTH, CHARACTER_HEALTH_MULTIPLIER, ABILITY_SLOT
 
-from src.actors.actor import Actor, Attributes, CombatSkills, ActorType
+from src.game_types import (
+    ActorType,
+    Attributes,
+    CombatSkills,
+    CraftingSkills,
+    SecondarySkills,
+    ItemType,
+)
+
+from src.actors.actor import Actor
 from src.actors.characters.ancestries import Ancestry
 
 from src.actors.characters.classes.classes import Classes
@@ -16,32 +24,7 @@ from src.actors.characters.classes.sentinel import Sentinel
 from src.actors.characters.classes.templar import Templar
 from src.actors.characters.classes.cenobite import Cenobite
 
-from src.actors.ability import Ability, PrefTarget
-
-from src.equipment.equipment import Equipment, ItemType
-from src.equipment.t0gear import get_starting_gear
-
-
-class CraftingSkills(Enum):
-    """A character's crafting skills"""
-
-    BLACKSMITHING = "blacksmithing"
-    OUTFITTING = "outfitting"
-    ENCHANTING = "enchanting"
-    ALCHEMY = "alchemy"
-
-
-class SecondarySkills(Enum):
-    """A character's secondary skills"""
-
-    FITNESS = "fitness"
-    STEALTH = "stealth"
-    SURVIVAL = "survival"
-    MEDICINE = "medicine"
-    NATURE = "nature"
-    ENGINEERING = "engineering"
-    OCCULTISM = "occultism"
-    SPEECHCRAFT = "speechcraft"
+from src.equipment.equipment import Equipment
 
 
 class Character(Actor):
@@ -305,7 +288,7 @@ class Character(Actor):
                 return list(random.sample(list(Penitent), ABILITY_SLOT))
 
     def _get_initial_gear(self):
-        starting_gear = get_starting_gear(self._char_class)
+        starting_gear = Equipment.get_starting_gear(self._char_class)
         for gear_key, gear_item in starting_gear.items():
             if gear_key == ItemType.RING:
                 self.equip_gear(gear_item["left"], "left")
@@ -439,11 +422,13 @@ class Character(Actor):
     def equip_gear(self, gear: Equipment, side=None):
         slot = gear.get_type()
         if side is not None and slot == ItemType.RING:
-            self.unequip_gear(slot, side)
+            if self._equipment[slot][side] is not None:
+                self.unequip_gear(slot, side)
             self._equipment[slot][side] = gear
             self._equipment[slot][side].on_equip(self)
         elif side is None and slot != ItemType.RING:
-            self.unequip_gear(slot)
+            if self._equipment[slot] is not None:
+                self.unequip_gear(slot)
             self._equipment[slot] = gear
             self._equipment[slot].on_equip(self)
         else:

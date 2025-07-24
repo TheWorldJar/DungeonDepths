@@ -29,7 +29,7 @@ from src.scenes.compositions.topbar import print_top_bar
 from src.scenes.compositions.verticalbar import print_vertical_bar
 from src.scenes.compositions.screensize import print_screen_size
 
-from src.actors.actor import ActorType
+from src.game_types import ActorType
 from src.actors.characters.classes.classes import Classes, ClassesDescriptions
 from src.actors.characters.character import Character
 

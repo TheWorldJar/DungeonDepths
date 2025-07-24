@@ -7,7 +7,9 @@ from src.const import (
     SUCCESS_DURATION,
 )
 
-from src.actors.actor import Actor, Attributes, CombatSkills
+from src.game_types import Attributes, CombatSkills
+
+from src.actors.actor import Actor
 from src.actors.roll import roll
 from src.actors.ability import PrefTarget
 
