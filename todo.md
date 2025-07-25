@@ -1,15 +1,13 @@
 # TODO
 
-- Test equipment system
-- Implement the activity menu.
-- Implement combat sub screen.
+- Implement dungeon sub screen.
 - Implement basic enemy.
 - Implement combat class.
 - Run a combat.
 - Finish implementing ability functions for all classes.
 - Implement the rat amulet effect
 
-## Priority Modifers
+## Priority Modifiers
 
 - If it targets low:
     - +1 per Bloodied target.
@@ -26,13 +24,13 @@
 - If it targets first:
     - x0 if first is friendly.
     - +2 if first is enemy.
-    - vice-versa on healing.
+    - vice versa on healing.
 - If it targets last:
     - x0 if last is friendly.
     - +2 if last is enemy.
-    - vice-versa on healing.
+    - vice versa on healing.
 - If it heals self:
-    - +1 if self i Hurt.
+    - +1 if self is Hurt.
     - +2 if self is Bloodied.
 - If it's a buff:
     - x0 if target already has the buff.

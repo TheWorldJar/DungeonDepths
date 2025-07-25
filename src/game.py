@@ -31,6 +31,7 @@ class SubScreen(Enum):
     CHAR_CREATION = "Char_Creation"
     GUIDE = "Guide"
     ACTIVITY_MENU = "Activity_Menu"
+    CHARACTER_SHEET = "Character_Sheet"
     PARTY_MENU = "Party_Menu"
     DUNGEON_MENU = "Dungeon_Menu"
     COMBAT_SCREEN = "Combat_Screen"
@@ -165,6 +166,14 @@ class GameState:
     def set_sub(self, sub: tuple[SubScreen, int]):
         self.debug_log(f"Setting Current Sub: {sub}")
         self._current_sub = sub
+
+    def set_sub_screen(self, sub: SubScreen):
+        self.debug_log(f"Setting Current Sub Screen: {sub}")
+        self._current_sub = (sub, self.get_sub_data())
+
+    def set_sub_data(self, data: int):
+        self.debug_log(f"Setting Current Sub Screen: {data}")
+        self._current_sub = (self.get_sub_screen(), data)
 
     # _characters
     def get_character(self, slot: int) -> Character:
