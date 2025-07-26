@@ -1,5 +1,7 @@
 # TODO
 
+- Implement Party Logic & sub screen.
+    - Create party selection sub screen.
 - Implement dungeon sub screen.
 - Implement basic enemy.
 - Implement combat class.

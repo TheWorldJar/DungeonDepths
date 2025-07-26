@@ -81,6 +81,7 @@ class GameState:
             )
             self._logger = logging.getLogger("game_state")
         self.save_status = "Empty"  # Helper functions in the Save module
+        self._party = self._characters[:4]
 
     def reset(self):
         self.set_scene(START_SCENE)
@@ -91,6 +92,7 @@ class GameState:
         self._inventory = []
         self.set_slots(START_CHARACTER_SLOT)
         self.is_empty_save = True
+        self._party = self._characters[:4]
         self.save_status = "Empty"
 
     def save_to_json(self):
@@ -186,6 +188,19 @@ class GameState:
         self.debug_log(f"Setting Character[{slot}]: {Character}")
         self._characters[slot] = character
 
+    def swap_characters(self, slot1: int, slot2: int):
+        self._characters[slot1], self._characters[slot2] = (
+            self._characters[slot2],
+            self._characters[slot1],
+        )
+        self.set_party()
+
+    def dismiss_character(self, slot: int):
+        empty_char = Character(Classes.MARAUDER, "Empty")
+        empty_char.set_actor_type(ActorType.NONE)
+        self.set_character(empty_char, slot)
+        self.swap_characters(slot, self.get_slots() - 1)
+
     # _inventory
     # Update when the rest of the inventory system is implemented
     def get_item(self, slot: int):
@@ -213,3 +228,13 @@ class GameState:
     def set_slots(self, slots: int):
         self.debug_log(f"Setting Slots: {slots}")
         self._slots = slots
+
+    # _party
+    def get_party(self) -> list[Character]:
+        return self._party
+
+    def get_party_member(self, slot: int) -> Character:
+        return self._party[slot]
+
+    def set_party(self):
+        self._party = self.get_all_characters()[:4]
