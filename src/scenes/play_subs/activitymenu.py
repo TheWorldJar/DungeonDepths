@@ -161,7 +161,8 @@ class ActivityMenu(Frame):
         pass
 
     def _party(self):
-        pass
+        self.scene.remove_effect(self)
+        self.parent.activate_party_menu()
 
     def _dungeon(self):
         pass
@@ -176,6 +177,7 @@ class ActivityMenu(Frame):
         pass
 
     def _guide(self):
+        self.scene.remove_effect(self)
         self.parent.activate_guide()
 
     def _save(self):
@@ -308,4 +310,4 @@ class ActivityMenu(Frame):
                         a._on_click()
                 return None  # Disables global scene cycling.
 
-        return event
+        return super().process_event(event)

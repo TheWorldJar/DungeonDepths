@@ -70,6 +70,7 @@ def load_save(game_state: GameState, save):
         game_state.add_item(item)
     game_state.set_slots(slot_data)
     game_state.is_empty_save = empty_save_data
+    game_state.set_party()
     game_state.info_log("Finished Loading Save")
 
 

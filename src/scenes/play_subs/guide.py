@@ -63,11 +63,15 @@ GUIDE
             if event.key_code in (ord("q"), ord("Q")):
                 return None  # Disables global exit from this screen.
             if event.key_code in (ord("b"), ord("B")):
-                self.parent.activate_quit_confirm()
+                if self.game.get_sub_data() == 0:
+                    self.parent.activate_quit_confirm()
+                else:
+                    self.scene.remove_effect(self)
+                    self.parent.activate_character(self.game.get_sub_data())
             if event.key_code in (ord("\n"), ord("\r")):
                 return None  # Disables global scene cycling.
             if ord("1") <= event.key_code <= ord(str(MAX_CHARACTER_SLOT)):
                 slot = event.key_code - ord("0")
                 self.scene.remove_effect(self)
                 self.parent.activate_character(slot)
-        return event
+        return super().process_event(event)

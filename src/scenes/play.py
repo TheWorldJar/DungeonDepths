@@ -24,6 +24,7 @@ from src.scenes.compositions.screensize import print_screen_size
 from src.scenes.play_subs.charactercreation import CharacterCreationView
 from src.scenes.play_subs.guide import GuideView
 from src.scenes.play_subs.activitymenu import ActivityMenu
+from src.scenes.play_subs.partymenu import PartyMenu
 
 
 class QuitPopup(PopUpDialog):
@@ -76,6 +77,7 @@ class PlayEffect(Print):
             SubScreen.CHAR_CREATION,
             SubScreen.GUIDE,
             SubScreen.ACTIVITY_MENU,
+            SubScreen.PARTY_MENU,
         ):
             return event
 
@@ -176,6 +178,8 @@ class PlayEffect(Print):
                 self.activate_guide()
             case SubScreen.CHAR_CREATION | SubScreen.ACTIVITY_MENU:
                 self.activate_character(data)
+            case SubScreen.PARTY_MENU:
+                self.activate_party_menu()
             # Other Cases will go here.
 
     def activate_character(self, slot):
@@ -204,3 +208,9 @@ class PlayEffect(Print):
         self.game.set_sub_screen(SubScreen.GUIDE)
         self.current_header = "Guide"
         self.scene.add_effect(GuideView(self.screen, self.game, self))
+
+    def activate_party_menu(self):
+        self.game.info_log("Activating Party Menu...")
+        self.game.set_sub_screen(SubScreen.PARTY_MENU)
+        self.current_header = "Party Menu"
+        self.scene.add_effect(PartyMenu(self.screen, self.game, self))

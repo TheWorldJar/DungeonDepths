@@ -116,7 +116,7 @@ class GameState:
             **slots,
             **empty_save,
         }
-        self.debug_log(save_data)
+        self.debug_log(str(save_data))
 
         with open(SAVE_FILE, "w", encoding="utf-8") as s:
             json.dump(save_data, s, indent=4)
@@ -189,6 +189,9 @@ class GameState:
         self._characters[slot] = character
 
     def swap_characters(self, slot1: int, slot2: int):
+        self.debug_log(
+            f"Swapping Character[{slot1}] & Character[{slot2}]: {self.get_character(slot1)} & {self.get_character(slot2)}"
+        )
         self._characters[slot1], self._characters[slot2] = (
             self._characters[slot2],
             self._characters[slot1],
@@ -196,10 +199,18 @@ class GameState:
         self.set_party()
 
     def dismiss_character(self, slot: int):
+        self.debug_log(f"Dismissing Character[{slot}]: {self.get_character(slot)}")
+        next_slot = slot + 1
+        while (
+            next_slot < len(self.get_all_characters())
+            and self.get_character(next_slot).get_actor_type() != ActorType.NONE
+        ):
+            self.swap_characters(slot, next_slot)
+            slot += 1
+            next_slot += 1
         empty_char = Character(Classes.MARAUDER, "Empty")
         empty_char.set_actor_type(ActorType.NONE)
         self.set_character(empty_char, slot)
-        self.swap_characters(slot, self.get_slots() - 1)
 
     # _inventory
     # Update when the rest of the inventory system is implemented
@@ -235,6 +246,9 @@ class GameState:
 
     def get_party_member(self, slot: int) -> Character:
         return self._party[slot]
+
+    def get_not_party(self) -> list[Character]:
+        return self.get_all_characters()[4:]
 
     def set_party(self):
         self._party = self.get_all_characters()[:4]

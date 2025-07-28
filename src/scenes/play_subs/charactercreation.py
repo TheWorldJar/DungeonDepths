@@ -118,6 +118,7 @@ class CharacterCreationView(Frame):
         self.game.debug_log(self.game.get_character(self.slot - 1).to_json())
         if self.game.is_empty_save:
             self.game.is_empty_save = False
+        self.game.set_party()
         self.scene.remove_effect(self)
         self.screen.clear_buffer(0, 0, 0)
         self.parent.activate_character(self.slot)
