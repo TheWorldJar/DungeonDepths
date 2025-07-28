@@ -100,6 +100,7 @@ class PartyMenu(Frame):
                     Button(
                         c.get_name(),
                         lambda x=i: self._on_switch(x),
+                        add_box=False,
                     )
                 )
 
@@ -121,6 +122,7 @@ class PartyMenu(Frame):
                     Button(
                         n.get_name(),
                         lambda x=j: self._on_switch(x + 4),
+                        add_box=False,
                     )
                 )
 
@@ -142,7 +144,7 @@ class PartyMenu(Frame):
         self.fix()
 
     def _on_switch(self, slot1: int):
-        if len(self.game.get_party()) < 2:
+        if self.game.get_party_member(1).get_actor_type() != ActorType.CHARACTER:
             self.scene.add_effect(BadSwitchPopup(self.screen))
         else:
             self.scene.add_effect(SwitchMenu(self.screen, self.game, slot1))
@@ -154,6 +156,8 @@ class PartyMenu(Frame):
         self.scene.reset()
 
     def process_event(self, event):
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
             self.screen.clear_buffer(0, 0, 0)
             if event.key_code in (ord("q"), ord("Q")):

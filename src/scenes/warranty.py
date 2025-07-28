@@ -50,6 +50,8 @@ For more information, please consult the LICENSE file found in the root of this 
         )
 
     def process_event(self, event):
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
                 self.game.set_scene(START_SCENE)
@@ -58,7 +60,7 @@ For more information, please consult the LICENSE file found in the root of this 
                 return None  # Disables gloabl exit from this screen.
             if event.key_code in (ord("\n"), ord("\r")):
                 return None  # Disables global scene cycling.
-        return event
+        return super().process_event(event)
 
     def _update(self, frame_no):
         if (

@@ -81,6 +81,8 @@ class PlayEffect(Print):
         ):
             return event
 
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
             self.screen.clear_buffer(0, 0, 0)
             if event.key_code in (ord("q"), ord("Q")):
@@ -94,7 +96,7 @@ class PlayEffect(Print):
                 self.activate_character(slot)
             if event.key_code in (ord("g"), ord("G")):
                 self.activate_guide()
-        return event
+        return super().process_event(event)
 
     def _update(self, frame_no):
         if (

@@ -34,6 +34,8 @@ class StartEffect(Print):
         )
 
     def process_event(self, event):
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
             if event.key_code in (ord("s"), ord("S")):
                 self.game.set_scene(SETTINGS_SCENE)
@@ -58,7 +60,7 @@ class StartEffect(Print):
                 raise NextScene(LICENSE_SCENE)
             if event.key_code in (ord("\n"), ord("\r")):
                 return None  # Disables global scene cycling.
-        return event
+        return super().process_event(event)
 
     def _update(self, frame_no):
         if (

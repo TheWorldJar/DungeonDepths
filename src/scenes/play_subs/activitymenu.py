@@ -2,7 +2,7 @@ from asciimatics.widgets import (
     Frame,
     Layout,
     Button,
-    TextBox,
+    Label,
     Divider,
 )
 
@@ -37,16 +37,8 @@ class ActivityMenu(Frame):
         self.activities = []
 
         # Manage Character
-        self.character_header = TextBox(
-            1,
-            name="character_header",
-            as_string=True,
-            line_wrap=False,
-            readonly=True,
-            tab_stop=False,
-        )
-        self.character_header.hide_cursor = True
-        self.character_header.value = "Manage Character"
+        self.character_header = Label("Manage Character", 1, "^")
+        self.character_header.custom_colour = "title"
         self.button_character_sheet = Button("[C]haracter Sheet", self._sheet)
         self.button_equip_menu = Button("[E]quip", self._equip)
         self.button_inventory = Button("[V]iew Inventory", self._inventory)
@@ -64,16 +56,8 @@ class ActivityMenu(Frame):
         )
 
         # Dungeons
-        self.dungeon_header = TextBox(
-            1,
-            name="dungeon_header",
-            as_string=True,
-            line_wrap=False,
-            readonly=True,
-            tab_stop=False,
-        )
-        self.dungeon_header.hide_cursor = True
-        self.dungeon_header.value = "Dungeons"
+        self.dungeon_header = Label("Dungeons", 1, "^")
+        self.dungeon_header.custom_colour = "title"
         self.button_party_menu = Button("[P]arty Sheet", self._party)
         self.button_dungeon_menu = Button("[D]ungeons", self._dungeon)
         self.activities.extend(
@@ -87,16 +71,8 @@ class ActivityMenu(Frame):
         )
 
         # Training
-        self.training_header = TextBox(
-            1,
-            name="training_header",
-            as_string=True,
-            line_wrap=False,
-            readonly=True,
-            tab_stop=False,
-        )
-        self.training_header.hide_cursor = True
-        self.training_header.value = "Training"
+        self.training_header = Label("Training", 1, "^")
+        self.training_header.custom_colour = "title"
         self.button_combat_train = Button("Combat [T]raining", self._combat)
         self.button_crafting_train = Button("C[r]afting", self._craft)
         self.button_secondary_train = Button("Secondary S[k]ills", self._secondary)
@@ -112,16 +88,8 @@ class ActivityMenu(Frame):
         )
 
         # Options
-        self.options_header = TextBox(
-            1,
-            name="options_header",
-            as_string=True,
-            line_wrap=False,
-            readonly=True,
-            tab_stop=False,
-        )
-        self.options_header.hide_cursor = True
-        self.options_header.value = "Options"
+        self.options_header = Label("Options", 1, "^")
+        self.options_header.custom_colour = "title"
         self.button_guide = Button("[G]uide", self._guide)
         self.button_save = Button("[S]ave", self._save)
         self.activities.extend(
@@ -187,6 +155,8 @@ class ActivityMenu(Frame):
         self.parent.activate_quit_confirm()
 
     def process_event(self, event):
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
             self.screen.clear_buffer(0, 0, 0)
             if event.key_code in (ord("q"), ord("Q")):
@@ -198,7 +168,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_character_sheet.focus()
 
             if event.key_code in (ord("e"), ord("E")):
@@ -207,7 +176,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_equip_menu.focus()
 
             if event.key_code in (ord("v"), ord("V")):
@@ -216,7 +184,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_inventory.focus()
 
             if event.key_code in (ord("i"), ord("I")):
@@ -225,7 +192,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_dismiss.focus()
 
             if event.key_code in (ord("p"), ord("P")):
@@ -234,7 +200,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_party_menu.focus()
 
             if event.key_code in (ord("d"), ord("D")):
@@ -243,7 +208,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_dungeon_menu.focus()
 
             if event.key_code in (ord("t"), ord("T")):
@@ -252,7 +216,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_combat_train.focus()
 
             if event.key_code in (ord("r"), ord("R")):
@@ -261,7 +224,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_crafting_train.focus()
 
             if event.key_code in (ord("k"), ord("K")):
@@ -270,7 +232,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_secondary_train.focus()
 
             if event.key_code in (ord("g"), ord("G")):
@@ -279,7 +240,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_guide.focus()
 
             if event.key_code in (ord("s"), ord("S")):
@@ -288,7 +248,6 @@ class ActivityMenu(Frame):
                 else:
                     for a in self.activities:
                         a.blur()
-                    self.button_back.blur()
                     self.button_save.focus()
 
             if event.key_code in (ord("b"), ord("B")):
@@ -309,5 +268,4 @@ class ActivityMenu(Frame):
                     if a._has_focus:
                         a._on_click()
                 return None  # Disables global scene cycling.
-
         return super().process_event(event)

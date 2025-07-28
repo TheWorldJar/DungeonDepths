@@ -21,6 +21,8 @@ class SettingsEffect(Print):
         )
 
     def process_event(self, event):
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
                 self.game.set_scene(START_SCENE)
@@ -29,7 +31,7 @@ class SettingsEffect(Print):
                 return None  # Disables global exit from this screen.
             if event.key_code in (ord("\n"), ord("\r")):
                 return None  # Disables global scene cycling.
-        return event
+        return super().process_event(event)
 
     def _update(self, frame_no):
         if (
@@ -37,5 +39,6 @@ class SettingsEffect(Print):
             or self.screen.height < MIN_SCREEN_HEIGHT
         ):
             print_screen_size(self)
+            return None
         else:
             return super()._update(frame_no)

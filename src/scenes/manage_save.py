@@ -66,6 +66,8 @@ class ManageEffect(Print):
         )
 
     def process_event(self, event):
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
                 self.game.set_scene(START_SCENE)
@@ -76,7 +78,7 @@ class ManageEffect(Print):
                 return None  # Disables global scene cycling.
             if event.key_code in (ord("d"), ord("D")):
                 self.activate_delete_confirm()
-        return event
+        return super().process_event(event)
 
     def _update(self, frame_no):
         if (

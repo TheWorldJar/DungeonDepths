@@ -4,8 +4,8 @@ from asciimatics.widgets import (
     Text,
     RadioButtons,
     Button,
-    TextBox,
     Divider,
+    Label,
 )
 
 from src.const import (
@@ -19,6 +19,7 @@ from src.actors.characters.classes.classes import Classes, ClassesDescriptions
 
 
 class CharacterCreationView(Frame):
+    # Could benefit somewhat from being refactored to an activity list like the Activity Menu.
     def __init__(self, screen, game_state: GameState, slot, parent):
         super().__init__(
             screen,
@@ -59,50 +60,40 @@ class CharacterCreationView(Frame):
         layout.add_widget(self.classes_radio, 0)
 
         # Shows details about the selected class to the user.
-        self.class_info = TextBox(
-            20,
-            name="class_info",
-            as_string=True,
-            line_wrap=True,
-            readonly=True,
-            tab_stop=False,
+        self.class_info = Label(
+            self._set_info(),
+            screen.height - 6,
         )
-        self.class_info.hide_cursor = True
-        self.class_info.value = self._set_info()
+        self.class_info.custom_colour = "edit_text"
         layout.add_widget(self.class_info, 1)
 
         # Shows additional details about character creation.
-        self.add_info = TextBox(
-            15,
-            name="additional_info",
-            as_string=True,
-            line_wrap=False,
-            readonly=True,
-            tab_stop=False,
-        )
-        self.add_info.hide_cursor = True
-        self.add_info.value = """
+        self.add_info = Label(
+            """
 \n-The character's ancestry will be chosen at random.
 \n-The character will be given 4 abilities at random\nfrom their class pool.
 \n-The character's health, attributes, and skills\nwill be calculated based on their class and their\nancestry.
 \n-The character will be given a set of equipment\nfit for their class.
-"""
+""",
+            15,
+        )
+        self.add_info.custom_colour = "edit_text"
         layout.add_widget(self.add_info, 0)
 
         # Buttons for 'Ok' and 'Cancel'
-        layout2 = Layout([1, 1, 1, 1])
+        layout2 = Layout([1, 1])
         self.button_ok = Button("[O]K", self._ok)
         self.button_cancel = Button("[C]ancel", self._cancel)
         self.add_layout(layout2)
         layout2.add_widget(self.button_ok, 0)
-        layout2.add_widget(self.button_cancel, 3)
+        layout2.add_widget(self.button_cancel, 1)
 
         # The layout becomes fixed and the position of all widgets is calculated.
         self.fix()
 
     def _on_change(self):
         self.save()
-        self.class_info.value = self._set_info()
+        self.class_info.text = self._set_info()
 
     def _ok(self):
         self.save()
@@ -126,9 +117,12 @@ class CharacterCreationView(Frame):
     def _cancel(self):
         self.scene.remove_effect(self)
         self.screen.clear_buffer(0, 0, 0)
+        self.game.set_sub_data(0)
         self.parent.activate_guide()
 
     def process_event(self, event):
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
 
             if self.name_text._has_focus:

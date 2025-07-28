@@ -32,6 +32,8 @@ class LicenseEffect(Print):
         )
 
     def process_event(self, event):
+        if hasattr(event, "x") or hasattr(event, "y"):
+            return None  # Disables global mouse events
         if hasattr(event, "key_code"):
             if event.key_code in (ord("b"), ord("B")):  # Press 'b' to go back
                 self.game.set_scene(START_SCENE)
@@ -40,7 +42,7 @@ class LicenseEffect(Print):
                 return None  # Disables global exit from this screen.
             if event.key_code in (ord("\n"), ord("\r")):
                 return None  # Disables global scene cycling.
-        return event
+        return super().process_event(event)
 
     def _update(self, frame_no):
         if (
