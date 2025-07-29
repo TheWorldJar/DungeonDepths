@@ -5,7 +5,7 @@ from src.const import NO_DURATION, SUCCESS_DURATION, NEXT_TURN_DURATION
 from src.game_types import Attributes, CombatSkills
 
 from src.actors.actor import Actor
-from src.actors.roll import roll
+from src.actors.roll import roll_target
 from src.actors.ability import PrefTarget
 
 
@@ -30,12 +30,13 @@ def take_aim(source: Actor):
 
 
 def strangle(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.PERCEPTION)
         + source.get_combat_skill(CombatSkills.RANGED)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        + target.get_armour()
     )
     delta = attack - defence
     if delta >= 0:

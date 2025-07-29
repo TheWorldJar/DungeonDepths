@@ -5,12 +5,12 @@ from src.const import NO_DURATION, SUCCESS_DURATION
 from src.game_types import Attributes, CombatSkills
 
 from src.actors.actor import Actor
-from src.actors.roll import roll
+from src.actors.roll import roll_target
 from src.actors.ability import PrefTarget
 
 
 def martyr(source: Actor, target: Actor):
-    heal = roll(
+    heal = roll_target(
         source.get_attribute(Attributes.RESILIENCE)
         + source.get_combat_skill(CombatSkills.DEFENCE)
     )[0]
@@ -31,12 +31,12 @@ def suppress(source: Actor, target: Actor):
 
 
 def lightning_bolt(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.INTELLIGENCE)
         + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
         - (source.get_attribute(Attributes.INTELLIGENCE) // 3)
     )
@@ -50,12 +50,12 @@ def radiance(source: Actor):
 
 
 def ball_lightning(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.INTELLIGENCE)
         + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
         + (target.get_attribute(Attributes.INTELLIGENCE) // 3)
     )

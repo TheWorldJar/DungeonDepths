@@ -39,7 +39,7 @@ class Actor:
         self._enhanced_attributes = attributes.copy()
         self._combat_skills = combat_skills
         self._enhanced_combat_skills = combat_skills.copy()
-        self._initiative = 0
+        self._initiative = [0]
         self._initiative_mod = 0
 
     def to_json(self):
@@ -216,14 +216,34 @@ class Actor:
         self._enhanced_combat_skills[skill] += change
 
     # _initiative
-    def get_initiative(self) -> int:
+    def get_initiative(self) -> list[int]:
         return self._initiative
 
     def set_initiative(self, value: int):
-        self._initiative = value
+        if self._initiative[0] == 0:
+            self._initiative[0] = value
+            self.populate_initiative()
+        else:
+            self._initiative.append(value)
 
-    def change_initiative(self, change: int):
-        self._initiative += change
+    def change_initiative(self, change: int, slot=0):
+        for i in range(slot, len(self._initiative)):
+            self._initiative[i] += change
+
+    def get_initiative_roll(self) -> int:
+        return (
+            self.get_enhanced_attribute(Attributes.DEXTERITY)
+            + self.get_enhanced_attribute(Attributes.INTUITION)
+            + self.get_enhanced_attribute(Attributes.PERCEPTION)
+        )
+
+    def populate_initiative(self, slot=0):
+        if self._initiative[0] != 0 and self._initiative[slot] > 10:
+            self.set_initiative(self._initiative[slot] - 10)
+            self.populate_initiative(slot + 1)
+
+    def reset_initiative(self):
+        self._initiative = [0]
 
     # _initiative_mod
     def get_initiative_mod(self) -> int:

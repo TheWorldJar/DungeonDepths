@@ -5,7 +5,7 @@ from src.const import NO_DURATION
 from src.game_types import Attributes, CombatSkills
 
 from src.actors.actor import Actor
-from src.actors.roll import roll
+from src.actors.roll import roll_target
 from src.actors.ability import PrefTarget
 
 
@@ -28,7 +28,7 @@ def selfless(source: Actor):
 def inspire(source: Actor, target: list[Actor]):
     for t in target:
         heal = (
-            roll(
+            roll_target(
                 source.get_attribute(Attributes.RESILIENCE)
                 + source.get_combat_skill(CombatSkills.DEFENCE)
             )[0]
@@ -45,7 +45,7 @@ def transferance(source: Actor, target: Actor):
 
 
 def martyr(source: Actor, target: Actor):
-    heal = roll(
+    heal = roll_target(
         source.get_attribute(Attributes.RESILIENCE)
         + source.get_combat_skill(CombatSkills.DEFENCE)
     )[0]

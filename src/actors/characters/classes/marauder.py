@@ -10,7 +10,7 @@ from src.const import (
 from src.game_types import Attributes, CombatSkills
 
 from src.actors.actor import Actor
-from src.actors.roll import roll
+from src.actors.roll import roll_target
 from src.actors.ability import PrefTarget
 
 
@@ -26,11 +26,13 @@ def regenerate(source: Actor):
 
 def cleave(source: Actor, target: list[Actor]):
     for t in target:
-        attack = roll(
+        attack = roll_target(
             source.get_attribute(Attributes.STRENGTH)
             + source.get_combat_skill(CombatSkills.MELEE)
         )[0]
-        defence = roll(t.get_combat_skill(CombatSkills.DEFENCE))[0] + t.get_armour()
+        defence = (
+            roll_target(t.get_combat_skill(CombatSkills.DEFENCE))[0] + t.get_armour()
+        )
 
         delta = attack - defence
         if delta >= 0:
@@ -38,12 +40,12 @@ def cleave(source: Actor, target: list[Actor]):
 
 
 def power_strike(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.STRENGTH)
         + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
         + (target.get_attribute(Attributes.STRENGTH) // 3)
     )
@@ -55,12 +57,13 @@ def power_strike(source: Actor, target: Actor):
 
 
 def decapitate(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.STRENGTH)
         + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        + target.get_armour()
     )
     delta = attack - defence
     if delta >= 0:
@@ -75,7 +78,7 @@ def slam(source: Actor, target: list[Actor]):
     for t in target:
         t.change_initiative(
             -(
-                roll(
+                roll_target(
                     source.get_attribute(Attributes.RESILIENCE)
                     + source.get_combat_skill(CombatSkills.MELEE)
                 )[0]
@@ -84,12 +87,13 @@ def slam(source: Actor, target: list[Actor]):
 
 
 def overkill(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.STRENGTH)
         + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        + target.get_armour()
     )
     delta = attack - defence
     if delta >= 0:

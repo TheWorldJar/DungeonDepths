@@ -5,7 +5,7 @@ from src.const import NO_DURATION
 from src.game_types import Attributes, CombatSkills
 
 from src.actors.actor import Actor
-from src.actors.roll import roll
+from src.actors.roll import roll_target
 from src.actors.ability import PrefTarget
 
 
@@ -18,7 +18,7 @@ def glass_cannon(source: Actor):
 
 
 def reconstitute(source: Actor, target: Actor):
-    heal = roll(
+    heal = roll_target(
         source.get_attribute(Attributes.WILLPOWER)
         + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
@@ -34,12 +34,12 @@ def suppress(source: Actor, target: Actor):
 
 
 def eldritch_blast(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.INTELLIGENCE)
         + source.get_combat_skill(CombatSkills.MAGIC)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
         + (target.get_attribute(Attributes.INTELLIGENCE) // 3)
     )
@@ -52,11 +52,13 @@ def eldritch_blast(source: Actor, target: Actor):
 
 def shadow_pool(source: Actor, target: list[Actor]):
     for t in target:
-        attack = roll(
+        attack = roll_target(
             source.get_attribute(Attributes.STRENGTH)
             + source.get_combat_skill(CombatSkills.MELEE)
         )[0]
-        defence = roll(t.get_combat_skill(CombatSkills.DEFENCE))[0] + t.get_armour()
+        defence = (
+            roll_target(t.get_combat_skill(CombatSkills.DEFENCE))[0] + t.get_armour()
+        )
 
         delta = attack - defence
         if delta >= 0:

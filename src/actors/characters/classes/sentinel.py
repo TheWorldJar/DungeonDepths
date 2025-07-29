@@ -5,7 +5,7 @@ from src.const import NO_DURATION, NEXT_TURN_DURATION
 from src.game_types import Attributes, CombatSkills
 
 from src.actors.actor import Actor
-from src.actors.roll import roll
+from src.actors.roll import roll_target
 from src.actors.ability import PrefTarget
 
 
@@ -18,12 +18,13 @@ def multistrike(source: Actor, target: Actor):
 
 
 def high_slash(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.DEXTERITY)
         + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0] + target.get_armour()
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        + target.get_armour()
     )
     delta = attack - defence
     if delta >= 0:
@@ -35,12 +36,12 @@ def vengeance(source: Actor, target: Actor):
 
 
 def precise_strike(source: Actor, target: Actor):
-    attack = roll(
+    attack = roll_target(
         source.get_attribute(Attributes.DEXTERITY)
         + source.get_combat_skill(CombatSkills.MELEE)
     )[0]
     defence = (
-        roll(target.get_combat_skill(CombatSkills.DEFENCE))[0]
+        roll_target(target.get_combat_skill(CombatSkills.DEFENCE))[0]
         + target.get_armour()
         - (source.get_attribute(Attributes.DEXTERITY) // 3)
     )
