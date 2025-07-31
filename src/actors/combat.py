@@ -1,3 +1,5 @@
+from time import sleep
+
 from src.actors.actor import Actor
 from src.actors.characters.character import Character
 from src.actors.monsters.monster import Monster
@@ -5,6 +7,7 @@ from src.actors.puzzles.puzzle import Puzzle
 from src.actors.roll import roll_sum
 from src.game import GameState
 from src.game_types import ActorType
+from src.const import TURN_TIMER
 
 
 class Combat:
@@ -70,6 +73,24 @@ class Combat:
         elif len(self.get_all_enemies()) == 0 and len(self.get_all_characters()) > 0:
             victory = 1
         return victory
+
+    # TODO: Combat loop needs to be async.
+    def combat_loop(self):
+        victory = self._check_victory()
+        while victory == 0:
+            self._new_round()
+            for actor, _ in self._timeline:
+                if not self._game.get_delta_time() >= TURN_TIMER:
+                    sleep(TURN_TIMER - self._game.get_delta_time())
+
+                # Rest of the turn
+
+                victory = self._check_victory()
+                if victory != 0:
+                    break
+                self._game.set_now_to_last()
+
+        # Resolve combat
 
     # Nothing but Getters and Setters below.
     def get_characters(self, slot) -> Character:

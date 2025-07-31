@@ -30,7 +30,6 @@ HURT = 0.3
 BLOODIED = 0.01
 DEAD = 0
 
-
 # Characters
 CHARACTER_BASE_HEALTH = 5
 CHARACTER_HEALTH_MULTIPLIER = 5
@@ -47,6 +46,9 @@ NO_DURATION = float("inf")
 END_DURATION = 0
 SUCCESS_DURATION = -1
 NEXT_TURN_DURATION = float("-inf")
+
+# Combat
+TURN_TIMER = 5.0  # Seconds
 
 # Colour Palette
 PALETTE = {

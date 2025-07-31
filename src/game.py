@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+import time
 
 from enum import Enum
 
@@ -82,6 +83,8 @@ class GameState:
             self._logger = logging.getLogger("game_state")
         self.save_status = "Empty"  # Helper functions in the Save module
         self._party = self._characters[:4]
+        self._last_combat_turn = 0.0
+        self._now = time.time()
 
     def reset(self):
         self.set_scene(START_SCENE)
@@ -94,6 +97,8 @@ class GameState:
         self.is_empty_save = True
         self._party = self._characters[:4]
         self.save_status = "Empty"
+        self._last_combat_turn = 0.0
+        self._now = time.time()
 
     def save_to_json(self):
         current_scene = {"current_scene": self.get_scene()}
@@ -252,3 +257,26 @@ class GameState:
 
     def set_party(self):
         self._party = self.get_all_characters()[:4]
+
+    # _last_combat_turn
+    def get_last_combat_turn(self) -> float:
+        return self._last_combat_turn
+
+    def set_last_combat_turn(self):
+        self._last_combat_turn = time.time()
+
+    def reset_last_combat_turn(self):
+        self._last_combat_turn = 0.0
+
+    def set_now_to_last(self):
+        self._last_combat_turn = self.get_now()
+
+    # _now
+    def get_now(self) -> float:
+        return self._now
+
+    def set_now(self):
+        self._now = time.time()
+
+    def get_delta_time(self) -> float:
+        return self._now - self.get_last_combat_turn
