@@ -1,4 +1,5 @@
 import sys
+import asyncio
 
 from asciimatics.screen import Screen
 from asciimatics.scene import Scene
@@ -48,7 +49,7 @@ def screens(screen, scene, game_state):
     )
 
 
-def main():
+async def main():
     """The program's entry point"""
     last_scene = None
     game = GameState()
@@ -61,4 +62,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

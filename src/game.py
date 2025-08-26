@@ -61,6 +61,16 @@ class GameState:
         self.is_empty_save = True
 
         # These values are not saved to file.
+        self._logger = self._setup_logger()
+        self._party = self._characters[:4]
+        self._last_combat_turn = 0.0
+        self._now = time.time()
+        self._is_combat_active = False
+        self._combat_cancel_request = False
+        self._combat_task = None
+        self.save_status = "Empty"  # Helper functions in the Save module
+
+    def _setup_logger(self):
         if DEBUG:
             if os.path.exists(os.path.realpath("debug.log")):
                 os.remove(os.path.realpath("debug.log"))
@@ -70,7 +80,6 @@ class GameState:
                 level=logging.DEBUG,
                 format="%(asctime)s - %(levelname)s - %(message)s",
             )
-            self._logger = logging.getLogger("game_state")
         else:
             if os.path.exists(os.path.realpath("debug.log")):
                 os.remove(os.path.realpath("debug.log"))
@@ -80,11 +89,7 @@ class GameState:
                 level=logging.INFO,
                 format="%(asctime)s - %(levelname)s - %(message)s",
             )
-            self._logger = logging.getLogger("game_state")
-        self.save_status = "Empty"  # Helper functions in the Save module
-        self._party = self._characters[:4]
-        self._last_combat_turn = 0.0
-        self._now = time.time()
+        return logging.getLogger("game_state")
 
     def reset(self):
         self.set_scene(START_SCENE)
@@ -99,6 +104,9 @@ class GameState:
         self.save_status = "Empty"
         self._last_combat_turn = 0.0
         self._now = time.time()
+        self._is_combat_active = False
+        self._combat_cancel_request = False
+        self._combat_task = None
 
     def save_to_json(self):
         current_scene = {"current_scene": self.get_scene()}

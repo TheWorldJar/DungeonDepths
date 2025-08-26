@@ -1,4 +1,5 @@
 from time import sleep
+import asyncio
 
 from src.actors.actor import Actor
 from src.actors.characters.character import Character
@@ -75,13 +76,13 @@ class Combat:
         return victory
 
     # TODO: Combat loop needs to be async.
-    def combat_loop(self):
+    async def combat_loop(self):
         victory = self._check_victory()
         while victory == 0:
             self._new_round()
             for actor, _ in self._timeline:
                 if not self._game.get_delta_time() >= TURN_TIMER:
-                    sleep(TURN_TIMER - self._game.get_delta_time())
+                    asyncio.sleep(TURN_TIMER - self._game.get_delta_time())
 
                 # Rest of the turn
 
